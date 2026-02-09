@@ -1,0 +1,1787 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PetShop App</title>
+  <meta name="theme-color" content="#070A12" />
+  <style>
+    :root{
+      --bg:#070A12;
+      --card:rgba(255,255,255,.04);
+      --card2:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.16);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.58);
+      --muted2:rgba(255,255,255,.42);
+      --accent:#34b6ff;
+      --accent2:#7c5cff;
+      --ok:#21d07a;
+      --warn:#ffb020;
+      --bad:#ff4d6d;
+      --shadow: 0 16px 40px rgba(0,0,0,.45);
+      --radius:18px;
+      --radius2:24px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(600px 600px at 50% -10%, rgba(52,182,255,.20), transparent 60%),
+                  radial-gradient(700px 700px at 100% 100%, rgba(124,92,255,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .wrap{
+      max-width: 980px;
+      margin:0 auto;
+      padding: 18px 14px 110px;
+      position:relative;
+    }
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding: 6px 4px 10px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+    .brand .tiny{font-size:12px;color:var(--muted2)}
+    .brand .title{
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 66vw;
+    }
+    .brand .sub{font-size:12px;color:var(--muted)}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      color: var(--text);
+      white-space:nowrap;
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);box-shadow:0 0 20px rgba(33,208,122,.35)}
+    .warnDot{background:var(--warn);box-shadow:0 0 20px rgba(255,176,32,.35)}
+    .badDot{background:var(--bad);box-shadow:0 0 20px rgba(255,77,109,.35)}
+    .banner{
+      margin: 8px 4px 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius2);
+      border:1px solid var(--line);
+      background: linear-gradient(120deg, rgba(52,182,255,.12), rgba(124,92,255,.08));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.02);
+      backdrop-filter: blur(10px);
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .banner .bTitle{font-weight:800;font-size:13px}
+    .banner .bText{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .banner .bActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition: transform .08s ease, border-color .12s ease, background .12s ease;
+      user-select:none;
+    }
+    .btn:hover{border-color:var(--line2); background: rgba(255,255,255,.07)}
+    .btn:active{transform: translateY(1px)}
+    .btnPrimary{
+      border-color: rgba(52,182,255,.30);
+      background: rgba(52,182,255,.16);
+    }
+    .btnDanger{
+      border-color: rgba(255,77,109,.30);
+      background: rgba(255,77,109,.14);
+    }
+    .btnOk{
+      border-color: rgba(33,208,122,.30);
+      background: rgba(33,208,122,.14);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:12px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+      .brand .title{max-width: 78vw}
+    }
+    .card{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius2);
+      padding: 14px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.02);
+      backdrop-filter: blur(12px);
+    }
+    .cardHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .cardTitle{font-size:14px;font-weight:800}
+    .cardHint{font-size:12px;color:var(--muted)}
+    .miniGrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 420px){
+      .miniGrid{grid-template-columns:1fr}
+    }
+    .mini{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .mini .k{font-size:12px;color:var(--muted)}
+    .mini .v{font-size:18px;font-weight:900;margin-top:4px}
+    .search{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 10px 12px;
+    }
+    .search input{
+      width:100%;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size:14px;
+    }
+    .search .icon{
+      opacity:.7;
+      font-size:14px;
+      width:28px;
+      text-align:center;
+    }
+    .list{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .item{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--radius2);
+      padding: 12px;
+      cursor:pointer;
+      transition: border-color .12s ease, background .12s ease;
+    }
+    .item:hover{border-color:var(--line2); background: rgba(255,255,255,.05)}
+    .row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .name{font-weight:900;font-size:14px}
+    .meta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .tag{
+      font-size:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:6px 10px;
+      border-radius:999px;
+      color: var(--text);
+      white-space:nowrap;
+    }
+    .tagAccent{border-color: rgba(52,182,255,.28); background: rgba(52,182,255,.12); color: rgba(210,240,255,.95)}
+    .tagOk{border-color: rgba(33,208,122,.28); background: rgba(33,208,122,.12); color: rgba(210,255,230,.95)}
+    .tagWarn{border-color: rgba(255,176,32,.30); background: rgba(255,176,32,.12); color: rgba(255,240,210,.95)}
+    .tagBad{border-color: rgba(255,77,109,.30); background: rgba(255,77,109,.12); color: rgba(255,220,230,.95)}
+    .fab{
+      position: fixed;
+      right: 16px;
+      bottom: 92px;
+      z-index: 50;
+      border:none;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 900;
+      cursor:pointer;
+      color: #041018;
+      background: linear-gradient(120deg, var(--accent), var(--accent2));
+      box-shadow: 0 18px 42px rgba(52,182,255,.18);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .fab:active{transform: translateY(1px)}
+    .fab[disabled]{opacity:.45; filter:saturate(.5); cursor:not-allowed}
+    .bottomNav{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 12px;
+      width: min(980px, calc(100% - 18px));
+      z-index: 60;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 26px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 8px;
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .tab{
+      border:none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 20px;
+      padding: 10px 8px;
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:center;
+      justify-content:center;
+    }
+    .tab .ic{font-size:14px; opacity:.9}
+    .tab.active{
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+    }
+
+    /* Modal */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index: 100;
+      padding: 14px;
+    }
+    .overlay.show{display:flex}
+    .modal{
+      width: min(760px, 100%);
+      border:1px solid var(--line);
+      background: rgba(10,12,20,.92);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(16px);
+    }
+    .modalHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(120deg, rgba(52,182,255,.10), rgba(124,92,255,.08));
+    }
+    .modalHeader .mhTitle{font-weight:900}
+    .modalHeader .mhSub{font-size:12px;color:var(--muted);margin-top:3px}
+    .modalBody{padding: 14px 16px}
+    .modalFooter{
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .x{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 640px){
+      .form{grid-template-columns: 1fr}
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin: 2px 0 6px}
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 11px 12px;
+      outline:none;
+      font-size: 14px;
+    }
+    textarea{min-height: 90px; resize: vertical}
+    .sep{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+      margin: 12px 0;
+    }
+    .muted{color: var(--muted); font-size: 12px; line-height: 1.35}
+    .two{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    }
+    @media (max-width: 640px){.two{grid-template-columns:1fr}}
+    .kv{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+    }
+    .kv b{font-size:13px}
+    .kv span{font-size:12px; color: var(--muted)}
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 132px;
+      background: rgba(255,255,255,.10);
+      border:1px solid var(--line);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      display:none;
+      z-index: 120;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .toast.show{display:block}
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: rgba(210,240,255,.92);
+      background: rgba(52,182,255,.10);
+      border:1px solid rgba(52,182,255,.22);
+      padding: 6px 8px;
+      border-radius: 12px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="tiny">PetShop • Tech Modern</div>
+        <div class="title" id="shopName">Seu PetShop</div>
+        <div class="sub" id="shopSub">Clientes, pets, agenda, serviços e pagamentos</div>
+      </div>
+      <div class="pill" id="planPill"><span class="dot" id="planDot"></span><span id="planText">Plano ativo</span></div>
+    </div>
+
+    <div class="banner" id="planBanner" style="display:none;">
+      <div>
+        <div class="bTitle" id="bannerTitle">Aviso do plano</div>
+        <div class="bText" id="bannerText">...</div>
+      </div>
+      <div class="bActions">
+        <button class="btn btnPrimary" id="btnOpenConfig">Configurar</button>
+        <button class="btn" id="btnCopyPix">Copiar Pix</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <div class="cardTitle" id="screenTitle">Painel</div>
+            <div class="cardHint" id="screenHint">Tudo organizado, bonito e rápido</div>
+          </div>
+          <button class="btn" id="btnQuickAdd">Ação rápida</button>
+        </div>
+
+        <div class="miniGrid" id="kpis">
+          <div class="mini">
+            <div class="k">Agendamentos hoje</div>
+            <div class="v" id="kToday">0</div>
+          </div>
+          <div class="mini">
+            <div class="k">Pendentes</div>
+            <div class="v" id="kPending">0</div>
+          </div>
+          <div class="mini">
+            <div class="k">Total do dia</div>
+            <div class="v" id="kTotal">R$ 0</div>
+          </div>
+        </div>
+
+        <div class="search">
+          <div class="icon">⌕</div>
+          <input id="search" placeholder="Buscar cliente, pet, serviço, telefone, observação..." />
+        </div>
+
+        <div class="list" id="list"></div>
+      </div>
+
+      <div class="card" id="sideCard">
+        <div class="cardHeader">
+          <div>
+            <div class="cardTitle">Atalhos</div>
+            <div class="cardHint">Do jeito que o petshop precisa</div>
+          </div>
+          <span class="tag tagAccent" id="shopTag">Local</span>
+        </div>
+
+        <div class="two">
+          <button class="btn btnPrimary" id="goClients">Clientes</button>
+          <button class="btn btnPrimary" id="goPets">Pets</button>
+          <button class="btn btnPrimary" id="goAgenda">Agenda</button>
+          <button class="btn btnPrimary" id="goFinance">Pagamentos</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="kv">
+          <div>
+            <b>Pix do petshop</b><div class="muted">Copiar chave Pix cadastrada</div>
+          </div>
+          <button class="btn" id="btnPixSide">Copiar</button>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="kv">
+          <div>
+            <b>Backup</b><div class="muted">Exportar ou importar dados</div>
+          </div>
+          <button class="btn" id="btnBackup">Abrir</button>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="kv">
+          <div>
+            <b>Configuração</b><div class="muted">Nome, Pix, vencimento, mensagens</div>
+          </div>
+          <button class="btn" id="btnConfig">Abrir</button>
+        </div>
+
+        <div class="sep"></div>
+        <div class="muted">
+          Dica: defina vencimento do plano e a chave Pix. Mensagens automáticas ficam no detalhe do cliente/pet/agendamento.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="fab" id="fab">＋ Novo</button>
+
+  <div class="bottomNav">
+    <button class="tab active" data-tab="home"><div class="ic">⌂</div><div>Painel</div></button>
+    <button class="tab" data-tab="clients"><div class="ic">👤</div><div>Clientes</div></button>
+    <button class="tab" data-tab="pets"><div class="ic">🐾</div><div>Pets</div></button>
+    <button class="tab" data-tab="agenda"><div class="ic">📅</div><div>Agenda</div></button>
+    <button class="tab" data-tab="finance"><div class="ic">💳</div><div>Pagamentos</div></button>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <div class="modalHeader">
+        <div>
+          <div class="mhTitle" id="modalTitle">Modal</div>
+          <div class="mhSub" id="modalSub">...</div>
+        </div>
+        <button class="x" id="modalClose">Fechar</button>
+      </div>
+      <div class="modalBody" id="modalBody"></div>
+      <div class="modalFooter" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">OK</div>
+
+<script>
+(function(){
+  const $ = (s, el=document) => el.querySelector(s);
+  const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+  const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+  const now = () => new Date();
+  const pad2 = (n) => String(n).padStart(2, "0");
+  const fmtDate = (d) => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+  const iso = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const money = (n) => "R$ " + (Number(n||0)).toFixed(2).replace(".", ",");
+  const clampText = (t, max=90) => (t||"").length>max ? (t.slice(0,max-1)+"…") : (t||"");
+  const safeStr = (v) => (v==null ? "" : String(v));
+  const toInt = (v) => Number.parseInt(v||"0", 10) || 0;
+  const toNum = (v) => Number(String(v||"0").replace(",", "."));
+  const addDays = (d, days) => { const x=new Date(d); x.setDate(x.getDate()+days); return x; };
+  const daysBetween = (a, b) => Math.floor((b - a) / (24*60*60*1000));
+
+  const KEY = "PETSHOP_APP_V1";
+  const DEFAULT = {
+    config: {
+      shopId: "local",
+      shopName: "Seu PetShop",
+      shopCity: "Local",
+      pixKey: "",
+      planDueISO: "",
+      graceDays: 15,
+
+      // Templates WhatsApp (editáveis)
+      msg_confirm: "Oi, {NOME} 😊\nConfirmando o banho do {PET} em {DATA} às {HORA}.\nQualquer coisa é só avisar.",
+      msg_ready: "Oi, {NOME}! 🐶✨\nO {PET} já está pronto.\nPode passar pra buscar quando quiser.",
+      msg_reschedule: "Oi, {NOME}! 😊\nSobre o {PET}, você consegue reagendar o atendimento? Me diz o melhor horário pra você.",
+      msg_return30: "Oi, {NOME}! 😊\nJá faz cerca de 30 dias do último atendimento do {PET}.\nSe quiser agendar de novo, é só me chamar."
+    },
+    data: {
+      clients: [],
+      pets: [],
+      services: [
+        { id: "svc_banho", name: "Banho", price: 50 },
+        { id: "svc_tosa", name: "Tosa", price: 60 },
+        { id: "svc_banho_tosa", name: "Banho + Tosa", price: 100 }
+      ],
+      appointments: [],
+      payments: []
+    }
+  };
+
+  function loadAll(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return structuredClone(DEFAULT);
+      const parsed = JSON.parse(raw);
+      return merge(structuredClone(DEFAULT), parsed);
+    }catch(e){
+      return structuredClone(DEFAULT);
+    }
+  }
+  function saveAll(state){
+    localStorage.setItem(KEY, JSON.stringify(state));
+  }
+  function merge(a,b){
+    if(typeof a !== "object" || a===null) return b;
+    if(typeof b !== "object" || b===null) return a;
+    for(const k of Object.keys(b)){
+      if(Array.isArray(b[k])) a[k]=b[k];
+      else if(typeof b[k]==="object" && b[k]!==null) a[k]=merge(a[k]??{}, b[k]);
+      else a[k]=b[k];
+    }
+    return a;
+  }
+
+  let STATE = loadAll();
+  let TAB = "home";
+  let SEARCH = "";
+
+  // Multi loja no mesmo aparelho
+  function storeKeyForShop(shopId){
+    return KEY + "::SHOP::" + shopId;
+  }
+  function loadShop(shopId){
+    const k = storeKeyForShop(shopId);
+    const raw = localStorage.getItem(k);
+    if(!raw){
+      localStorage.setItem(k, JSON.stringify(structuredClone(DEFAULT.data)));
+      return structuredClone(DEFAULT.data);
+    }
+    try{
+      return merge(structuredClone(DEFAULT.data), JSON.parse(raw));
+    }catch(e){
+      return structuredClone(DEFAULT.data);
+    }
+  }
+  function saveShop(shopId, data){
+    localStorage.setItem(storeKeyForShop(shopId), JSON.stringify(data));
+  }
+
+  // Inicializa dados da loja atual
+  STATE.data = loadShop(STATE.config.shopId);
+
+  function toast(msg){
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1600);
+  }
+
+  // WhatsApp helpers
+  function digitsOnly(phone){
+    return safeStr(phone).replace(/\D+/g, "");
+  }
+  function openWhatsApp(phone, text){
+    const d = digitsOnly(phone);
+    if(!d) return toast("Cliente sem telefone");
+    const msg = encodeURIComponent(text || "");
+    // Se tiver DDI/DDD certinho, melhor. (Ex: 5567...)
+    // Se vier só com 67..., o WhatsApp costuma aceitar também.
+    const url = `https://wa.me/${d}?text=${msg}`;
+    window.open(url, "_blank");
+  }
+  function tpl(str, vars){
+    let out = safeStr(str);
+    for(const [k,v] of Object.entries(vars||{})){
+      out = out.replaceAll(`{${k}}`, safeStr(v));
+    }
+    return out;
+  }
+
+  function planStatus(){
+    const dueISO = safeStr(STATE.config.planDueISO).trim();
+    if(!dueISO){
+      return { level:"warn", title:"Plano sem vencimento definido", text:"Defina a data de vencimento para o bloqueio automático funcionar.", limited:false, lateDays:0 };
+    }
+    const due = new Date(dueISO + "T00:00:00");
+    const today = new Date(iso(now()) + "T00:00:00");
+    const late = daysBetween(due, today);
+    if(late <= 0){
+      return { level:"ok", title:"Plano ativo", text:`Vencimento em ${fmtDate(due)}.`, limited:false, lateDays: late };
+    }
+    if(late > 0 && late <= STATE.config.graceDays){
+      return {
+        level:"warn",
+        title:"Plano vencido, ainda em tolerância",
+        text:`Venceu em ${fmtDate(due)}. Você tem ${STATE.config.graceDays - late} dia(s) antes do modo limitado.`,
+        limited:false,
+        lateDays: late
+      };
+    }
+    return {
+      level:"bad",
+      title:"Modo limitado ativado",
+      text:`Venceu em ${fmtDate(due)}. Após ${STATE.config.graceDays} dias, novos cadastros e agendamentos ficam bloqueados.`,
+      limited:true,
+      lateDays: late
+    };
+  }
+
+  function isLimited(){
+    return planStatus().limited;
+  }
+
+  function setTab(t){
+    TAB = t;
+    $$(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab===t));
+    render();
+  }
+
+  function applyHeader(){
+    $("#shopName").textContent = STATE.config.shopName || "Seu PetShop";
+    $("#shopTag").textContent = STATE.config.shopCity || "Local";
+  }
+
+  function applyPlanUI(){
+    const ps = planStatus();
+    const dot = $("#planDot");
+    const planText = $("#planText");
+
+    dot.className = "dot";
+    if(ps.level==="warn") dot.className = "dot warnDot";
+    if(ps.level==="bad") dot.className = "dot badDot";
+
+    planText.textContent = (ps.level==="ok") ? "Plano ativo" : (ps.level==="warn" ? "Aviso" : "Limitado");
+
+    const banner = $("#planBanner");
+    if(ps.level==="ok"){
+      banner.style.display = "none";
+    }else{
+      banner.style.display = "flex";
+      $("#bannerTitle").textContent = ps.title;
+      $("#bannerText").textContent = ps.text;
+    }
+  }
+
+  function setScreenTitle(){
+    const map = {
+      home: ["Painel", "Resumo do dia e atalhos rápidos"],
+      clients: ["Clientes", "Cadastro e histórico"],
+      pets: ["Pets", "Pets vinculados aos clientes"],
+      agenda: ["Agenda", "Banho, tosa e serviços"],
+      finance: ["Pagamentos", "Lançamentos e histórico"]
+    };
+    $("#screenTitle").textContent = map[TAB][0];
+    $("#screenHint").textContent = map[TAB][1];
+  }
+
+  function kpis(){
+    const todayISO = iso(now());
+    const apToday = STATE.data.appointments.filter(a => a.dateISO === todayISO);
+    const pending = STATE.data.appointments.filter(a => a.status !== "Finalizado");
+    const paidToday = STATE.data.payments
+      .filter(p => p.dateISO === todayISO)
+      .reduce((s,p)=> s + Number(p.amount||0), 0);
+
+    $("#kToday").textContent = apToday.length;
+    $("#kPending").textContent = pending.length;
+    $("#kTotal").textContent = money(paidToday);
+  }
+
+  function matchSearch(text){
+    const s = SEARCH.trim().toLowerCase();
+    if(!s) return true;
+    return safeStr(text).toLowerCase().includes(s);
+  }
+
+  function listItems(){
+    const list = $("#list");
+    list.innerHTML = "";
+
+    const makeItem = (title, meta, tag, tagClass, onClick) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <div class="row">
+          <div style="min-width:0;">
+            <div class="name">${title}</div>
+            <div class="meta">${meta}</div>
+          </div>
+          <div class="tag ${tagClass||""}">${tag}</div>
+        </div>
+      `;
+      div.addEventListener("click", onClick);
+      list.appendChild(div);
+    };
+
+    if(TAB === "home"){
+      const todayISO = iso(now());
+      const todayList = STATE.data.appointments
+        .filter(a => a.dateISO===todayISO)
+        .sort((a,b)=> (a.time||"").localeCompare(b.time||""));
+
+      if(todayList.length){
+        makeItem("Agendamentos de hoje", "Toque para ver o dia", todayList.length + " itens", "tagAccent", ()=> openAgendaDay(todayISO));
+      }
+
+      const mixed = [];
+      STATE.data.clients.slice(-6).reverse().forEach(c => mixed.push({type:"client", c}));
+      STATE.data.appointments.slice(-6).reverse().forEach(a => mixed.push({type:"app", a}));
+      STATE.data.payments.slice(-6).reverse().forEach(p => mixed.push({type:"pay", p}));
+
+      const limited = isLimited();
+      if(limited){
+        makeItem("Modo limitado", "Novos cadastros e novos agendamentos estão bloqueados.", "Atraso", "tagBad", ()=> openConfig());
+      }else{
+        makeItem("Ação rápida", "Cadastrar cliente, pet ou agendar", "Abrir", "tagAccent", ()=> quickAdd());
+      }
+
+      if(!mixed.length){
+        makeItem("Sem dados ainda", "Cadastre um cliente e um pet para começar", "Dica", "tagWarn", ()=> openClientForm());
+        return;
+      }
+
+      mixed.slice(0,8).forEach(x=>{
+        if(x.type==="client"){
+          const c = x.c;
+          if(!matchSearch(c.name + " " + c.phone + " " + c.notes)) return;
+          makeItem(c.name, clampText([c.phone, c.notes].filter(Boolean).join(" • "), 92), "Cliente", "", ()=> openClientDetails(c.id));
+        }
+        if(x.type==="app"){
+          const a = x.a;
+          const pet = STATE.data.pets.find(p=>p.id===a.petId);
+          const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
+          const meta = `${a.dateISO} ${a.time||""} • ${pet?pet.name:"Pet"} • ${client?client.name:"Cliente"}`;
+          if(!matchSearch(meta + " " + safeStr(a.notes))) return;
+          makeItem(pet?pet.name:"Agendamento", clampText(meta, 92), a.status || "Agendado", a.status==="Finalizado"?"tagOk":(a.status==="Em atendimento"?"tagAccent":"tagWarn"), ()=> openAppointmentDetails(a.id));
+        }
+        if(x.type==="pay"){
+          const p = x.p;
+          const meta = `${p.dateISO} • ${p.method} • ${p.desc||"Pagamento"}`;
+          if(!matchSearch(meta)) return;
+          makeItem(p.desc||"Pagamento", clampText(meta, 92), money(p.amount), "tagOk", ()=> openPaymentDetails(p.id));
+        }
+      });
+      return;
+    }
+
+    if(TAB === "clients"){
+      const arr = STATE.data.clients
+        .filter(c => matchSearch(c.name + " " + c.phone + " " + c.notes))
+        .sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+
+      if(!arr.length){
+        makeItem("Nenhum cliente", "Toque para cadastrar o primeiro", "Novo", "tagAccent", ()=> openClientForm());
+        return;
+      }
+      arr.forEach(c=>{
+        const petsCount = STATE.data.pets.filter(p=>p.clientId===c.id).length;
+        makeItem(c.name, clampText([c.phone, c.notes].filter(Boolean).join(" • "), 100), petsCount + " pet(s)", "tagAccent", ()=> openClientDetails(c.id));
+      });
+      return;
+    }
+
+    if(TAB === "pets"){
+      const arr = STATE.data.pets
+        .map(p=>{
+          const c = STATE.data.clients.find(x=>x.id===p.clientId);
+          return {p, c};
+        })
+        .filter(x => matchSearch((x.p.name||"") + " " + (x.p.breed||"") + " " + (x.c?.name||"") + " " + (x.c?.phone||"") + " " + (x.p.notes||"")))
+        .sort((a,b)=> (a.p.name||"").localeCompare(b.p.name||""));
+
+      if(!arr.length){
+        makeItem("Nenhum pet", "Cadastre um cliente e depois um pet", "Dica", "tagWarn", ()=> openPetForm());
+        return;
+      }
+      arr.forEach(x=>{
+        const p = x.p, c = x.c;
+        makeItem(p.name, clampText([p.species, p.breed, c?("Tutor: "+c.name):""].filter(Boolean).join(" • "), 100), p.size||"Pet", "tagAccent", ()=> openPetDetails(p.id));
+      });
+      return;
+    }
+
+    if(TAB === "agenda"){
+      const arr = STATE.data.appointments
+        .map(a=>{
+          const pet = STATE.data.pets.find(p=>p.id===a.petId);
+          const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
+          return {a, pet, client};
+        })
+        .filter(x => matchSearch(
+          `${x.a.dateISO} ${x.a.time||""} ${x.a.status||""} ${x.pet?.name||""} ${x.client?.name||""} ${x.a.serviceName||""} ${x.a.notes||""}`
+        ))
+        .sort((x,y)=> (y.a.dateISO + (y.a.time||"")).localeCompare(x.a.dateISO + (x.a.time||"")));
+
+      if(!arr.length){
+        makeItem("Agenda vazia", "Toque para criar o primeiro agendamento", "Novo", "tagAccent", ()=> openAppointmentForm());
+        return;
+      }
+      arr.slice(0,40).forEach(x=>{
+        const {a, pet, client} = x;
+        const title = `${a.dateISO} ${a.time||""}`.trim();
+        const meta = `${pet?pet.name:"Pet"} • ${client?client.name:"Cliente"} • ${a.serviceName||"Serviço"}`;
+        const tclass = a.status==="Finalizado" ? "tagOk" : (a.status==="Em atendimento" ? "tagAccent" : "tagWarn");
+        makeItem(title, clampText(meta, 100), a.status||"Agendado", tclass, ()=> openAppointmentDetails(a.id));
+      });
+      return;
+    }
+
+    if(TAB === "finance"){
+      const arr = STATE.data.payments
+        .filter(p => matchSearch(`${p.dateISO} ${p.method} ${p.desc} ${p.notes||""}`))
+        .sort((a,b)=> (b.dateISO||"").localeCompare(a.dateISO||""));
+
+      if(!arr.length){
+        makeItem("Sem pagamentos", "Toque para lançar o primeiro", "Novo", "tagAccent", ()=> openPaymentForm());
+        return;
+      }
+      arr.slice(0,50).forEach(p=>{
+        makeItem(p.desc||"Pagamento", clampText(`${p.dateISO} • ${p.method}${p.notes?(" • "+p.notes):""}`, 100), money(p.amount), "tagOk", ()=> openPaymentDetails(p.id));
+      });
+      return;
+    }
+  }
+
+  // Modal helpers
+  function openModal(title, sub, bodyHTML, footerButtons){
+    $("#modalTitle").textContent = title;
+    $("#modalSub").textContent = sub || "";
+    $("#modalBody").innerHTML = bodyHTML || "";
+    const footer = $("#modalFooter");
+    footer.innerHTML = "";
+    (footerButtons||[]).forEach(btn=>{
+      const b = document.createElement("button");
+      b.className = btn.className || "btn";
+      b.textContent = btn.text;
+      b.disabled = !!btn.disabled;
+      b.addEventListener("click", btn.onClick);
+      footer.appendChild(b);
+    });
+    $("#overlay").classList.add("show");
+  }
+  function closeModal(){
+    $("#overlay").classList.remove("show");
+  }
+
+  $("#modalClose").addEventListener("click", closeModal);
+  $("#overlay").addEventListener("click", (e)=>{ if(e.target.id==="overlay") closeModal(); });
+
+  function persist(){
+    saveShop(STATE.config.shopId, STATE.data);
+    saveAll({config: STATE.config});
+  }
+
+  // Forms and actions
+  function openClientForm(existingId){
+    if(isLimited()) return toast("Modo limitado: cadastro bloqueado");
+    const c = existingId ? STATE.data.clients.find(x=>x.id===existingId) : null;
+    openModal(
+      c ? "Editar cliente" : "Novo cliente",
+      "Cadastre o tutor do pet",
+      `
+      <div class="form">
+        <div>
+          <label>Nome do cliente</label>
+          <input id="f_name" value="${c?safeStr(c.name):""}" placeholder="Ex: Maria Souza" />
+        </div>
+        <div>
+          <label>Telefone (WhatsApp)</label>
+          <input id="f_phone" value="${c?safeStr(c.phone):""}" placeholder="Ex: 5567999999999 ou (67) 9xxxx-xxxx" />
+        </div>
+        <div style="grid-column:1/-1;">
+          <label>Observações</label>
+          <textarea id="f_notes" placeholder="Preferências, endereços, detalhes...">${c?safeStr(c.notes):""}</textarea>
+        </div>
+      </div>
+      `,
+      [
+        c ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removeClient(c.id); closeModal(); }} : null,
+        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
+          const name = safeStr($("#f_name").value).trim();
+          if(!name) return toast("Informe o nome");
+          const phone = safeStr($("#f_phone").value).trim();
+          const notes = safeStr($("#f_notes").value).trim();
+          if(c){
+            c.name=name; c.phone=phone; c.notes=notes;
+          }else{
+            STATE.data.clients.push({id: uid(), name, phone, notes, createdAt: Date.now()});
+          }
+          persist();
+          toast("Cliente salvo");
+          closeModal();
+          render();
+        }}
+      ].filter(Boolean)
+    );
+  }
+
+  function removeClient(clientId){
+    const hasPets = STATE.data.pets.some(p=>p.clientId===clientId);
+    if(hasPets){
+      toast("Este cliente tem pets. Exclua os pets primeiro.");
+      return;
+    }
+    STATE.data.clients = STATE.data.clients.filter(c=>c.id!==clientId);
+    persist();
+    toast("Cliente excluído");
+    render();
+  }
+
+  function openClientDetails(clientId){
+    const c = STATE.data.clients.find(x=>x.id===clientId);
+    if(!c) return;
+    const pets = STATE.data.pets.filter(p=>p.clientId===clientId);
+    const petsHtml = pets.length ? pets.map(p=>`
+      <div class="item" style="cursor:pointer" data-pet="${p.id}">
+        <div class="row">
+          <div style="min-width:0">
+            <div class="name">${p.name}</div>
+            <div class="meta">${clampText([p.species,p.breed,p.size].filter(Boolean).join(" • "), 96)}</div>
+          </div>
+          <div class="tag tagAccent">Pet</div>
+        </div>
+      </div>
+    `).join("") : `<div class="muted">Sem pets cadastrados para este cliente.</div>`;
+
+    openModal(
+      "Cliente",
+      c.name,
+      `
+      <div class="two">
+        <div class="kv"><b>Telefone</b><span>${c.phone||"Sem"}</span></div>
+        <div class="kv"><b>Pets</b><span>${pets.length}</span></div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="kv">
+        <div>
+          <b>Observações</b>
+          <div class="muted">${c.notes?clampText(c.notes, 140):"Sem observações"}</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="cardTitle" style="margin-bottom:8px">Pets deste cliente</div>
+      <div id="petsList">${petsHtml}</div>
+      `,
+      [
+        {text:"WhatsApp", className:"btn btnOk", onClick: ()=>{
+          const msg = `Oi, ${c.name}! 😊\nTudo certo por aí?`;
+          openWhatsApp(c.phone, msg);
+        }},
+        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openClientForm(c.id); }},
+        {text:"Novo pet", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openPetForm(null, c.id); }},
+        {text:"Agendar", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, null, c.id); }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+
+    setTimeout(()=>{
+      $$("#petsList .item").forEach(el=>{
+        el.addEventListener("click", ()=> openPetDetails(el.dataset.pet));
+      });
+    }, 0);
+  }
+
+  function openPetForm(existingId, forcedClientId){
+    if(isLimited()) return toast("Modo limitado: cadastro bloqueado");
+    const p = existingId ? STATE.data.pets.find(x=>x.id===existingId) : null;
+    const clients = STATE.data.clients.slice().sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+    if(!clients.length){
+      toast("Cadastre um cliente primeiro");
+      return openClientForm();
+    }
+    const selectedClient = forcedClientId || (p ? p.clientId : clients[0].id);
+    const clientOpts = clients.map(c=> `<option value="${c.id}" ${c.id===selectedClient?"selected":""}>${c.name}</option>`).join("");
+
+    openModal(
+      p ? "Editar pet" : "Novo pet",
+      "Cadastro do animal",
+      `
+      <div class="form">
+        <div>
+          <label>Tutor (cliente)</label>
+          <select id="p_client">${clientOpts}</select>
+        </div>
+        <div>
+          <label>Nome do pet</label>
+          <input id="p_name" value="${p?safeStr(p.name):""}" placeholder="Ex: Thor" />
+        </div>
+        <div>
+          <label>Espécie</label>
+          <select id="p_species">
+            ${["Cachorro","Gato","Outro"].map(x=>`<option ${p&&p.species===x?"selected":""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label>Raça</label>
+          <input id="p_breed" value="${p?safeStr(p.breed):""}" placeholder="Ex: Shih Tzu" />
+        </div>
+        <div>
+          <label>Porte</label>
+          <select id="p_size">
+            ${["Pequeno","Médio","Grande"].map(x=>`<option ${p&&p.size===x?"selected":""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label>Observações</label>
+          <textarea id="p_notes" placeholder="Alergia, comportamento, medo...">${p?safeStr(p.notes):""}</textarea>
+        </div>
+      </div>
+      `,
+      [
+        p ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removePet(p.id); closeModal(); }} : null,
+        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
+          const clientId = $("#p_client").value;
+          const name = safeStr($("#p_name").value).trim();
+          if(!name) return toast("Informe o nome do pet");
+          const species = $("#p_species").value;
+          const breed = safeStr($("#p_breed").value).trim();
+          const size = $("#p_size").value;
+          const notes = safeStr($("#p_notes").value).trim();
+
+          if(p){
+            p.clientId=clientId; p.name=name; p.species=species; p.breed=breed; p.size=size; p.notes=notes;
+          }else{
+            STATE.data.pets.push({id: uid(), clientId, name, species, breed, size, notes, createdAt: Date.now()});
+          }
+          persist();
+          toast("Pet salvo");
+          closeModal();
+          render();
+        }}
+      ].filter(Boolean)
+    );
+  }
+
+  function removePet(petId){
+    const hasAppointments = STATE.data.appointments.some(a=>a.petId===petId);
+    if(hasAppointments){
+      toast("Este pet tem agendamentos. Exclua os agendamentos primeiro.");
+      return;
+    }
+    STATE.data.pets = STATE.data.pets.filter(p=>p.id!==petId);
+    persist();
+    toast("Pet excluído");
+    render();
+  }
+
+  function openPetDetails(petId){
+    const p = STATE.data.pets.find(x=>x.id===petId);
+    if(!p) return;
+    const c = STATE.data.clients.find(x=>x.id===p.clientId);
+
+    const apps = STATE.data.appointments
+      .filter(a=>a.petId===petId)
+      .sort((a,b)=> (b.dateISO+(b.time||"")).localeCompare(a.dateISO+(a.time||"")))
+      .slice(0,8);
+
+    const appsHtml = apps.length ? apps.map(a=>`
+      <div class="item" style="cursor:pointer" data-app="${a.id}">
+        <div class="row">
+          <div style="min-width:0">
+            <div class="name">${a.dateISO} ${a.time||""}</div>
+            <div class="meta">${clampText([a.serviceName, a.status, a.notes].filter(Boolean).join(" • "), 96)}</div>
+          </div>
+          <div class="tag ${a.status==="Finalizado"?"tagOk":(a.status==="Em atendimento"?"tagAccent":"tagWarn")}">${a.status||"Agendado"}</div>
+        </div>
+      </div>
+    `).join("") : `<div class="muted">Sem agendamentos para este pet ainda.</div>`;
+
+    openModal(
+      "Pet",
+      p.name,
+      `
+      <div class="two">
+        <div class="kv"><b>Tutor</b><span>${c?c.name:"Sem"}</span></div>
+        <div class="kv"><b>Porte</b><span>${p.size||"Sem"}</span></div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="kv">
+        <div>
+          <b>Detalhes</b>
+          <div class="muted">${clampText([p.species, p.breed].filter(Boolean).join(" • ") || "Sem detalhes", 120)}</div>
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="kv">
+        <div>
+          <b>Observações</b>
+          <div class="muted">${p.notes?clampText(p.notes, 140):"Sem observações"}</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="cardTitle" style="margin-bottom:8px">Últimos agendamentos</div>
+      <div id="appsList">${appsHtml}</div>
+      `,
+      [
+        {text:"Retorno 30 dias", className:"btn btnOk", onClick: ()=>{
+          const msg = tpl(STATE.config.msg_return30, {
+            NOME: c?.name || "tudo bem",
+            PET: p.name
+          });
+          openWhatsApp(c?.phone, msg);
+        }},
+        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openPetForm(p.id); }},
+        {text:"Agendar", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, p.id); }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+
+    setTimeout(()=>{
+      $$("#appsList .item").forEach(el=>{
+        el.addEventListener("click", ()=> openAppointmentDetails(el.dataset.app));
+      });
+    }, 0);
+  }
+
+  function openAppointmentForm(existingId, forcedPetId, forcedClientId){
+    if(isLimited()) return toast("Modo limitado: agendamento bloqueado");
+    const a = existingId ? STATE.data.appointments.find(x=>x.id===existingId) : null;
+
+    const clients = STATE.data.clients.slice().sort((x,y)=>(x.name||"").localeCompare(y.name||""));
+    if(!clients.length){
+      toast("Cadastre um cliente primeiro");
+      return openClientForm();
+    }
+
+    let clientId = forcedClientId || (a ? getClientIdFromPet(a.petId) : clients[0].id);
+    const petsForClient = (cid) => STATE.data.pets.filter(p=>p.clientId===cid).sort((x,y)=>(x.name||"").localeCompare(y.name||""));
+
+    if(forcedPetId){
+      const pet = STATE.data.pets.find(p=>p.id===forcedPetId);
+      if(pet) clientId = pet.clientId;
+    }
+
+    const petList = petsForClient(clientId);
+    if(!petList.length){
+      toast("Cadastre um pet para este cliente");
+      return openPetForm(null, clientId);
+    }
+
+    const petId = forcedPetId || (a ? a.petId : petList[0].id);
+
+    const clientOpts = clients.map(c=>`<option value="${c.id}" ${c.id===clientId?"selected":""}>${c.name}</option>`).join("");
+    const petOpts = petsForClient(clientId).map(p=>`<option value="${p.id}" ${p.id===petId?"selected":""}>${p.name}</option>`).join("");
+
+    const svcOpts = STATE.data.services.map(s=>`<option value="${s.id}" ${a&&a.serviceId===s.id?"selected":""}>${s.name} (${money(s.price)})</option>`).join("");
+    const statusOpts = ["Agendado","Em atendimento","Finalizado"].map(s=>`<option ${a&&a.status===s?"selected":""}>${s}</option>`).join("");
+
+    const defDate = a ? a.dateISO : iso(now());
+    const defTime = a ? safeStr(a.time) : "14:00";
+
+    openModal(
+      a ? "Editar agendamento" : "Novo agendamento",
+      "Banho, tosa e serviços",
+      `
+      <div class="form">
+        <div>
+          <label>Cliente</label>
+          <select id="a_client">${clientOpts}</select>
+        </div>
+        <div>
+          <label>Pet</label>
+          <select id="a_pet">${petOpts}</select>
+        </div>
+        <div>
+          <label>Data</label>
+          <input id="a_date" type="date" value="${defDate}" />
+        </div>
+        <div>
+          <label>Hora</label>
+          <input id="a_time" type="time" value="${defTime}" />
+        </div>
+        <div>
+          <label>Serviço</label>
+          <select id="a_service">${svcOpts}</select>
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="a_status">${statusOpts}</select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label>Observações</label>
+          <textarea id="a_notes" placeholder="Detalhes do atendimento...">${a?safeStr(a.notes):""}</textarea>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:10px">Dica: ao finalizar, você pode lançar o pagamento na aba Pagamentos.</div>
+      `,
+      [
+        a ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removeAppointment(a.id); closeModal(); }} : null,
+        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
+          const petId2 = $("#a_pet").value;
+          const dateISO = $("#a_date").value;
+          const time = $("#a_time").value;
+          const serviceId = $("#a_service").value;
+          const service = STATE.data.services.find(s=>s.id===serviceId);
+          const serviceName = service ? service.name : "Serviço";
+          const price = service ? Number(service.price||0) : 0;
+          const status = $("#a_status").value;
+          const notes = safeStr($("#a_notes").value).trim();
+
+          const pet = STATE.data.pets.find(p=>p.id===petId2);
+          if(!pet) return toast("Pet inválido");
+
+          if(a){
+            a.petId=petId2; a.dateISO=dateISO; a.time=time; a.serviceId=serviceId;
+            a.serviceName=serviceName; a.price=price; a.status=status; a.notes=notes;
+          }else{
+            STATE.data.appointments.push({
+              id: uid(), petId: petId2, dateISO, time, serviceId, serviceName, price,
+              status, notes, createdAt: Date.now()
+            });
+          }
+          persist();
+          toast("Agendamento salvo");
+          closeModal();
+          render();
+        }}
+      ].filter(Boolean)
+    );
+
+    // troca pets quando troca cliente
+    setTimeout(()=>{
+      $("#a_client").addEventListener("change", ()=>{
+        const newClient = $("#a_client").value;
+        const pets = petsForClient(newClient);
+        const sel = $("#a_pet");
+        sel.innerHTML = pets.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+      });
+    }, 0);
+  }
+
+  function removeAppointment(appId){
+    STATE.data.appointments = STATE.data.appointments.filter(a=>a.id!==appId);
+    persist();
+    toast("Agendamento excluído");
+    render();
+  }
+
+  function openAppointmentDetails(appId){
+    const a = STATE.data.appointments.find(x=>x.id===appId);
+    if(!a) return;
+    const pet = STATE.data.pets.find(p=>p.id===a.petId);
+    const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
+
+    const vars = {
+      NOME: client?.name || "",
+      PET: pet?.name || "",
+      DATA: a.dateISO || "",
+      HORA: a.time || ""
+    };
+
+    openModal(
+      "Agendamento",
+      `${a.dateISO} ${a.time||""}`.trim(),
+      `
+      <div class="two">
+        <div class="kv"><b>Pet</b><span>${pet?pet.name:"Sem"}</span></div>
+        <div class="kv"><b>Cliente</b><span>${client?client.name:"Sem"}</span></div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="two">
+        <div class="kv"><b>Serviço</b><span>${a.serviceName||"Serviço"}</span></div>
+        <div class="kv"><b>Valor</b><span>${money(a.price||0)}</span></div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="kv">
+        <div>
+          <b>Status</b>
+          <div class="muted">${a.status||"Agendado"}</div>
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="kv">
+        <div>
+          <b>Observações</b>
+          <div class="muted">${a.notes?clampText(a.notes, 180):"Sem observações"}</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="muted">Mensagens automáticas: abre o WhatsApp com o texto pronto (só enviar).</div>
+      `,
+      [
+        {text:"Confirmar", className:"btn btnOk", onClick: ()=>{
+          openWhatsApp(client?.phone, tpl(STATE.config.msg_confirm, vars));
+        }},
+        {text:"Pet pronto", className:"btn btnOk", onClick: ()=>{
+          openWhatsApp(client?.phone, tpl(STATE.config.msg_ready, vars));
+        }},
+        {text:"Reagendar", className:"btn btnPrimary", onClick: ()=>{
+          openWhatsApp(client?.phone, tpl(STATE.config.msg_reschedule, vars));
+        }},
+        {text:"Retorno 30 dias", className:"btn", onClick: ()=>{
+          openWhatsApp(client?.phone, tpl(STATE.config.msg_return30, vars));
+        }},
+        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(a.id); }},
+        {text:"Lançar pagamento", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{
+          closeModal();
+          openPaymentForm(null, { amount: a.price||0, desc: `Serviço: ${a.serviceName||"Petshop"} (${pet?pet.name:"Pet"})` });
+        }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+  }
+
+  function openAgendaDay(dateISO){
+    const arr = STATE.data.appointments
+      .filter(a=>a.dateISO===dateISO)
+      .sort((a,b)=>(a.time||"").localeCompare(b.time||""))
+      .map(a=>{
+        const pet = STATE.data.pets.find(p=>p.id===a.petId);
+        const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
+        return {a, pet, client};
+      });
+
+    const html = arr.length ? arr.map(x=>`
+      <div class="item" style="cursor:pointer" data-app="${x.a.id}">
+        <div class="row">
+          <div style="min-width:0">
+            <div class="name">${x.a.time||""} • ${x.pet?x.pet.name:"Pet"}</div>
+            <div class="meta">${clampText([x.client?x.client.name:"Cliente", x.a.serviceName, x.a.notes].filter(Boolean).join(" • "), 100)}</div>
+          </div>
+          <div class="tag ${x.a.status==="Finalizado"?"tagOk":(x.a.status==="Em atendimento"?"tagAccent":"tagWarn")}">${x.a.status||"Agendado"}</div>
+        </div>
+      </div>
+    `).join("") : `<div class="muted">Sem agendamentos nesta data.</div>`;
+
+    openModal(
+      "Agenda do dia",
+      fmtDate(new Date(dateISO+"T00:00:00")),
+      `<div id="dayList">${html}</div>`,
+      [
+        {text:"Novo agendamento", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, null, null); }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+
+    setTimeout(()=>{
+      $$("#dayList .item").forEach(el=>{
+        el.addEventListener("click", ()=> openAppointmentDetails(el.dataset.app));
+      });
+    }, 0);
+  }
+
+  function openPaymentForm(existingId, prefill){
+    if(isLimited()) return toast("Modo limitado: lançamento bloqueado");
+    const p = existingId ? STATE.data.payments.find(x=>x.id===existingId) : null;
+
+    const defDate = p ? p.dateISO : iso(now());
+    const defAmount = p ? p.amount : (prefill?.amount ?? 0);
+    const defDesc = p ? p.desc : (prefill?.desc ?? "Pagamento");
+    const defMethod = p ? p.method : "Pix";
+    const defNotes = p ? p.notes : "";
+
+    openModal(
+      p ? "Editar pagamento" : "Novo pagamento",
+      "Registro simples e rápido",
+      `
+      <div class="form">
+        <div>
+          <label>Data</label>
+          <input id="pay_date" type="date" value="${defDate}" />
+        </div>
+        <div>
+          <label>Valor</label>
+          <input id="pay_amount" inputmode="decimal" value="${String(defAmount).replace(".", ",")}" placeholder="Ex: 100,00" />
+        </div>
+        <div>
+          <label>Método</label>
+          <select id="pay_method">
+            ${["Pix","Dinheiro","Cartão","Outro"].map(x=>`<option ${defMethod===x?"selected":""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label>Descrição</label>
+          <input id="pay_desc" value="${safeStr(defDesc)}" placeholder="Ex: Banho + Tosa (Thor)" />
+        </div>
+        <div style="grid-column:1/-1;">
+          <label>Observações</label>
+          <textarea id="pay_notes" placeholder="Detalhes...">${safeStr(defNotes)}</textarea>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="muted">Pix do petshop cadastrado: ${STATE.config.pixKey ? `<span class="kbd">${STATE.config.pixKey}</span>` : "Sem chave. Configure em Ajustes."}</div>
+      `,
+      [
+        p ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removePayment(p.id); closeModal(); }} : null,
+        {text:"Copiar Pix", className:"btn", onClick: ()=> copyPix() },
+        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
+          const dateISO = $("#pay_date").value;
+          const amount = toNum($("#pay_amount").value);
+          if(!(amount>0)) return toast("Informe o valor");
+          const method = $("#pay_method").value;
+          const desc = safeStr($("#pay_desc").value).trim() || "Pagamento";
+          const notes = safeStr($("#pay_notes").value).trim();
+
+          if(p){
+            p.dateISO=dateISO; p.amount=amount; p.method=method; p.desc=desc; p.notes=notes;
+          }else{
+            STATE.data.payments.push({ id: uid(), dateISO, amount, method, desc, notes, createdAt: Date.now() });
+          }
+          persist();
+          toast("Pagamento salvo");
+          closeModal();
+          render();
+        }}
+      ].filter(Boolean)
+    );
+  }
+
+  function removePayment(pid){
+    STATE.data.payments = STATE.data.payments.filter(p=>p.id!==pid);
+    persist();
+    toast("Pagamento excluído");
+    render();
+  }
+
+  function openPaymentDetails(pid){
+    const p = STATE.data.payments.find(x=>x.id===pid);
+    if(!p) return;
+    openModal(
+      "Pagamento",
+      p.desc || "Pagamento",
+      `
+      <div class="two">
+        <div class="kv"><b>Data</b><span>${p.dateISO}</span></div>
+        <div class="kv"><b>Valor</b><span>${money(p.amount)}</span></div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="two">
+        <div class="kv"><b>Método</b><span>${p.method}</span></div>
+        <div class="kv"><b>Obs.</b><span>${p.notes?clampText(p.notes, 50):"Sem"}</span></div>
+      </div>
+      <div class="sep"></div>
+      <div class="muted">Pix cadastrado: ${STATE.config.pixKey ? `<span class="kbd">${STATE.config.pixKey}</span>` : "Sem chave Pix configurada."}</div>
+      `,
+      [
+        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openPaymentForm(p.id); }},
+        {text:"Copiar Pix", className:"btn btnPrimary", onClick: ()=> copyPix() },
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+  }
+
+  function getClientIdFromPet(petId){
+    const p = STATE.data.pets.find(x=>x.id===petId);
+    return p ? p.clientId : null;
+  }
+
+  function copyPix(){
+    const pix = safeStr(STATE.config.pixKey).trim();
+    if(!pix) return toast("Cadastre a chave Pix em Ajustes");
+    navigator.clipboard?.writeText(pix).then(()=>toast("Pix copiado")).catch(()=>{
+      try{
+        const ta = document.createElement("textarea");
+        ta.value = pix;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Pix copiado");
+      }catch(e){
+        toast("Não consegui copiar aqui");
+      }
+    });
+  }
+
+  function openConfig(){
+    const c = STATE.config;
+    const ps = planStatus();
+    openModal(
+      "Configuração",
+      "Nome, Pix, vencimento e mensagens automáticas",
+      `
+      <div class="form">
+        <div>
+          <label>ID da loja</label>
+          <input id="cfg_shopId" value="${safeStr(c.shopId)}" placeholder="Ex: petshop_centro" />
+          <div class="muted" style="margin-top:6px">Dica: um ID por petshop quando você replicar no mesmo aparelho.</div>
+        </div>
+        <div>
+          <label>Nome do petshop</label>
+          <input id="cfg_shopName" value="${safeStr(c.shopName)}" placeholder="Ex: PetShop Centro" />
+        </div>
+        <div>
+          <label>Cidade ou etiqueta</label>
+          <input id="cfg_shopCity" value="${safeStr(c.shopCity)}" placeholder="Ex: Pedro Gomes" />
+        </div>
+        <div>
+          <label>Chave Pix</label>
+          <input id="cfg_pix" value="${safeStr(c.pixKey)}" placeholder="Chave Pix do petshop" />
+        </div>
+        <div>
+          <label>Vencimento do plano</label>
+          <input id="cfg_due" type="date" value="${safeStr(c.planDueISO)}" />
+        </div>
+        <div>
+          <label>Tolerância (dias)</label>
+          <input id="cfg_grace" inputmode="numeric" value="${toInt(c.graceDays)}" />
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="kv">
+        <div>
+          <b>Status atual</b>
+          <div class="muted">${ps.title}</div>
+        </div>
+        <span class="tag ${ps.level==="ok"?"tagOk":(ps.level==="warn"?"tagWarn":"tagBad")}">${ps.level==="ok"?"Ativo":(ps.level==="warn"?"Aviso":"Limitado")}</span>
+      </div>
+
+      <div class="sep"></div>
+      <div class="cardTitle" style="margin-bottom:8px">Mensagens automáticas (WhatsApp)</div>
+      <div class="muted" style="margin-bottom:8px">Você pode editar os textos. Variáveis: {NOME}, {PET}, {DATA}, {HORA}</div>
+
+      <label>Confirmar agendamento</label>
+      <textarea id="m_confirm">${safeStr(c.msg_confirm)}</textarea>
+
+      <label style="margin-top:10px">Pet pronto</label>
+      <textarea id="m_ready">${safeStr(c.msg_ready)}</textarea>
+
+      <label style="margin-top:10px">Reagendar</label>
+      <textarea id="m_resch">${safeStr(c.msg_reschedule)}</textarea>
+
+      <label style="margin-top:10px">Retorno 30 dias</label>
+      <textarea id="m_ret30">${safeStr(c.msg_return30)}</textarea>
+
+      <div class="sep"></div>
+      <div class="muted">Se mudar o ID da loja, você alterna entre dados de lojas diferentes neste mesmo aparelho.</div>
+      `,
+      [
+        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
+          const newShopId = safeStr($("#cfg_shopId").value).trim() || "local";
+          const newName = safeStr($("#cfg_shopName").value).trim() || "Seu PetShop";
+          const newCity = safeStr($("#cfg_shopCity").value).trim() || "Local";
+          const newPix = safeStr($("#cfg_pix").value).trim();
+          const due = safeStr($("#cfg_due").value).trim();
+          const grace = Math.max(0, toInt($("#cfg_grace").value)) || 15;
+
+          const msg_confirm = safeStr($("#m_confirm").value);
+          const msg_ready = safeStr($("#m_ready").value);
+          const msg_reschedule = safeStr($("#m_resch").value);
+          const msg_return30 = safeStr($("#m_ret30").value);
+
+          // salva dados da loja atual antes de trocar
+          saveShop(STATE.config.shopId, STATE.data);
+
+          STATE.config.shopId = newShopId;
+          STATE.config.shopName = newName;
+          STATE.config.shopCity = newCity;
+          STATE.config.pixKey = newPix;
+          STATE.config.planDueISO = due;
+          STATE.config.graceDays = grace;
+
+          STATE.config.msg_confirm = msg_confirm;
+          STATE.config.msg_ready = msg_ready;
+          STATE.config.msg_reschedule = msg_reschedule;
+          STATE.config.msg_return30 = msg_return30;
+
+          // carrega dados da nova loja
+          STATE.data = loadShop(STATE.config.shopId);
+
+          saveAll({config: STATE.config});
+          toast("Configuração salva");
+          closeModal();
+          render();
+        }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+  }
+
+  function openBackup(){
+    const payload = JSON.stringify({ config: STATE.config, data: STATE.data }, null, 2);
+    openModal(
+      "Backup",
+      "Exportar e importar (JSON)",
+      `
+      <div class="muted">Exportar salva tudo em um arquivo de texto. Importar restaura o conteúdo.</div>
+      <div style="height:10px"></div>
+      <label>Conteúdo</label>
+      <textarea id="bk_text" style="min-height:220px;">${payload}</textarea>
+      <div style="height:10px"></div>
+      <div class="muted">Dica: envie esse texto pra você mesmo no WhatsApp e guarde. É seu backup.</div>
+      `,
+      [
+        {text:"Copiar backup", className:"btn", onClick: ()=>{
+          const t = $("#bk_text").value;
+          navigator.clipboard?.writeText(t).then(()=>toast("Backup copiado")).catch(()=>toast("Não consegui copiar"));
+        }},
+        {text:"Importar", className:"btn btnDanger", onClick: ()=>{
+          try{
+            const obj = JSON.parse($("#bk_text").value);
+            if(obj?.config) STATE.config = merge(structuredClone(DEFAULT.config), obj.config);
+            if(obj?.data) STATE.data = merge(structuredClone(DEFAULT.data), obj.data);
+            saveAll({config: STATE.config});
+            saveShop(STATE.config.shopId, STATE.data);
+            toast("Backup importado");
+            closeModal();
+            render();
+          }catch(e){
+            toast("JSON inválido");
+          }
+        }},
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+  }
+
+  function quickAdd(){
+    const limited = isLimited();
+    openModal(
+      "Ação rápida",
+      limited ? "Modo limitado: novas ações bloqueadas" : "Escolha o que criar agora",
+      `
+      <div class="two">
+        <button class="btn btnPrimary" id="qa_client" ${limited?"disabled":""}>Novo cliente</button>
+        <button class="btn btnPrimary" id="qa_pet" ${limited?"disabled":""}>Novo pet</button>
+        <button class="btn btnPrimary" id="qa_app" ${limited?"disabled":""}>Agendar</button>
+        <button class="btn btnPrimary" id="qa_pay" ${limited?"disabled":""}>Pagamento</button>
+      </div>
+      <div class="sep"></div>
+      <div class="muted">Comece pelo cliente, depois pet, depois agendar.</div>
+      `,
+      [
+        {text:"Fechar", className:"btn", onClick: closeModal}
+      ]
+    );
+    setTimeout(()=>{
+      $("#qa_client")?.addEventListener("click", ()=>{ closeModal(); openClientForm(); });
+      $("#qa_pet")?.addEventListener("click", ()=>{ closeModal(); openPetForm(); });
+      $("#qa_app")?.addEventListener("click", ()=>{ closeModal(); openAppointmentForm(); });
+      $("#qa_pay")?.addEventListener("click", ()=>{ closeModal(); openPaymentForm(); });
+    }, 0);
+  }
+
+  // UI bindings
+  $$(".tab").forEach(b=> b.addEventListener("click", ()=> setTab(b.dataset.tab)));
+  $("#search").addEventListener("input", (e)=>{ SEARCH = e.target.value; listItems(); });
+
+  $("#fab").addEventListener("click", ()=>{
+    if(TAB==="clients") return openClientForm();
+    if(TAB==="pets") return openPetForm();
+    if(TAB==="agenda") return openAppointmentForm();
+    if(TAB==="finance") return openPaymentForm();
+    quickAdd();
+  });
+
+  $("#btnQuickAdd").addEventListener("click", quickAdd);
+  $("#btnOpenConfig").addEventListener("click", openConfig);
+  $("#btnConfig").addEventListener("click", openConfig);
+  $("#btnBackup").addEventListener("click", openBackup);
+  $("#btnCopyPix").addEventListener("click", copyPix);
+  $("#btnPixSide").addEventListener("click", copyPix);
+
+  $("#goClients").addEventListener("click", ()=> setTab("clients"));
+  $("#goPets").addEventListener("click", ()=> setTab("pets"));
+  $("#goAgenda").addEventListener("click", ()=> setTab("agenda"));
+  $("#goFinance").addEventListener("click", ()=> setTab("finance"));
+
+  // Hotkeys (desktop)
+  document.addEventListener("keydown", (e)=>{
+    if(e.key==="Escape") closeModal();
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="k"){
+      e.preventDefault();
+      $("#search").focus();
+    }
+  });
+
+  function render(){
+    applyHeader();
+    applyPlanUI();
+    setScreenTitle();
+    kpis();
+    listItems();
+
+    const limited = isLimited();
+    const fab = $("#fab");
+
+    const label =
+      TAB==="clients" ? "＋ Cliente" :
+      TAB==="pets" ? "＋ Pet" :
+      TAB==="agenda" ? "＋ Agendar" :
+      TAB==="finance" ? "＋ Pagamento" : "＋ Novo";
+    fab.textContent = label;
+    fab.disabled = limited;
+
+    const ps = planStatus();
+    $("#shopSub").textContent = limited
+      ? "Modo limitado: sem novos cadastros e agendamentos"
+      : "Clientes, pets, agenda, serviços e pagamentos";
+  }
+
+  // Inicial
+  render();
+
+  // Primeira vez: abre ajustes se estiver vazio
+  if(!STATE.config.planDueISO && !STATE.config.pixKey){
+    setTimeout(()=> openConfig(), 400);
+  }
+
+})();
+</script>
+</body>
+</html>
