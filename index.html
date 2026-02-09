@@ -3,1495 +3,1421 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Petshop + Vet (V3)</title>
+<title>Petshop + Vet</title>
 
 <style>
 :root{
-  --bg:#F5F1EB; --card:#FFFFFF; --text:#2E2E2E; --muted:#6B6B6B;
-  --primary:#4CAF8F; --secondary:#6FA8DC; --danger:#C97A5B;
-  --border:#E6E0D8; --radius:14px; --shadow:0 6px 16px rgba(0,0,0,.08);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  --bg:#F6F7FB;
+  --card:#FFFFFF;
+  --text:#111827;
+  --muted:#6B7280;
+  --border:rgba(17,24,39,.10);
+  --shadow:0 10px 28px rgba(17,24,39,.10);
+  --radius:18px;
+
+  --primary:#4CAF8F;
+  --secondary:#6FA8DC;
+  --danger:#E26D5A;
+  --ok:#22C55E;
+
+  --tap:44px;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
 }
-body{margin:0;background:var(--bg);color:var(--text);padding-bottom:78px}
-header{padding:16px;font-weight:850;font-size:18px}
-section{padding:12px}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:14px;margin-bottom:12px}
-h3{margin:0 0 10px 0}
-label{display:block;margin-top:8px;font-size:12px;color:var(--muted)}
-input,textarea,select{
-  width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid var(--border);
-  font-size:14px;background:#fff;box-sizing:border-box;
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background: radial-gradient(1200px 900px at 20% 0%, rgba(111,168,220,.16), transparent 55%),
+              radial-gradient(900px 700px at 90% 20%, rgba(76,175,143,.18), transparent 55%),
+              var(--bg);
+  color:var(--text);
+  padding-bottom:72px;
 }
-textarea{min-height:80px;resize:vertical}
-button{padding:10px 14px;border-radius:12px;border:none;cursor:pointer;font-size:14px}
-.primary{background:var(--primary);color:#fff}
-.secondary{background:var(--secondary);color:#fff}
-.danger{background:var(--danger);color:#fff}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.row > *{flex:1;min-width:140px}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter: blur(10px);
+  background: rgba(246,247,251,.75);
+  border-bottom:1px solid var(--border);
+}
+
+.header-wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:14px 14px 12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+#shopLogo{
+  width:38px;height:38px;border-radius:14px;
+  object-fit:cover;
+  box-shadow: 0 8px 16px rgba(17,24,39,.10);
+  border:1px solid var(--border);
+  display:none;
+}
+
+.titles{min-width:0}
+#shopName{
+  font-weight:800;
+  font-size:14px;
+  line-height:1.1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#titleText{
+  font-weight:700;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chips{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.chip{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.75);
+}
+.chip strong{font-weight:800}
+.chip.ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10)}
+.chip.warn{border-color: rgba(226,109,90,.35); background: rgba(226,109,90,.10)}
+.chip.primary{border-color: rgba(76,175,143,.35); background: rgba(76,175,143,.10)}
+
+main{
+  max-width:980px;
+  margin:0 auto;
+  padding:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:12px;
+}
+
+.card{
+  grid-column: span 12;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow: var(--shadow);
+  padding:14px;
+}
+
+.card h3{
+  margin:0 0 10px 0;
+  font-size:14px;
+  letter-spacing:.2px;
+}
+
 .small{font-size:12px;color:var(--muted)}
-hr{border:none;border-top:1px solid var(--border);margin:12px 0}
-.list-item{padding:10px;border-bottom:1px solid var(--border)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{display:inline-block;padding:4px 8px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);margin-left:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > *{flex:1;min-width: 180px}
+
+label{display:block;font-size:12px;color:var(--muted);margin-top:10px}
+input, textarea, select{
+  width:100%;
+  margin-top:6px;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-size:14px;
+  background:#fff;
+  outline:none;
+}
+textarea{min-height:96px;resize:vertical}
+
+.btn{
+  height:var(--tap);
+  padding:0 14px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow: 0 10px 20px rgba(17,24,39,.12);
+}
+.btn:active{transform: translateY(1px)}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.secondary{background:var(--secondary);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.ghost{background:#fff;border:1px solid var(--border);box-shadow:none;color:var(--text)}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.item{
+  padding:12px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background: rgba(246,247,251,.55);
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:10px;
+}
+.kpi{
+  border:1px solid var(--border);
+  background: rgba(246,247,251,.55);
+  border-radius:16px;
+  padding:12px;
+}
+.kpi .n{font-size:18px;font-weight:900}
+.kpi .t{font-size:12px;color:var(--muted)}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background: #fff;
+}
+
+hr.sep{border:none;border-top:1px solid var(--border); margin:12px 0}
+
 nav{
-  position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
-  display:flex;z-index:999
+  position:fixed;
+  bottom:0; left:0; right:0;
+  background: rgba(255,255,255,.92);
+  border-top:1px solid var(--border);
+  backdrop-filter: blur(12px);
+  z-index:20;
 }
-nav button{flex:1;background:none;border:none;padding:10px 0;font-size:12px}
-nav button.active{color:var(--primary);font-weight:850}
-.hidden{display:none}
-.avatar{
-  width:64px;height:64px;border-radius:14px;border:1px solid var(--border);object-fit:cover;background:#fff
+.nav-wrap{
+  max-width:980px;
+  margin:0 auto;
+  display:flex;
+  padding:10px 8px;
+  gap:6px;
 }
-.kpi{display:flex;gap:10px;flex-wrap:wrap}
-.kpi > div{flex:1;min-width:150px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px}
-.kpi b{font-size:18px}
-.pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 10px;border-radius:999px;border:1px solid var(--border);
-  font-size:12px;color:var(--muted);
+.nav-btn{
+  flex:1;
+  height:52px;
+  border:none;
+  border-radius:16px;
+  background:transparent;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
 }
-.dot{width:8px;height:8px;border-radius:999px;background:var(--muted);display:inline-block}
-.dot.green{background:var(--primary)}
-.dot.blue{background:var(--secondary)}
-.dot.red{background:var(--danger)}
-.dot.gray{background:var(--muted)}
+.nav-btn .ico{font-size:18px;line-height:1}
+.nav-btn.active{
+  background: rgba(76,175,143,.12);
+  color: var(--text);
+  border:1px solid rgba(76,175,143,.22);
+}
+
+.banner{
+  position:fixed;
+  left:14px; right:14px; bottom:84px;
+  max-width:980px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow: var(--shadow);
+  padding:12px;
+  display:none;
+  z-index:30;
+}
+.banner .top{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+}
+.banner h4{margin:0;font-size:14px}
+.banner p{margin:6px 0 0 0; font-size:12px;color:var(--muted)}
+.banner .actions{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
 </style>
 </head>
 
 <body>
-<header id="title">Painel</header>
-<section id="screen"></section>
-<nav id="nav"></nav>
+
+<header>
+  <div class="header-wrap">
+    <div class="brand">
+      <img id="shopLogo" alt="Logo" />
+      <div class="titles">
+        <div id="shopName">Petshop</div>
+        <div id="titleText">Painel</div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip primary" id="chipPlan"><strong>Plano</strong>: ...</span>
+      <span class="chip" id="chipTrial">Teste: ...</span>
+      <span class="chip" id="chipRole">Cliente</span>
+    </div>
+  </div>
+</header>
+
+<main id="screen"></main>
+
+<div class="banner" id="installBanner">
+  <div class="top">
+    <div>
+      <h4>Instalar no celular</h4>
+      <p>Quer usar como aplicativo? Coloca na tela inicial e abre em tela cheia.</p>
+    </div>
+    <button class="btn ghost" onclick="dismissInstall()">Fechar</button>
+  </div>
+  <div class="actions">
+    <button class="btn primary" id="btnInstall" onclick="triggerInstall()">Instalar</button>
+    <button class="btn ghost" id="btnIOS" onclick="showIOSHelp()">Como instalar no iPhone</button>
+  </div>
+  <div class="small" id="iosHelp" style="display:none;margin-top:8px;">
+    No iPhone: abra no Safari → toque em Compartilhar → Adicionar à Tela de Início.
+  </div>
+</div>
+
+<nav>
+  <div class="nav-wrap" id="nav"></div>
+</nav>
 
 <script>
-/** ======================
- * FEATURES / PLANS (bloqueio/desbloqueio)
- * ====================== */
-const FEATURES = {
-  CLIENTS: "CLIENTS",
-  AGENDA: "AGENDA",
-  VET: "VET",
-  PDF: "PDF",
-  WHATSAPP: "WHATSAPP",
-  PRODUCTS: "PRODUCTS",
-  STOCK_ALERT: "STOCK_ALERT",
-  CASH: "CASH",
-  HOTEL: "HOTEL",
-  COMMISSION: "COMMISSION",
-  PORTAL: "PORTAL",
-  MULTISHOP: "MULTISHOP",
-  LOGIN: "LOGIN",
-  GROOMING_FLOW: "GROOMING_FLOW",
-  TERMS: "TERMS"
-};
+/* =======================
+   CONFIG GERAL
+======================= */
+const STORAGE_KEY = "petdb_v4";
+const ADMIN_KEY = "pg_admin";
+const url = new URL(location.href);
+const isAdmin = url.searchParams.get("admin") === ADMIN_KEY;
 
-const PLANS = {
-  START: {
-    name: "START",
-    label: "Start",
-    allow: [FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL]
-  },
-  PRO: {
-    name: "PRO",
-    label: "Pro",
-    allow: [
-      FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL,
-      FEATURES.VET, FEATURES.PDF, FEATURES.WHATSAPP
-    ]
-  },
-  PLUS: {
-    name: "PLUS",
-    label: "Plus",
-    allow: [
-      FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL,
-      FEATURES.VET, FEATURES.PDF, FEATURES.WHATSAPP,
-      FEATURES.HOTEL, FEATURES.CASH, FEATURES.STOCK_ALERT, FEATURES.COMMISSION,
-      FEATURES.GROOMING_FLOW
-    ]
-  },
-  MASTER: {
-    name: "MASTER",
-    label: "Master",
-    allow: Object.values(FEATURES)
-  }
-};
+const THEMES = [
+  { id:"cuidado_natural", name:"Cuidado Natural", primary:"#4CAF8F", secondary:"#6FA8DC", bg:"#F6F7FB" },
+  { id:"azul_clinico", name:"Azul Clínico", primary:"#3A7BD5", secondary:"#6FA8DC", bg:"#F2F6FB" },
+  { id:"verde_vet", name:"Verde Vet", primary:"#2E8B57", secondary:"#9AD0B3", bg:"#F3F7F5" },
+  { id:"pet_afetivo", name:"Pet Afetivo", primary:"#E67EA3", secondary:"#F4B6C8", bg:"#FFF1F5" },
+  { id:"premium_escuro", name:"Premium Escuro", primary:"#1F2937", secondary:"#C9A24D", bg:"#0F172A" },
+  { id:"clean_minimal", name:"Clean Minimal", primary:"#111827", secondary:"#9CA3AF", bg:"#F9FAFB" },
+  { id:"terracota", name:"Terracota Natural", primary:"#C26D3A", secondary:"#E6B8A2", bg:"#FBF2EC" },
+  { id:"azul_pet", name:"Azul Pet", primary:"#1E90FF", secondary:"#8EC5FC", bg:"#F0F7FF" },
+  { id:"verde_calmo", name:"Verde Calmante", primary:"#6BBF59", secondary:"#B7E4C7", bg:"#F4FBF6" },
+  { id:"rosa_suave", name:"Rosa Suave", primary:"#F2A1B3", secondary:"#F8CAD7", bg:"#FFF6F9" },
+  { id:"areia_mar", name:"Areia & Mar", primary:"#2E86AB", secondary:"#F6C177", bg:"#FFF8ED" },
+  { id:"amadeirado", name:"Amadeirado", primary:"#8B5E34", secondary:"#CBB79B", bg:"#F7F3EE" },
+  { id:"preto_verde", name:"Preto & Verde", primary:"#0F172A", secondary:"#22C55E", bg:"#020617" },
+  { id:"azul_noturno", name:"Azul Noturno", primary:"#1E3A8A", secondary:"#93C5FD", bg:"#0B1220" },
+  { id:"cinza_prof", name:"Cinza Profissional", primary:"#374151", secondary:"#9CA3AF", bg:"#F3F4F6" },
+  { id:"laranja_energia", name:"Laranja Energia", primary:"#F97316", secondary:"#FDBA74", bg:"#FFF7ED" },
+  { id:"lilas", name:"Lilás Calmo", primary:"#8B5CF6", secondary:"#C4B5FD", bg:"#F5F3FF" },
+  { id:"verde_agua", name:"Verde Água", primary:"#14B8A6", secondary:"#99F6E4", bg:"#ECFEFF" },
+  { id:"azul_petroleo", name:"Azul Petróleo", primary:"#0F766E", secondary:"#5EEAD4", bg:"#E6FFFA" },
+  { id:"marrom_creme", name:"Marrom & Creme", primary:"#7C4A2D", secondary:"#E7D8C9", bg:"#FAF6F2" },
+  { id:"pastel_pet", name:"Pastel Pet", primary:"#A5B4FC", secondary:"#FBCFE8", bg:"#F8FAFF" },
+  { id:"verde_floresta", name:"Verde Floresta", primary:"#14532D", secondary:"#86EFAC", bg:"#ECFDF5" },
+  { id:"azul_ceu", name:"Azul Céu", primary:"#38BDF8", secondary:"#BAE6FD", bg:"#F0F9FF" },
+  { id:"classico_branco", name:"Clássico Branco", primary:"#111827", secondary:"#4CAF8F", bg:"#FFFFFF" }
+];
 
-function activePlan(){
-  const key = DB.plan || "START";
-  return PLANS[key] || PLANS.START;
-}
-function has(feature){ return activePlan().allow.includes(feature); }
-
-function upgradeScreen(feature, msg){
-  const p = activePlan();
-  $("title").innerText = "Upgrade";
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Função bloqueada</h3>
-      <div class="small">${msg || "Essa função faz parte de um pacote superior."}</div>
-      <hr>
-      <div class="small">
-        Seu plano atual: <b>${p.label}</b><br>
-        Quer liberar isso? Troca o plano na hora (modo demonstração) ou vende o upgrade.
-      </div>
-      <div class="actions" style="margin-top:12px">
-        <button class="primary" onclick="show('home')">Voltar</button>
-        <button class="secondary" onclick="demoUnlock()">Desbloquear (demo)</button>
-      </div>
-      <hr>
-      <div class="small">
-        Dica de venda: “No ${PLANS.PRO.label} entra Vet + Receita. No ${PLANS.PLUS.label} entra Hotel + Caixa + Fila Banho/Tosa. No ${PLANS.MASTER.label} entra multi-loja e login.”
-      </div>
-    </div>
-  `;
-  setActiveNone();
-}
-function demoUnlock(){
-  // modo demo: sobe um nível até liberar geral
-  const k = DB.plan || "START";
-  DB.plan = (k==="START") ? "PRO" : (k==="PRO") ? "PLUS" : "MASTER";
-  save();
-  renderNav();
-  show("home");
-}
-function guard(feature, msg){
-  if(has(feature)) return true;
-  upgradeScreen(feature, msg);
-  return false;
+function nowISO(){ return new Date().toISOString(); }
+function daysBetween(aISO, bISO){
+  const a = new Date(aISO).getTime();
+  const b = new Date(bISO).getTime();
+  return Math.floor((b - a) / (1000*60*60*24));
 }
 
-/** ======================
- * DB + helpers
- * ====================== */
-const DEFAULT_DB = {
-  plan: "PLUS", // <-- mude aqui para START/PRO/PLUS/MASTER antes de vender
-  auth: { enabled:false, pass:"1234" }, // login só se MASTER (você ativa lá)
-  __logged: false,
+/* =======================
+   BANCO LOCAL
+======================= */
+function defaultDB(){
+  return {
+    version: 4,
+    trial: { startedAt: null },         // set no 1º uso
+    planPaid: "BASIC",                  // plano pago configurado (admin)
+    currentShopId: 1,
+    shops: [{
+      id: 1,
+      name: "Amigos de Patas",
+      phone: "",
+      instagram: "",
+      logo: null,
+      themeId: "cuidado_natural",
+      pin: "" // opcional pro dono alterar
+    }],
+    clients: [], // {id, name, phone}
+    pets: [],    // {id, clientId, name, breed, photo}
+    agenda: [],  // {id, type, petName, date, time, notes}
+    products: [],// {id, name, price, qty}
+    banho: [],   // {id, petName, stage, beforePhoto, afterPhoto, notes, date}
+    hotel: [],   // {id, petName, inDate, outDate, status, notes, photoIn, photoOut}
+    vet: [],     // {id, petName, weight, diag, meds, proc, ret, date}
+    caixa: []    // {id, type, desc, value, date}
+  };
+}
 
-  shops: [{id:1,name:"Minha Loja",phone:""}],
-  currentShopId: 1,
-
-  clients: [],
-  pets: [],
-  agenda: [],
-  products: [],
-  vetRecords: [],
-  vaccines: [],
-  boardings: [],
-  sales: [],
-  cashflow: [],
-
-  grooming: [] // fila banho/tosa {id, petId, type, status, createdAt, note}
-};
-
-const DB = loadDB();
+let DB = loadDB();
 function loadDB(){
   try{
-    const raw = localStorage.getItem("petdb_v3");
-    if(!raw) return structuredClone(DEFAULT_DB);
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultDB();
     const parsed = JSON.parse(raw);
-    return {...structuredClone(DEFAULT_DB), ...parsed,
-      auth: parsed.auth || structuredClone(DEFAULT_DB.auth),
-      shops: parsed.shops || structuredClone(DEFAULT_DB.shops),
-      vaccines: parsed.vaccines || [],
-      boardings: parsed.boardings || [],
-      sales: parsed.sales || [],
-      cashflow: parsed.cashflow || [],
-      grooming: parsed.grooming || []
-    };
-  }catch(e){ return structuredClone(DEFAULT_DB); }
-}
-function save(){ localStorage.setItem("petdb_v3", JSON.stringify(DB)); }
-
-const $ = (id)=>document.getElementById(id);
-const esc = (s)=>String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const idNow = ()=> Date.now() + Math.floor(Math.random()*1000);
-const todayISO = ()=> new Date().toISOString().slice(0,10);
-
-function fmt(n){
-  n = Number(n||0);
-  return n.toFixed(2).replace(".",",");
-}
-function currentShop(){ return DB.shops.find(s=>s.id===DB.currentShopId) || DB.shops[0]; }
-function shopFilter(arr){ return arr.filter(x=> (x.shopId ?? DB.currentShopId)===DB.currentShopId ); }
-function petName(petId){ const p = DB.pets.find(p=>p.id===petId); return p ? p.name : "Pet"; }
-function waOpen(phone, text){
-  const clean = String(phone||"").replace(/\D/g,"");
-  window.open(`https://wa.me/55${clean}?text=${encodeURIComponent(text||"")}`, "_blank");
-}
-
-/** ======================
- * NAV (dinâmico por plano)
- * ====================== */
-function renderNav(){
-  const nav = $("nav");
-  const btn = (id,label)=>`<button onclick="show('${id}')" id="b_${id}">${label}</button>`;
-
-  nav.innerHTML = `
-    ${btn("home","Home")}
-    ${has(FEATURES.CLIENTS) ? btn("clients","Clientes") : ""}
-    ${has(FEATURES.AGENDA) ? btn("agenda","Agenda") : ""}
-    ${has(FEATURES.GROOMING_FLOW) ? btn("groom","Banho/Tosa") : ""}
-    ${has(FEATURES.VET) ? btn("vet","Vet") : ""}
-    ${has(FEATURES.HOTEL) ? btn("hotel","Hotel") : ""}
-    ${has(FEATURES.CASH) ? btn("cash","Caixa") : ""}
-    ${has(FEATURES.PORTAL) ? btn("portal","Portal") : ""}
-  `;
-}
-
-function setActive(tab){
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  const btn = $("b_"+tab);
-  if(btn) btn.classList.add("active");
-}
-function setActiveNone(){
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-}
-function setTitle(tab){
-  const shop = currentShop();
-  const p = activePlan();
-  $("title").innerText = ({
-    home:"Painel",
-    clients:"Clientes e Pets",
-    agenda:"Agenda + Vacinas",
-    groom:"Fila Banho/Tosa",
-    vet:"Veterinário",
-    hotel:"Hotelzinho / Creche",
-    cash:"Caixa / Vendas",
-    portal:"Portal do Tutor"
-  }[tab] || "Painel") + ` • ${shop.name} • ${p.label}`;
-}
-
-/** ======================
- * LOGIN (somente MASTER)
- * ====================== */
-function loginScreen(){
-  $("title").innerText = "Entrar";
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Senha</h3>
-      <input id="lpass" type="password" placeholder="Digite a senha">
-      <div class="actions">
-        <button class="primary" onclick="doLogin()">Entrar</button>
-      </div>
-      <hr>
-      <div class="small">Senha padrão: <b>1234</b>. Troque nas Configurações.</div>
-    </div>
-  `;
-}
-function doLogin(){
-  const p = $("lpass").value;
-  if(p !== DB.auth.pass) return alert("Senha errada.");
-  DB.__logged = true; save();
-  show("home");
-}
-function mustLogin(){
-  if(!has(FEATURES.LOGIN)) return false; // sem login fora do master
-  if(!DB.auth.enabled) return false;
-  return !DB.__logged;
-}
-
-/** ======================
- * ROUTER
- * ====================== */
-function show(tab){
-  if(mustLogin()) return loginScreen();
-
-  if(tab==="clients" && !guard(FEATURES.CLIENTS, "Clientes/Pets está no START ou acima.")) return;
-  if(tab==="agenda" && !guard(FEATURES.AGENDA, "Agenda está no START ou acima.")) return;
-  if(tab==="vet" && !guard(FEATURES.VET, "Veterinário é PRO ou acima.")) return;
-  if(tab==="hotel" && !guard(FEATURES.HOTEL, "Hotelzinho é PLUS ou acima.")) return;
-  if(tab==="cash" && !guard(FEATURES.CASH, "Caixa é PLUS ou acima.")) return;
-  if(tab==="portal" && !guard(FEATURES.PORTAL, "Portal do tutor é START ou acima.")) return;
-  if(tab==="groom" && !guard(FEATURES.GROOMING_FLOW, "Fila Banho/Tosa é PLUS ou acima.")) return;
-
-  renderNav();
-  setActive(tab);
-  setTitle(tab);
-  const s=$("screen"); s.innerHTML="";
-
-  if(tab==="home") return home();
-  if(tab==="clients") return clients();
-  if(tab==="agenda") return agenda();
-  if(tab==="groom") return groom();
-  if(tab==="vet") return vet();
-  if(tab==="hotel") return hotel();
-  if(tab==="cash") return cash();
-  if(tab==="portal") return portal();
-}
-
-/** ======================
- * HOME
- * ====================== */
-function home(){
-  const clients = shopFilter(DB.clients);
-  const pets = shopFilter(DB.pets);
-  const agenda = shopFilter(DB.agenda);
-  const boardings = shopFilter(DB.boardings);
-  const sales = shopFilter(DB.sales);
-  const grooming = shopFilter(DB.grooming);
-  const products = shopFilter(DB.products);
-
-  const upcoming = agenda.slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).slice(0,5);
-  const todaySales = sales.filter(s=>s.date===todayISO()).reduce((acc,s)=>acc+Number((s.total||"0").replace(".","").replace(",",".")||0),0);
-
-  const lowStock = has(FEATURES.STOCK_ALERT)
-    ? products.filter(p=>{
-        const qty = Number((p.qty||"0").replace(",","."));
-        const min = Number((p.min||"0").replace(",","."));
-        return !isNaN(qty) && !isNaN(min) && qty <= min;
-      }).slice(0,6)
-    : [];
-
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Plano e Loja</h3>
-      <div class="row">
-        <div>
-          <label>Plano</label>
-          <select id="planSel">
-            ${Object.keys(PLANS).map(k=>`<option value="${k}" ${(DB.plan||"START")===k?"selected":""}>${PLANS[k].label}</option>`).join("")}
-          </select>
-        </div>
-        <div>
-          <label>Loja</label>
-          <select id="shopSel" onchange="switchShop()">
-            ${DB.shops.map(s=>`<option value="${s.id}" ${s.id===DB.currentShopId?"selected":""}>${esc(s.name)}</option>`).join("")}
-          </select>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="primary" onclick="setPlan()">Aplicar plano</button>
-        <button class="secondary" onclick="addShopGuarded()">Adicionar loja</button>
-        <button class="secondary" onclick="settings()">Configurações</button>
-      </div>
-      <div class="small">Vende assim: você troca o plano na frente do cliente e “desbloqueia” as funções.</div>
-    </div>
-
-    <div class="card">
-      <h3>Resumo</h3>
-      <div class="kpi">
-        <div><div class="small">Clientes</div><b>${clients.length}</b></div>
-        <div><div class="small">Pets</div><b>${pets.length}</b></div>
-        <div><div class="small">Agendamentos</div><b>${agenda.length}</b></div>
-        ${has(FEATURES.GROOMING_FLOW) ? `<div><div class="small">Fila Banho/Tosa</div><b>${grooming.filter(g=>g.status!=="Entregue").length}</b></div>` : ``}
-        ${has(FEATURES.HOTEL) ? `<div><div class="small">No hotel</div><b>${boardings.filter(b=>b.status==="Ativo").length}</b></div>` : ``}
-        ${has(FEATURES.CASH) ? `<div><div class="small">Vendas hoje</div><b>R$ ${fmt(todaySales)}</b></div>` : ``}
-      </div>
-    </div>
-
-    ${has(FEATURES.STOCK_ALERT) ? `
-      <div class="card">
-        <h3>Alertas de estoque</h3>
-        ${lowStock.length ? lowStock.map(p=>`
-          <div class="list-item">
-            <b>${esc(p.name)}</b>
-            <span class="badge">Qtd ${esc(p.qty||"0")}</span>
-            <span class="badge">Mín ${esc(p.min||"0")}</span>
-          </div>
-        `).join("") : `<div class="small">Tudo ok no estoque.</div>`}
-      </div>
-    ` : ``}
-
-    <div class="card">
-      <h3>Próximos</h3>
-      ${upcoming.length ? upcoming.map(a=>{
-        const pet = pets.find(p=>p.id===a.petId);
-        const client = pet ? clients.find(c=>c.id===pet.clientId) : null;
-        return `
-          <div class="list-item">
-            <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
-            <span class="small">${esc(pet?.name || "Pet")} • ${esc(client?.name || "Tutor")}</span>
-          </div>
-        `;
-      }).join("") : `<div class="small">Nada agendado ainda.</div>`}
-    </div>
-
-    <div class="card">
-      <h3>Backup rápido</h3>
-      <div class="small">Copia e guarda. Se der ruim, restaura.</div>
-      <textarea readonly>${esc(JSON.stringify(DB))}</textarea>
-      <div class="actions">
-        <button class="secondary" onclick="downloadBackup()">Baixar backup</button>
-        <button class="danger" onclick="resetAll()">Zerar tudo</button>
-      </div>
-    </div>
-  `;
-}
-function setPlan(){
-  DB.plan = $("planSel").value;
-  save();
-  renderNav();
-  show("home");
-}
-function switchShop(){
-  DB.currentShopId = Number($("shopSel").value);
-  save(); show("home");
-}
-function addShopGuarded(){
-  if(!guard(FEATURES.MULTISHOP, "Multi-loja é MASTER.")) return;
-  addShop();
-}
-function addShop(){
-  const name = prompt("Nome da loja:");
-  if(!name) return;
-  const phone = prompt("Telefone (opcional):") || "";
-  const id = idNow();
-  DB.shops.push({id,name,phone});
-  DB.currentShopId = id;
-  save();
-  show("home");
-}
-function settings(){
-  const canLogin = has(FEATURES.LOGIN);
-  $("title").innerText = "Configurações";
-  setActiveNone();
-
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Configurações</h3>
-
-      <div class="small">Plano atual: <b>${activePlan().label}</b></div>
-      <hr>
-
-      <h3 style="margin:0 0 10px 0">Login</h3>
-      ${canLogin ? `
-        <div class="small">Somente no plano MASTER.</div>
-        <label>Ativar login</label>
-        <select id="authOn">
-          <option value="0" ${DB.auth.enabled? "":"selected"}>Desligado</option>
-          <option value="1" ${DB.auth.enabled? "selected":""}>Ligado</option>
-        </select>
-        <label>Senha atual</label>
-        <input id="curPass" type="password" placeholder="Senha atual">
-        <label>Nova senha</label>
-        <input id="newPass" type="password" placeholder="Nova senha">
-        <div class="actions">
-          <button class="primary" onclick="applyAuth()">Aplicar</button>
-        </div>
-      ` : `
-        <div class="small">Login está disponível no plano MASTER.</div>
-      `}
-      <hr>
-
-      <div class="actions">
-        <button class="secondary" onclick="show('home')">Voltar</button>
-      </div>
-    </div>
-  `;
-}
-function applyAuth(){
-  const on = $("authOn").value==="1";
-  DB.auth.enabled = on;
-
-  const cur = $("curPass").value;
-  const np = $("newPass").value.trim();
-  if(np){
-    if(cur !== DB.auth.pass) return alert("Senha atual errada.");
-    if(np.length < 4) return alert("Use 4+ caracteres.");
-    DB.auth.pass = np;
+    // migração simples
+    if(!parsed.version || parsed.version < 4){
+      const d = defaultDB();
+      return Object.assign(d, parsed, {version:4});
+    }
+    return parsed;
+  }catch(e){
+    return defaultDB();
   }
-  DB.__logged = false;
-  save();
-  alert("Ok.");
-  show("home");
 }
-function downloadBackup(){
-  const blob = new Blob([JSON.stringify(DB,null,2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "petdb-v3-backup.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-function resetAll(){
-  if(!confirm("Tem certeza? Apaga tudo deste navegador.")) return;
-  localStorage.removeItem("petdb_v3");
-  location.reload();
+function saveDB(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
 }
 
-/** ======================
- * CLIENTS + PETS + FOTO
- * ====================== */
-let __petPhotoB64 = "";
+/* =======================
+   TRIAL e PLANO EFETIVO
+======================= */
+function ensureTrial(){
+  if(!DB.trial) DB.trial = {startedAt:null};
+  if(!DB.trial.startedAt){
+    DB.trial.startedAt = nowISO();
+    saveDB();
+  }
+}
+function getEffectivePlan(){
+  ensureTrial();
+  const d = daysBetween(DB.trial.startedAt, nowISO()) + 1; // dia 1 = hoje
+  if(d <= 3) return { plan:"TOP", day:d, phase:"top" };
+  if(d <= 15) return { plan:"BASIC", day:d, phase:"basic15" };
+  return { plan: (DB.planPaid || "BASIC"), day:d, phase:"paid" };
+}
 
-function clients(){
-  const clients = shopFilter(DB.clients).slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
-  const pets = shopFilter(DB.pets);
+/* =======================
+   SHOP + THEME
+======================= */
+function getShop(){
+  const id = DB.currentShopId || 1;
+  return DB.shops.find(s => s.id == id) || DB.shops[0];
+}
+function applyTheme(){
+  const shop = getShop();
+  const theme = THEMES.find(t => t.id === (shop?.themeId || "cuidado_natural")) || THEMES[0];
+  document.documentElement.style.setProperty("--primary", theme.primary);
+  document.documentElement.style.setProperty("--secondary", theme.secondary);
+  document.documentElement.style.setProperty("--bg", theme.bg);
+  // ajuste de background em dark themes
+  if(theme.bg && (theme.bg === "#0F172A" || theme.bg === "#020617" || theme.bg === "#0B1220")){
+    document.body.style.background = theme.bg;
+  }
+}
 
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Novo cliente</h3>
-      <label>Nome</label><input id="cname" placeholder="Ex: João Silva">
-      <label>Telefone</label><input id="cphone" placeholder="Ex: 6799999-9999">
-      <div class="actions"><button class="primary" onclick="addClient()">Salvar</button></div>
-    </div>
+/* =======================
+   IMAGEM -> BASE64 REDUZIDA
+======================= */
+function fileToResizedBase64(file, maxW=420, quality=0.85){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = e => { img.src = e.target.result; };
+    reader.onerror = reject;
+    img.onload = () => {
+      const scale = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      const out = canvas.toDataURL("image/jpeg", quality);
+      resolve(out);
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-    <div class="card">
-      <h3>Novo pet</h3>
-      <label>Tutor</label>
-      <select id="petOwner">
-        ${clients.length ? clients.map(c=>`<option value="${c.id}">${esc(c.name)} • ${esc(c.phone||"")}</option>`).join("") : `<option value="">Cadastre um cliente primeiro</option>`}
-      </select>
-      <label>Nome do pet</label><input id="petName" placeholder="Ex: Thor">
-      <div class="row">
-        <div><label>Espécie</label><select id="petSpecies"><option>Cão</option><option>Gato</option><option>Outro</option></select></div>
-        <div><label>Raça</label><input id="petBreed" placeholder="Ex: SRD"></div>
-      </div>
-      <div class="row">
-        <div><label>Nascimento</label><input id="petBirth" type="date"></div>
-        <div><label>Alergias</label><input id="petAllergy" placeholder="Ex: frango"></div>
-      </div>
-      <label>Foto do pet</label>
-      <input id="petPhoto" type="file" accept="image/*" onchange="previewPetPhoto()">
-      <div class="row" style="align-items:center;margin-top:10px">
-        <img id="petPreview" class="avatar" alt="">
-        <div class="small">Foto vira carteirinha e dá confiança.</div>
-      </div>
-      <label>Observações</label><input id="petNotes" placeholder="Temperamento, cuidados, etc">
-      <div class="actions"><button class="primary" onclick="addPet()">Salvar pet</button></div>
-    </div>
+/* =======================
+   UI BÁSICA
+======================= */
+const screen = document.getElementById("screen");
+function setHeader(tabName){
+  const shop = getShop();
+  document.getElementById("shopName").innerText = shop?.name || "Petshop";
+  document.getElementById("titleText").innerText = tabName;
 
-    ${clients.map(c=>{
-      const cpets = pets.filter(p=>p.clientId===c.id);
-      return `
-        <div class="card">
-          <b>${esc(c.name)}</b> <span class="badge">${esc(c.phone||"")}</span><br>
-          <span class="small">${cpets.length} pet(s)</span>
+  const img = document.getElementById("shopLogo");
+  if(shop?.logo){
+    img.src = shop.logo;
+    img.style.display = "block";
+  }else{
+    img.style.display = "none";
+  }
 
-          ${cpets.length ? `<hr>` : ``}
+  const eff = getEffectivePlan();
+  document.getElementById("chipPlan").innerHTML = `<strong>Plano</strong>: ${eff.plan}`;
+  const trialText = eff.phase === "top"
+    ? `Teste TOP (dia ${eff.day}/3)`
+    : eff.phase === "basic15"
+      ? `Básico automático (dia ${eff.day}/15)`
+      : `Ativo (dia ${eff.day})`;
+  document.getElementById("chipTrial").innerText = trialText;
 
-          ${cpets.map(p=>`
-            <div class="list-item">
-              <div class="row" style="align-items:center">
-                <img class="avatar" src="${p.photo||""}" alt="" onerror="this.style.display='none'">
-                <div>
-                  <b>${esc(p.name)}</b> <span class="badge">${esc(p.species||"")}</span><br>
-                  <span class="small">${esc(p.breed||"")} ${p.allergy ? "• alergia: "+esc(p.allergy) : ""}</span>
-                </div>
-              </div>
-              <div class="actions">
-                ${has(FEATURES.VET) ? `<button class="secondary" onclick="goVet(${p.id})">Ficha/Receita</button>` : `<button class="secondary" onclick="upgradeScreen('${FEATURES.VET}','Veterinário é PRO ou acima.')">Ficha/Receita</button>`}
-                ${has(FEATURES.GROOMING_FLOW) ? `<button class="secondary" onclick="quickGroom(${p.id})">Fila Banho/Tosa</button>` : ``}
-                ${has(FEATURES.HOTEL) ? `<button class="secondary" onclick="goHotel(${p.id})">Hotelzinho</button>` : ``}
-                <button class="danger" onclick="delPet(${p.id})">Excluir pet</button>
-              </div>
-            </div>
-          `).join("")}
+  document.getElementById("chipRole").innerText = isAdmin ? "Admin" : "Cliente";
+  document.getElementById("chipRole").className = "chip " + (isAdmin ? "ok" : "");
+}
 
-          <div class="actions">
-            <button class="danger" onclick="delClient(${c.id})">Excluir cliente</button>
-            ${c.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}','Olá! 😊')">WhatsApp tutor</button>` : ``}
-          </div>
+/* =======================
+   NAVEGAÇÃO POR PLANO
+======================= */
+function allowedTabsByPlan(plan){
+  // TOP = tudo liberado
+  if(plan === "TOP") return ["home","clients","pets","agenda","banho","vet","hotel","caixa","products","portal","content","settings"];
+  if(plan === "MASTER") return ["home","clients","pets","agenda","banho","vet","hotel","caixa","products","portal","content","settings"];
+  if(plan === "PLUS") return ["home","clients","pets","agenda","banho","hotel","caixa","products","portal","content","settings"];
+  if(plan === "PRO") return ["home","clients","pets","agenda","banho","products","portal","content","settings"];
+  return ["home","clients","pets","agenda","products","portal","content","settings"]; // BASIC
+}
+
+function buildNav(active){
+  const eff = getEffectivePlan();
+  const allowed = allowedTabsByPlan(eff.plan);
+
+  const items = [
+    { id:"home", label:"Home", ico:"🏠" },
+    { id:"clients", label:"Tutores", ico:"👤" },
+    { id:"pets", label:"Pets", ico:"🐾" },
+    { id:"agenda", label:"Agenda", ico:"📅" },
+    { id:"banho", label:"Banho", ico:"🛁" },
+    { id:"vet", label:"Vet", ico:"🩺" },
+    { id:"hotel", label:"Hotel", ico:"🏨" },
+    { id:"caixa", label:"Caixa", ico:"💵" },
+    { id:"products", label:"Produtos", ico:"🧺" },
+    { id:"portal", label:"Portal", ico:"📲" },
+    { id:"content", label:"Conteúdo", ico:"📚" },
+    { id:"settings", label:"Ajustes", ico:"⚙️" }
+  ].filter(x => allowed.includes(x.id));
+
+  const nav = document.getElementById("nav");
+  nav.innerHTML = items.map(it => `
+    <button class="nav-btn ${active===it.id ? "active":""}" onclick="go('${it.id}')">
+      <div class="ico">${it.ico}</div>
+      <div>${it.label}</div>
+    </button>
+  `).join("");
+}
+
+/* =======================
+   TELAS
+======================= */
+function go(tab){
+  const eff = getEffectivePlan();
+  const allowed = allowedTabsByPlan(eff.plan);
+  if(!allowed.includes(tab)){
+    alert("Essa função não está liberada no seu plano agora.");
+    tab = "home";
+  }
+  buildNav(tab);
+
+  const title = ({
+    home:"Painel",
+    clients:"Tutores",
+    pets:"Pets",
+    agenda:"Agenda",
+    banho:"Banho e Tosa",
+    vet:"Veterinário",
+    hotel:"Hotelzinho",
+    caixa:"Caixa",
+    products:"Produtos",
+    portal:"Portal do Tutor",
+    content:"Conteúdo",
+    settings:"Ajustes"
+  })[tab] || "Painel";
+
+  applyTheme();
+  setHeader(title);
+
+  if(tab==="home") return screenHome();
+  if(tab==="clients") return screenClients();
+  if(tab==="pets") return screenPets();
+  if(tab==="agenda") return screenAgenda();
+  if(tab==="banho") return screenBanho();
+  if(tab==="vet") return screenVet();
+  if(tab==="hotel") return screenHotel();
+  if(tab==="caixa") return screenCaixa();
+  if(tab==="products") return screenProducts();
+  if(tab==="portal") return screenPortal();
+  if(tab==="content") return screenContent();
+  if(tab==="settings") return screenSettings();
+}
+
+function screenHome(){
+  const eff = getEffectivePlan();
+  const shop = getShop();
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card" style="grid-column: span 12;">
+        <h3>Resumo rápido</h3>
+        <div class="kpis">
+          <div class="kpi"><div class="n">${DB.clients.length}</div><div class="t">Tutores</div></div>
+          <div class="kpi"><div class="n">${DB.pets.length}</div><div class="t">Pets</div></div>
+          <div class="kpi"><div class="n">${DB.agenda.length}</div><div class="t">Agendamentos</div></div>
+          <div class="kpi"><div class="n">${DB.products.length}</div><div class="t">Produtos</div></div>
         </div>
-      `;
-    }).join("")}
+        <hr class="sep">
+        <div class="row">
+          <span class="badge">🏷️ Loja: <b>${shop?.name||""}</b></span>
+          <span class="badge">📌 Plano efetivo: <b>${eff.plan}</b></span>
+          <span class="badge">🗓️ Dia: <b>${eff.day}</b></span>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: span 12;">
+        <h3>Ações rápidas</h3>
+        <div class="row">
+          <button class="btn primary" onclick="go('clients')">👤 Novo tutor</button>
+          <button class="btn secondary" onclick="go('pets')">🐾 Novo pet</button>
+          <button class="btn ghost" onclick="go('agenda')">📅 Agendar</button>
+        </div>
+        <div class="small" style="margin-top:10px">
+          Dica: no celular, instale na tela inicial pra ficar igual aplicativo.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function screenClients(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Novo tutor</h3>
+        <input id="cname" placeholder="Nome do tutor">
+        <input id="cphone" placeholder="Telefone / WhatsApp">
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addClient()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Lista</h3>
+        <div class="list">
+          ${DB.clients.map(c=>`
+            <div class="item">
+              <b>${escapeHtml(c.name)}</b><br>
+              <span class="small">${escapeHtml(c.phone||"")}</span>
+            </div>
+          `).join("") || `<div class="small">Ainda sem tutores cadastrados.</div>`}
+        </div>
+      </div>
+    </div>
   `;
 }
 function addClient(){
-  const name = $("cname").value.trim();
-  const phone = $("cphone").value.trim();
-  if(!name) return alert("Coloque o nome.");
-  DB.clients.push({id:idNow(), shopId:DB.currentShopId, name, phone});
-  save(); show("clients");
-}
-function previewPetPhoto(){
-  const f = $("petPhoto").files?.[0];
-  if(!f) return;
-  const r = new FileReader();
-  r.onload = ()=>{ __petPhotoB64 = r.result; $("petPreview").src = __petPhotoB64; };
-  r.readAsDataURL(f);
-}
-function addPet(){
-  const owner = Number($("petOwner").value);
-  if(!owner) return alert("Cadastre um cliente primeiro.");
-  const name = $("petName").value.trim();
-  if(!name) return alert("Nome do pet, por favor.");
-
-  DB.pets.push({
-    id:idNow(), shopId:DB.currentShopId,
-    clientId:owner,
-    name,
-    species:$("petSpecies").value,
-    breed:$("petBreed").value.trim(),
-    birth:$("petBirth").value,
-    allergy:$("petAllergy").value.trim(),
-    notes:$("petNotes").value.trim(),
-    photo: __petPhotoB64 || ""
-  });
-  __petPhotoB64 = "";
-  save(); show("clients");
-}
-function delClient(clientId){
-  if(!confirm("Excluir cliente e tudo ligado a ele?")) return;
-  const myPets = shopFilter(DB.pets).filter(p=>p.clientId===clientId).map(p=>p.id);
-
-  DB.clients = DB.clients.filter(c=>c.id!==clientId);
-  DB.pets = DB.pets.filter(p=>p.clientId!==clientId);
-  DB.agenda = DB.agenda.filter(a=> !myPets.includes(a.petId));
-  DB.vetRecords = DB.vetRecords.filter(v=> !myPets.includes(v.petId));
-  DB.vaccines = DB.vaccines.filter(v=> !myPets.includes(v.petId));
-  DB.boardings = DB.boardings.filter(b=> !myPets.includes(b.petId));
-  DB.grooming = DB.grooming.filter(g=> !myPets.includes(g.petId));
-
-  save(); show("clients");
-}
-function delPet(petId){
-  if(!confirm("Excluir pet e histórico dele?")) return;
-
-  DB.pets = DB.pets.filter(p=>p.id!==petId);
-  DB.agenda = DB.agenda.filter(a=>a.petId!==petId);
-  DB.vetRecords = DB.vetRecords.filter(v=>v.petId!==petId);
-  DB.vaccines = DB.vaccines.filter(v=>v.petId!==petId);
-  DB.boardings = DB.boardings.filter(b=>b.petId!==petId);
-  DB.grooming = DB.grooming.filter(g=>g.petId!==petId);
-
-  save(); show("clients");
+  const name = (document.getElementById("cname").value||"").trim();
+  if(!name) return alert("Coloque o nome do tutor.");
+  const phone = (document.getElementById("cphone").value||"").trim();
+  DB.clients.push({id:Date.now(), name, phone});
+  saveDB(); go("clients");
 }
 
-/** ======================
- * AGENDA + VACINAS
- * ====================== */
-function agenda(){
-  const pets = shopFilter(DB.pets);
-  const clients = shopFilter(DB.clients);
-  const items = shopFilter(DB.agenda).slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
-  const vac = shopFilter(DB.vaccines).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+function screenPets(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Novo pet</h3>
+        <label>Tutor</label>
+        <select id="petClient">
+          ${DB.clients.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("")}
+        </select>
 
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Novo agendamento</h3>
-      <label>Tipo</label>
-      <select id="atype">
-        <option>Banho</option><option>Tosa</option><option>Banho + Tosa</option>
-        <option>Consulta Veterinária</option><option>Vacina</option><option>Retorno</option><option>Hotelzinho</option>
-      </select>
-      <label>Pet</label>
-      <select id="apetId">
-        ${pets.length ? pets.map(p=>{
-          const c = clients.find(x=>x.id===p.clientId);
-          return `<option value="${p.id}">${esc(p.name)} • ${esc(c?.name||"Tutor")}</option>`;
-        }).join("") : `<option value="">Cadastre um pet primeiro</option>`}
-      </select>
-      <div class="row">
-        <div><label>Data</label><input type="date" id="adate" value="${todayISO()}"></div>
-        <div><label>Hora</label><input type="time" id="atime"></div>
+        <label>Nome do pet</label>
+        <input id="petName" placeholder="Ex: Thor, Mel, Luna">
+
+        <label>Raça</label>
+        <input id="petBreed" placeholder="Ex: Shih-tzu, Vira-lata, Pastor Alemão">
+
+        <label>Foto do pet (opcional)</label>
+        <input type="file" id="petPhoto" accept="image/*">
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addPet()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          Dica: foto pequena é melhor. O sistema reduz automaticamente.
+        </div>
       </div>
-      <label>Obs</label><input id="aobs" placeholder="Ex: levar carteirinha">
-      <div class="actions"><button class="primary" onclick="addAgenda()">Salvar</button></div>
-      ${has(FEATURES.GROOMING_FLOW) ? `<div class="small" style="margin-top:10px">Dica: se for Banho/Tosa, você pode jogar direto na fila.</div>` : ``}
-    </div>
 
-    <div class="card">
-      <h3>Vacinas (carteirinha)</h3>
-      <label>Pet</label>
-      <select id="vpetVac">
-        ${pets.length ? pets.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("") : `<option value="">Cadastre um pet</option>`}
-      </select>
-      <label>Vacina</label>
-      <input id="vname" placeholder="Ex: V10, Antirrábica">
-      <div class="row">
-        <div><label>Data</label><input id="vdate" type="date" value="${todayISO()}"></div>
-        <div><label>Próxima</label><input id="vnext" type="date"></div>
-      </div>
-      <label>Obs</label><input id="vobs" placeholder="Lote, reação, etc">
-      <div class="actions"><button class="primary" onclick="addVaccine()">Salvar vacina</button></div>
-
-      <hr>
-      ${vac.length ? vac.slice(0,8).map(v=>{
-        return `
-          <div class="list-item">
-            <b>${esc(v.name)}</b> <span class="badge">${esc(v.date||"")}</span>
-            ${v.nextDate ? `<span class="badge">Próxima: ${esc(v.nextDate)}</span>` : ``}
-            <div class="small">${esc(petName(v.petId))}${v.obs ? " • "+esc(v.obs) : ""}</div>
-            <div class="actions"><button class="danger" onclick="delVaccine(${v.id})">Excluir</button></div>
-          </div>
-        `;
-      }).join("") : `<div class="small">Sem vacinas registradas.</div>`}
-    </div>
-
-    <div class="card">
-      <h3>Agendamentos</h3>
-      ${items.length ? items.map(a=>{
-        const p = pets.find(x=>x.id===a.petId);
-        const c = p ? clients.find(x=>x.id===p.clientId) : null;
-        return `
-          <div class="list-item">
-            <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
-            <span class="small">${esc(p?.name||"")} • ${esc(c?.name||"")}</span>
-            ${a.obs ? `<div class="small">${esc(a.obs)}</div>` : ``}
-            <div class="actions">
-              ${has(FEATURES.VET) ? `<button class="secondary" onclick="goVet(${a.petId})">Ficha</button>` : ``}
-              ${has(FEATURES.GROOMING_FLOW) && /Banho|Tosa/i.test(a.type) ? `<button class="secondary" onclick="quickGroom(${a.petId}, '${esc(a.type)}')">Jogar na fila</button>` : ``}
-              <button class="danger" onclick="delAgenda(${a.id})">Excluir</button>
+      <div class="card">
+        <h3>Pets cadastrados</h3>
+        <div class="list">
+          ${DB.pets.map(p=>`
+            <div class="item" style="display:flex;gap:12px;align-items:center;">
+              <div style="width:46px;height:46px;border-radius:16px;border:1px solid var(--border);overflow:hidden;background:#fff;flex:0 0 auto;">
+                ${p.photo ? `<img src="${p.photo}" style="width:46px;height:46px;object-fit:cover;">` : `<div class="small" style="padding:14px;text-align:center;">🐾</div>`}
+              </div>
+              <div style="min-width:0;">
+                <b>${escapeHtml(p.name)}</b> <span class="small">(${escapeHtml(p.breed||"")})</span><br>
+                <span class="small">Tutor: ${escapeHtml(getClientName(p.clientId))}</span>
+              </div>
             </div>
+          `).join("") || `<div class="small">Ainda sem pets cadastrados.</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function addPet(){
+  if(DB.clients.length === 0) return alert("Cadastre um tutor primeiro.");
+  const clientId = Number(document.getElementById("petClient").value);
+  const name = (document.getElementById("petName").value||"").trim();
+  if(!name) return alert("Coloque o nome do pet.");
+  const breed = (document.getElementById("petBreed").value||"").trim();
+  const file = document.getElementById("petPhoto").files?.[0];
+  let photo = null;
+  if(file) photo = await fileToResizedBase64(file, 520, 0.85);
+
+  DB.pets.push({id:Date.now(), clientId, name, breed, photo});
+  saveDB(); go("pets");
+}
+function getClientName(id){
+  return (DB.clients.find(c=>c.id==id)?.name) || "Não informado";
+}
+
+function screenAgenda(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Novo agendamento</h3>
+        <label>Tipo</label>
+        <select id="atype">
+          <option>Banho</option>
+          <option>Tosa</option>
+          <option>Banho + Tosa</option>
+          <option>Consulta</option>
+          <option>Retorno</option>
+        </select>
+
+        <label>Pet</label>
+        <input id="apet" placeholder="Nome do pet">
+
+        <div class="row">
+          <div>
+            <label>Data</label>
+            <input type="date" id="adate">
           </div>
-        `;
-      }).join("") : `<div class="small">Agenda vazia.</div>`}
+          <div>
+            <label>Hora</label>
+            <input type="time" id="atime">
+          </div>
+        </div>
+
+        <label>Observações</label>
+        <textarea id="anotes" placeholder="Ex: alérgico, não gosta de secador, etc."></textarea>
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addAgenda()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Agendamentos</h3>
+        <div class="list">
+          ${DB.agenda.slice().reverse().map(a=>`
+            <div class="item">
+              <b>${escapeHtml(a.type)}</b> • ${escapeHtml(a.petName)}<br>
+              <span class="small">${escapeHtml(a.date)} ${escapeHtml(a.time)}</span>
+              ${a.notes ? `<div class="small" style="margin-top:6px">${escapeHtml(a.notes)}</div>`:""}
+            </div>
+          `).join("") || `<div class="small">Nenhum agendamento ainda.</div>`}
+        </div>
+      </div>
     </div>
   `;
 }
 function addAgenda(){
-  const petId = Number($("apetId").value);
-  if(!petId) return alert("Selecione um pet.");
-  const date = $("adate").value;
-  if(!date) return alert("Data obrigatória.");
+  const type = document.getElementById("atype").value;
+  const petName = (document.getElementById("apet").value||"").trim();
+  if(!petName) return alert("Coloque o nome do pet.");
+  const date = document.getElementById("adate").value || "";
+  const time = document.getElementById("atime").value || "";
+  const notes = (document.getElementById("anotes").value||"").trim();
 
-  DB.agenda.push({
-    id:idNow(), shopId:DB.currentShopId,
-    type:$("atype").value, petId, date,
-    time:$("atime").value,
-    obs:$("aobs").value.trim()
-  });
-  save(); show("agenda");
-}
-function delAgenda(id){
-  if(!confirm("Excluir agendamento?")) return;
-  DB.agenda = DB.agenda.filter(a=>a.id!==id);
-  save(); show("agenda");
-}
-function addVaccine(){
-  const petId = Number($("vpetVac").value);
-  if(!petId) return alert("Selecione o pet.");
-  const name = $("vname").value.trim();
-  if(!name) return alert("Nome da vacina.");
-
-  DB.vaccines.push({
-    id:idNow(), shopId:DB.currentShopId,
-    petId, name,
-    date:$("vdate").value,
-    nextDate:$("vnext").value,
-    obs:$("vobs").value.trim()
-  });
-  save(); show("agenda");
-}
-function delVaccine(id){
-  if(!confirm("Excluir vacina?")) return;
-  DB.vaccines = DB.vaccines.filter(v=>v.id!==id);
-  save(); show("agenda");
+  DB.agenda.push({id:Date.now(), type, petName, date, time, notes});
+  saveDB(); go("agenda");
 }
 
-/** ======================
- * GROOMING FLOW (Fila Banho/Tosa)
- * ====================== */
-const GROOM_STEPS = ["Recebido","Banho","Secagem","Tosa","Pronto","Entregue"];
-function stepDot(status){
-  if(status==="Entregue") return "dot green";
-  if(status==="Pronto") return "dot blue";
-  if(status==="Recebido") return "dot gray";
-  return "dot red";
-}
-function groom(){
-  const pets = shopFilter(DB.pets);
-  const clients = shopFilter(DB.clients);
-  const items = shopFilter(DB.grooming)
-    .slice()
-    .sort((a,b)=> b.createdAt - a.createdAt);
+function screenBanho(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Registro de Banho/Tosa</h3>
+        <label>Pet</label>
+        <input id="bpet" placeholder="Nome do pet">
 
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Entrar na fila</h3>
-      <label>Pet</label>
-      <select id="gpet">
-        ${pets.length ? pets.map(p=>{
-          const c = clients.find(x=>x.id===p.clientId);
-          return `<option value="${p.id}">${esc(p.name)} • ${esc(c?.name||"")}</option>`;
-        }).join("") : `<option value="">Cadastre um pet</option>`}
-      </select>
-      <label>Serviço</label>
-      <select id="gtype">
-        <option>Banho</option>
-        <option>Tosa</option>
-        <option>Banho + Tosa</option>
-      </select>
-      <label>Observação</label>
-      <input id="gnote" placeholder="Ex: não cortar muito curto">
-      <div class="actions">
-        <button class="primary" onclick="addGroom()">Adicionar</button>
+        <label>Etapa</label>
+        <select id="bstage">
+          <option>Recebido</option>
+          <option>Em banho</option>
+          <option>Em tosa</option>
+          <option>Finalizando</option>
+          <option>Pronto</option>
+        </select>
+
+        <label>Foto antes (opcional)</label>
+        <input type="file" id="bbefore" accept="image/*">
+
+        <label>Foto depois (opcional)</label>
+        <input type="file" id="bafter" accept="image/*">
+
+        <label>Observações</label>
+        <textarea id="bnotes" placeholder="Ex: pedir para não cortar muito, etc."></textarea>
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addBanho()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+        <div class="small" style="margin-top:10px">Antes e depois vende muito no WhatsApp e no Instagram.</div>
       </div>
-      <div class="small">Isso aqui vende demais: o cliente vê organização e fluxo.</div>
-    </div>
 
-    <div class="card">
-      <h3>Fila (status)</h3>
-      ${items.length ? items.map(g=>{
-        const p = pets.find(x=>x.id===g.petId);
-        const c = p ? clients.find(x=>x.id===p.clientId) : null;
-        const idx = GROOM_STEPS.indexOf(g.status);
-        const next = idx>=0 && idx < GROOM_STEPS.length-1 ? GROOM_STEPS[idx+1] : null;
-        const prev = idx>0 ? GROOM_STEPS[idx-1] : null;
-
-        return `
-          <div class="list-item">
-            <div class="row" style="align-items:center">
-              <span class="${stepDot(g.status)}"></span>
-              <div>
-                <b>${esc(p?.name||"Pet")}</b>
-                <span class="badge">${esc(g.type||"")}</span>
-                <span class="badge">${esc(g.status||"")}</span><br>
-                <span class="small">${esc(c?.name||"")} ${c?.phone ? "• "+esc(c.phone) : ""}</span>
-                ${g.note ? `<div class="small">${esc(g.note)}</div>` : ``}
-              </div>
+      <div class="card">
+        <h3>Últimos registros</h3>
+        <div class="list">
+          ${DB.banho.slice().reverse().map(r=>`
+            <div class="item">
+              <b>${escapeHtml(r.petName)}</b> <span class="badge">${escapeHtml(r.stage)}</span><br>
+              <span class="small">${escapeHtml(r.date||"")}</span>
+              ${r.notes ? `<div class="small" style="margin-top:6px">${escapeHtml(r.notes)}</div>`:""}
             </div>
-
-            <div class="actions">
-              ${prev ? `<button class="secondary" onclick="setGroomStatus(${g.id}, '${prev}')">Voltar</button>` : ``}
-              ${next ? `<button class="primary" onclick="setGroomStatus(${g.id}, '${next}')">Avançar</button>` : ``}
-              ${c?.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}', groomMsg('${esc(p?.name||"Pet")}','${esc(g.status||"")}'))">WhatsApp status</button>` : ``}
-              <button class="danger" onclick="delGroom(${g.id})">Excluir</button>
-            </div>
-          </div>
-        `;
-      }).join("") : `<div class="small">Fila vazia. Quando entrar um pet, ele aparece aqui.</div>`}
+          `).join("") || `<div class="small">Ainda sem registros.</div>`}
+        </div>
+      </div>
     </div>
   `;
 }
-function groomMsg(pet, status){
-  return `🐾 Atualização do ${pet}\nStatus: ${status}\n\nQualquer coisa, chama aqui.`;
-}
-function addGroom(){
-  const petId = Number($("gpet").value);
-  if(!petId) return alert("Selecione um pet.");
-  DB.grooming.push({
-    id:idNow(), shopId:DB.currentShopId,
-    petId,
-    type:$("gtype").value,
-    status:"Recebido",
-    note:$("gnote").value.trim(),
-    createdAt: Date.now()
-  });
-  save(); show("groom");
-}
-function setGroomStatus(id, status){
-  const g = DB.grooming.find(x=>x.id===id);
-  if(!g) return;
-  g.status = status;
-  save(); show("groom");
-}
-function delGroom(id){
-  if(!confirm("Excluir da fila?")) return;
-  DB.grooming = DB.grooming.filter(g=>g.id!==id);
-  save(); show("groom");
-}
-function quickGroom(petId, type){
-  if(!guard(FEATURES.GROOMING_FLOW, "Fila Banho/Tosa é PLUS ou acima.")) return;
-  DB.grooming.push({
-    id:idNow(), shopId:DB.currentShopId,
-    petId,
-    type: type || "Banho + Tosa",
-    status:"Recebido",
-    note:"",
-    createdAt: Date.now()
-  });
-  save(); show("groom");
+async function addBanho(){
+  const petName = (document.getElementById("bpet").value||"").trim();
+  if(!petName) return alert("Coloque o nome do pet.");
+  const stage = document.getElementById("bstage").value;
+  const notes = (document.getElementById("bnotes").value||"").trim();
+  const f1 = document.getElementById("bbefore").files?.[0];
+  const f2 = document.getElementById("bafter").files?.[0];
+  const beforePhoto = f1 ? await fileToResizedBase64(f1, 720, 0.85) : null;
+  const afterPhoto = f2 ? await fileToResizedBase64(f2, 720, 0.85) : null;
+
+  DB.banho.push({id:Date.now(), petName, stage, beforePhoto, afterPhoto, notes, date:new Date().toLocaleDateString("pt-BR")});
+  saveDB(); go("banho");
 }
 
-/** ======================
- * PRODUCTS + STOCK ALERT
- * ====================== */
-function productsUI(){
-  const products = shopFilter(DB.products).slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
-  const lowStock = products.filter(p=>{
-    const qty = Number((p.qty||"0").replace(",","."));
-    const min = Number((p.min||"0").replace(",","."));
-    return !isNaN(qty) && !isNaN(min) && qty <= min;
-  });
+function screenVet(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Ficha Veterinária</h3>
+        <label>Pet</label>
+        <input id="vpet" placeholder="Nome do pet">
 
-  return `
-    <div class="card">
-      <h3>Produtos / Estoque</h3>
-      <label>Nome</label><input id="pname" placeholder="Ex: Ração 10kg">
-      <div class="row">
-        <div><label>Preço</label><input id="pprice" placeholder="Ex: 129,90"></div>
-        <div><label>Estoque</label><input id="pqty" placeholder="Ex: 8"></div>
-      </div>
-      <div class="row">
-        <div><label>Mínimo (alerta)</label><input id="pmin" placeholder="Ex: 3"></div>
-        <div><label>Obs</label><input id="pnotes" placeholder="Marca, validade, etc"></div>
-      </div>
-      <div class="actions">
-        <button class="primary" onclick="addProduct()">Salvar</button>
-      </div>
-      ${has(FEATURES.STOCK_ALERT) ? `
-        <hr>
-        <div class="small"><b>Alertas:</b> ${lowStock.length ? lowStock.length+" item(ns) baixo" : "tudo ok"}</div>
-      ` : `<div class="small" style="margin-top:10px">Alerta de estoque é PLUS ou acima.</div>`}
-    </div>
-
-    <div class="card">
-      <h3>Lista</h3>
-      ${products.length ? products.map(p=>`
-        <div class="list-item">
-          <b>${esc(p.name)}</b>
-          <span class="badge">R$ ${esc(p.price||"0")}</span>
-          <span class="badge">Qtd ${esc(p.qty||"0")}</span>
-          ${has(FEATURES.STOCK_ALERT) ? `<span class="badge">Mín ${esc(p.min||"0")}</span>` : ``}
-          <div class="small">${p.notes ? esc(p.notes) : ""}</div>
-          <div class="actions">
-            <button class="secondary" onclick="adjustStock(${p.id}, 1)">+1</button>
-            <button class="secondary" onclick="adjustStock(${p.id}, -1)">-1</button>
-            <button class="danger" onclick="delProduct(${p.id})">Excluir</button>
+        <div class="row">
+          <div>
+            <label>Peso</label>
+            <input id="vweight" placeholder="Ex: 8,2 kg">
+          </div>
+          <div>
+            <label>Data</label>
+            <input type="date" id="vdate">
           </div>
         </div>
-      `).join("") : `<div class="small">Sem produtos ainda.</div>`}
+
+        <label>Diagnóstico (descrição)</label>
+        <textarea id="vdiag" placeholder="Descrição do caso"></textarea>
+
+        <label>Medicamentos / Orientações</label>
+        <textarea id="vmeds" placeholder="Orientações gerais e medicamentos"></textarea>
+
+        <label>Procedimentos</label>
+        <textarea id="vproc" placeholder="Exames, curativos, etc."></textarea>
+
+        <label>Retorno</label>
+        <input type="date" id="vret">
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addVet()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          Observação: este módulo é para registro interno. Evite prometer diagnóstico por conteúdo.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Histórico (últimos)</h3>
+        <div class="list">
+          ${DB.vet.slice().reverse().map(v=>`
+            <div class="item">
+              <b>${escapeHtml(v.petName)}</b> <span class="small">${escapeHtml(v.date||"")}</span><br>
+              <span class="small">Peso: ${escapeHtml(v.weight||"-")}</span>
+            </div>
+          `).join("") || `<div class="small">Ainda sem fichas.</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function addVet(){
+  const petName = (document.getElementById("vpet").value||"").trim();
+  if(!petName) return alert("Coloque o nome do pet.");
+  DB.vet.push({
+    id:Date.now(),
+    petName,
+    weight:(document.getElementById("vweight").value||"").trim(),
+    date:(document.getElementById("vdate").value||"").trim(),
+    diag:(document.getElementById("vdiag").value||"").trim(),
+    meds:(document.getElementById("vmeds").value||"").trim(),
+    proc:(document.getElementById("vproc").value||"").trim(),
+    ret:(document.getElementById("vret").value||"").trim()
+  });
+  saveDB(); go("vet");
+}
+
+function screenHotel(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Hotelzinho</h3>
+        <label>Pet</label>
+        <input id="hpet" placeholder="Nome do pet">
+
+        <div class="row">
+          <div>
+            <label>Check-in</label>
+            <input type="date" id="hin">
+          </div>
+          <div>
+            <label>Check-out</label>
+            <input type="date" id="hout">
+          </div>
+        </div>
+
+        <label>Status</label>
+        <select id="hstatus">
+          <option>Hospedado</option>
+          <option>Saída programada</option>
+          <option>Finalizado</option>
+        </select>
+
+        <label>Foto check-in (opcional)</label>
+        <input type="file" id="hphotoIn" accept="image/*">
+
+        <label>Foto check-out (opcional)</label>
+        <input type="file" id="hphotoOut" accept="image/*">
+
+        <label>Observações</label>
+        <textarea id="hnotes" placeholder="Ração, remédio, comportamento..."></textarea>
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addHotel()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Registros</h3>
+        <div class="list">
+          ${DB.hotel.slice().reverse().map(h=>`
+            <div class="item">
+              <b>${escapeHtml(h.petName)}</b> <span class="badge">${escapeHtml(h.status)}</span><br>
+              <span class="small">Entrada: ${escapeHtml(h.inDate||"-")} • Saída: ${escapeHtml(h.outDate||"-")}</span>
+            </div>
+          `).join("") || `<div class="small">Sem hospedagens ainda.</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function addHotel(){
+  const petName = (document.getElementById("hpet").value||"").trim();
+  if(!petName) return alert("Coloque o nome do pet.");
+  const inDate = document.getElementById("hin").value || "";
+  const outDate = document.getElementById("hout").value || "";
+  const status = document.getElementById("hstatus").value;
+  const notes = (document.getElementById("hnotes").value||"").trim();
+
+  const f1 = document.getElementById("hphotoIn").files?.[0];
+  const f2 = document.getElementById("hphotoOut").files?.[0];
+  const photoIn = f1 ? await fileToResizedBase64(f1, 720, 0.85) : null;
+  const photoOut = f2 ? await fileToResizedBase64(f2, 720, 0.85) : null;
+
+  DB.hotel.push({id:Date.now(), petName, inDate, outDate, status, notes, photoIn, photoOut});
+  saveDB(); go("hotel");
+}
+
+function screenCaixa(){
+  const totalIn = DB.caixa.filter(x=>x.type==="Entrada").reduce((a,b)=>a+Number(b.value||0),0);
+  const totalOut = DB.caixa.filter(x=>x.type==="Saída").reduce((a,b)=>a+Number(b.value||0),0);
+  const saldo = totalIn - totalOut;
+
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Caixa do dia</h3>
+        <div class="row">
+          <span class="badge">✅ Entradas: <b>R$ ${fmt(totalIn)}</b></span>
+          <span class="badge">🧾 Saídas: <b>R$ ${fmt(totalOut)}</b></span>
+          <span class="badge">💰 Saldo: <b>R$ ${fmt(saldo)}</b></span>
+        </div>
+
+        <hr class="sep">
+        <label>Tipo</label>
+        <select id="ctype">
+          <option>Entrada</option>
+          <option>Saída</option>
+        </select>
+
+        <label>Descrição</label>
+        <input id="cdesc" placeholder="Ex: banho, ração, produto, fornecedor...">
+
+        <label>Valor</label>
+        <input id="cvalue" placeholder="Ex: 80,00">
+
+        <label>Data</label>
+        <input type="date" id="cdate">
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addCaixa()">Lançar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Lançamentos</h3>
+        <div class="list">
+          ${DB.caixa.slice().reverse().map(x=>`
+            <div class="item">
+              <b>${escapeHtml(x.type)}</b> • R$ ${fmt(Number(x.value||0))}<br>
+              <span class="small">${escapeHtml(x.desc||"")} • ${escapeHtml(x.date||"")}</span>
+            </div>
+          `).join("") || `<div class="small">Sem lançamentos ainda.</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function addCaixa(){
+  const type = document.getElementById("ctype").value;
+  const desc = (document.getElementById("cdesc").value||"").trim();
+  const valueRaw = (document.getElementById("cvalue").value||"").trim().replace(".","").replace(",",".");
+  const value = Number(valueRaw);
+  if(!desc) return alert("Coloque uma descrição.");
+  if(!Number.isFinite(value)) return alert("Coloque um valor válido.");
+  const date = document.getElementById("cdate").value || "";
+  DB.caixa.push({id:Date.now(), type, desc, value, date});
+  saveDB(); go("caixa");
+}
+
+function screenProducts(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Cadastrar produto</h3>
+        <input id="pname" placeholder="Nome do produto">
+        <div class="row">
+          <div>
+            <label>Preço</label>
+            <input id="pprice" placeholder="Ex: 39,90">
+          </div>
+          <div>
+            <label>Estoque</label>
+            <input id="pqty" placeholder="Ex: 10">
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="addProduct()">Salvar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Estoque</h3>
+        <div class="list">
+          ${DB.products.map(p=>`
+            <div class="item">
+              <b>${escapeHtml(p.name)}</b><br>
+              <span class="small">R$ ${escapeHtml(p.price||"")} • Qtd ${escapeHtml(p.qty||"")}</span>
+            </div>
+          `).join("") || `<div class="small">Sem produtos cadastrados.</div>`}
+        </div>
+      </div>
     </div>
   `;
 }
 function addProduct(){
-  const name = $("pname").value.trim();
-  if(!name) return alert("Nome do produto.");
+  const name = (document.getElementById("pname").value||"").trim();
+  if(!name) return alert("Coloque o nome do produto.");
   DB.products.push({
-    id:idNow(), shopId:DB.currentShopId,
+    id:Date.now(),
     name,
-    price:$("pprice").value.trim(),
-    qty:$("pqty").value.trim(),
-    min:$("pmin").value.trim(),
-    notes:$("pnotes").value.trim()
+    price:(document.getElementById("pprice").value||"").trim(),
+    qty:(document.getElementById("pqty").value||"").trim()
   });
-  save(); show("home");
-}
-function delProduct(id){
-  if(!confirm("Excluir produto?")) return;
-  DB.products = DB.products.filter(p=>p.id!==id);
-  save(); show("home");
-}
-function adjustStock(id, delta){
-  const p = DB.products.find(x=>x.id===id);
-  if(!p) return;
-  let q = Number((p.qty||"0").replace(",","."));
-  if(isNaN(q)) q = 0;
-  q += delta;
-  if(q < 0) q = 0;
-  p.qty = String(q).replace(".",",");
-  save(); show("home");
+  saveDB(); go("products");
 }
 
-/** ======================
- * VET + PDF/PRINT + WHATSAPP + COMISSÃO
- * ====================== */
-function vet(){
-  const pets = shopFilter(DB.pets);
-  const clients = shopFilter(DB.clients);
-  if(!pets.length){
-    $("screen").innerHTML = `<div class="card"><h3>Veterinário</h3><div class="small">Cadastre um pet primeiro.</div></div>`;
-    return;
-  }
-  const petId = Number(DB.__vetPetId || pets[0].id);
-  DB.__vetPetId = petId; save();
-
-  const pet = pets.find(p=>p.id===petId);
-  const tutor = clients.find(c=>c.id===pet.clientId);
-
-  const records = shopFilter(DB.vetRecords).filter(r=>r.petId===petId).slice().sort((a,b)=>b.createdAt-a.createdAt);
-
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Atendimento</h3>
-      <label>Pet</label>
-      <select id="vpetSel" onchange="selectVetPet()">
-        ${pets.map(p=>`<option value="${p.id}" ${p.id===petId?"selected":""}>${esc(p.name)}</option>`).join("")}
-      </select>
-
-      <div class="row" style="align-items:center;margin-top:10px">
-        <img class="avatar" src="${pet.photo||""}" alt="" onerror="this.style.display='none'">
+function screenPortal(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Portal do Tutor</h3>
         <div class="small">
-          <b>${esc(pet.name)}</b> • ${esc(pet.species||"")} ${pet.breed ? "• "+esc(pet.breed) : ""}<br>
-          Tutor: ${esc(tutor?.name||"")} ${tutor?.phone ? "• "+esc(tutor.phone) : ""}
+          Aqui é um modelo simples: o tutor pesquisa pelo telefone e você encontra o cadastro.
+          Depois a gente evolui com login, histórico do pet e avisos automáticos.
         </div>
-      </div>
 
-      <hr>
-
-      <div class="row">
-        <div><label>Peso (kg)</label><input id="vweight" placeholder="Ex: 12,4"></div>
-        <div><label>Temperatura</label><input id="vtemp" placeholder="Ex: 38,9"></div>
-      </div>
-
-      <label>Anamnese</label><textarea id="vanam"></textarea>
-      <label>Diagnóstico</label><textarea id="vdiag"></textarea>
-      <label>Receita</label><textarea id="vmed" placeholder="Dose, intervalo, duração"></textarea>
-      <label>Procedimentos</label><textarea id="vproc"></textarea>
-
-      <div class="row">
-        <div><label>Retorno</label><input id="vreturn" type="date"></div>
-        <div><label>Valor</label><input id="vvalue" placeholder="Ex: 120,00"></div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Veterinário</label>
-          <input id="vdoc" placeholder="Nome do veterinário">
+        <label>Telefone do tutor</label>
+        <input id="psearch" placeholder="Digite parte do telefone">
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="searchTutor()">Buscar</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
         </div>
-        <div>
-          <label>Comissão (%)</label>
-          <input id="vcomm" placeholder="Ex: 30" ${has(FEATURES.COMMISSION) ? "" : "disabled"}>
-          ${has(FEATURES.COMMISSION) ? "" : `<div class="small">Comissão é PLUS ou acima.</div>`}
-        </div>
+
+        <div id="presult" style="margin-top:12px"></div>
       </div>
-
-      <div class="actions">
-        <button class="primary" onclick="saveVetRecord()">Salvar atendimento</button>
-        <button class="secondary" onclick="printPrescriptionGuarded()">Imprimir / PDF</button>
-        ${tutor?.phone ? `<button class="secondary" onclick="sendWhatsAppReceiptGuarded('${esc(tutor.phone)}')">WhatsApp receita</button>` : ``}
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Histórico</h3>
-      ${records.length ? records.map(r=>`
-        <div class="list-item">
-          <b>${new Date(r.createdAt).toLocaleString("pt-BR")}</b>
-          ${r.value ? `<span class="badge">R$ ${esc(r.value)}</span>` : ``}
-          ${r.weight ? `<span class="badge">${esc(r.weight)} kg</span>` : ``}
-          ${r.returnDate ? `<span class="badge">Retorno: ${esc(r.returnDate)}</span>` : ``}
-          ${r.vet ? `<span class="badge">${esc(r.vet)}</span>` : ``}
-          ${r.commValue ? `<span class="badge">Comissão: R$ ${esc(r.commValue)}</span>` : ``}
-
-          <div class="small" style="margin-top:6px">
-            ${r.anam ? `<div><b>Anamnese:</b> ${esc(r.anam)}</div>` : ``}
-            ${r.diag ? `<div><b>Diagnóstico:</b> ${esc(r.diag)}</div>` : ``}
-            ${r.med ? `<div><b>Receita:</b> ${esc(r.med)}</div>` : ``}
-            ${r.proc ? `<div><b>Procedimentos:</b> ${esc(r.proc)}</div>` : ``}
-          </div>
-
-          <div class="actions">
-            <button class="secondary" onclick="openRecord(${r.id})">Abrir</button>
-            <button class="danger" onclick="delVetRecord(${r.id})">Excluir</button>
-          </div>
-        </div>
-      `).join("") : `<div class="small">Sem atendimentos ainda.</div>`}
-    </div>
-  `;
-}
-function selectVetPet(){
-  DB.__vetPetId = Number($("vpetSel").value);
-  save(); show("vet");
-}
-function goVet(petId){
-  DB.__vetPetId = petId;
-  save(); show("vet");
-}
-function saveVetRecord(){
-  const petId = Number(DB.__vetPetId);
-  const weight = $("vweight").value.trim();
-  const temp = $("vtemp").value.trim();
-  const anam = $("vanam").value.trim();
-  const diag = $("vdiag").value.trim();
-  const med = $("vmed").value.trim();
-  const proc = $("vproc").value.trim();
-  const returnDate = $("vreturn").value;
-  const value = $("vvalue").value.trim();
-  const vet = $("vdoc").value.trim();
-  const comm = $("vcomm") ? $("vcomm").value.trim() : "";
-
-  const hasAny = weight||temp||anam||diag||med||proc||returnDate||value||vet||comm;
-  if(!hasAny) return alert("Escreva algo antes de salvar.");
-
-  let commValue = "";
-  if(has(FEATURES.COMMISSION)){
-    const v = Number((value||"").replace(".","").replace(",","."));
-    const c = Number((comm||"").replace(",","."));
-    if(!isNaN(v) && !isNaN(c) && v>0 && c>0) commValue = fmt(v*(c/100));
-  }
-
-  DB.vetRecords.push({
-    id:idNow(), shopId:DB.currentShopId,
-    petId, createdAt:Date.now(),
-    weight, temp, anam, diag, med, proc, returnDate,
-    value, vet, comm, commValue
-  });
-
-  if(has(FEATURES.CASH) && value){
-    DB.cashflow.push({
-      id:idNow(), shopId:DB.currentShopId,
-      date: todayISO(),
-      type:"in",
-      value,
-      desc: `Atendimento vet • ${petName(petId)}`
-    });
-  }
-
-  save(); show("vet");
-}
-function delVetRecord(id){
-  if(!confirm("Excluir atendimento?")) return;
-  DB.vetRecords = DB.vetRecords.filter(r=>r.id!==id);
-  save(); show("vet");
-}
-function openRecord(id){
-  const r = DB.vetRecords.find(x=>x.id===id);
-  if(!r) return;
-  $("vweight").value = r.weight||"";
-  $("vtemp").value = r.temp||"";
-  $("vanam").value = r.anam||"";
-  $("vdiag").value = r.diag||"";
-  $("vmed").value = r.med||"";
-  $("vproc").value = r.proc||"";
-  $("vreturn").value = r.returnDate||"";
-  $("vvalue").value = r.value||"";
-  $("vdoc").value = r.vet||"";
-  if($("vcomm")) $("vcomm").value = r.comm||"";
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-function printPrescriptionGuarded(){
-  if(!guard(FEATURES.PDF, "Imprimir/PDF é PRO ou acima.")) return;
-  printPrescription();
-}
-function printPrescription(){
-  const pets = shopFilter(DB.pets);
-  const clients = shopFilter(DB.clients);
-  const pet = pets.find(p=>p.id===Number(DB.__vetPetId));
-  const tutor = pet ? clients.find(c=>c.id===pet.clientId) : null;
-
-  const med = $("vmed")?.value?.trim() || "";
-  const diag = $("vdiag")?.value?.trim() || "";
-  const proc = $("vproc")?.value?.trim() || "";
-  const vet = $("vdoc")?.value?.trim() || "Veterinário";
-  const shop = currentShop();
-
-  const html = `
-    <div style="font-family:Arial; padding:18px">
-      <h2 style="margin:0 0 6px 0">${esc(shop.name)}</h2>
-      ${shop.phone ? `<div>${esc(shop.phone)}</div>` : ``}
-      <hr>
-      <h3 style="margin:10px 0">Receita / Orientações</h3>
-
-      <div><b>Pet:</b> ${esc(pet?.name||"")}</div>
-      <div><b>Tutor:</b> ${esc(tutor?.name||"")} ${tutor?.phone ? " • "+esc(tutor.phone) : ""}</div>
-      <div><b>Data:</b> ${new Date().toLocaleDateString("pt-BR")}</div>
-      <div><b>Veterinário:</b> ${esc(vet)}</div>
-
-      <hr>
-
-      ${diag ? `<div><b>Diagnóstico:</b><br>${esc(diag).replace(/\n/g,"<br>")}</div><br>` : ``}
-      ${med ? `<div><b>Receita:</b><br>${esc(med).replace(/\n/g,"<br>")}</div><br>` : ``}
-      ${proc ? `<div><b>Procedimentos / Orientações:</b><br>${esc(proc).replace(/\n/g,"<br>")}</div><br>` : ``}
-
-      <hr>
-      <div style="margin-top:22px">Assinatura: _______________________________________</div>
-    </div>
-  `;
-  const w = window.open("", "_blank");
-  w.document.write(html);
-  w.document.close();
-  w.focus();
-  w.print();
-}
-function sendWhatsAppReceiptGuarded(phone){
-  if(!guard(FEATURES.WHATSAPP, "WhatsApp automático é PRO ou acima.")) return;
-  sendWhatsAppReceipt(phone);
-}
-function sendWhatsAppReceipt(phone){
-  const pets = shopFilter(DB.pets);
-  const pet = pets.find(p=>p.id===Number(DB.__vetPetId));
-  const med = $("vmed")?.value?.trim() || "";
-  const diag = $("vdiag")?.value?.trim() || "";
-  const ret = $("vreturn")?.value || "";
-
-  let msg = `🐾 Receita do ${pet?.name||"pet"}\n\n`;
-  if(diag) msg += `Diagnóstico:\n${diag}\n\n`;
-  if(med) msg += `Receita:\n${med}\n\n`;
-  if(ret) msg += `Retorno: ${ret}\n\n`;
-  msg += `Qualquer coisa, chama aqui.`;
-
-  waOpen(phone, msg);
-}
-
-/** ======================
- * HOTEL
- * ====================== */
-function hotel(){
-  const pets = shopFilter(DB.pets);
-  const clients = shopFilter(DB.clients);
-  const items = shopFilter(DB.boardings).slice().sort((a,b)=> (b.inDate||"").localeCompare(a.inDate||""));
-
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Nova hospedagem</h3>
-      <label>Pet</label>
-      <select id="hpet">
-        ${pets.length ? pets.map(p=>{
-          const c = clients.find(x=>x.id===p.clientId);
-          return `<option value="${p.id}" ${Number(DB.__hotelPetId||0)===p.id?"selected":""}>${esc(p.name)} • ${esc(c?.name||"")}</option>`;
-        }).join("") : `<option value="">Cadastre um pet</option>`}
-      </select>
-      <div class="row">
-        <div><label>Entrada</label><input id="hin" type="date" value="${todayISO()}"></div>
-        <div><label>Saída prevista</label><input id="hout" type="date"></div>
-      </div>
-      <div class="row">
-        <div><label>Diária (R$)</label><input id="hdaily" placeholder="Ex: 50,00"></div>
-        <div><label>Status</label><select id="hstatus"><option>Ativo</option><option>Finalizado</option></select></div>
-      </div>
-      <label>Medicação / Rotina</label>
-      <textarea id="hmeds" placeholder="Horários, ração, cuidados"></textarea>
-      <label>Observações</label>
-      <input id="hobs" placeholder="Temperamento, banho, etc">
-      <div class="actions">
-        <button class="primary" onclick="addBoarding()">Salvar</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Hospedagens</h3>
-      ${items.length ? items.map(b=>{
-        const p = pets.find(x=>x.id===b.petId);
-        const c = p ? clients.find(x=>x.id===p.clientId) : null;
-        return `
-          <div class="list-item">
-            <b>${esc(p?.name||"Pet")}</b> <span class="badge">${esc(b.status||"")}</span><br>
-            <span class="small">${esc(c?.name||"")} • Entrada: ${esc(b.inDate||"")} ${b.outDate? "• Saída: "+esc(b.outDate):""}</span>
-            ${b.daily ? `<div class="small">Diária: R$ ${esc(b.daily)}</div>` : ``}
-            ${b.meds ? `<div class="small"><b>Rotina:</b> ${esc(b.meds)}</div>` : ``}
-            ${b.obs ? `<div class="small">${esc(b.obs)}</div>` : ``}
-            <div class="actions">
-              ${has(FEATURES.WHATSAPP) && c?.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}', '🐾 Atualização do ${esc(p?.name||"pet")}\\nStatus: ${esc(b.status||"Ativo")}')">WhatsApp status</button>` : ``}
-              <button class="danger" onclick="delBoarding(${b.id})">Excluir</button>
-            </div>
-          </div>
-        `;
-      }).join("") : `<div class="small">Nenhuma hospedagem registrada.</div>`}
-    </div>
-  `;
-}
-function goHotel(petId){
-  DB.__hotelPetId = petId;
-  save(); show("hotel");
-}
-function addBoarding(){
-  const petId = Number($("hpet").value);
-  if(!petId) return alert("Selecione um pet.");
-  const inDate = $("hin").value;
-  if(!inDate) return alert("Entrada obrigatória.");
-
-  DB.boardings.push({
-    id:idNow(), shopId:DB.currentShopId,
-    petId,
-    inDate,
-    outDate:$("hout").value,
-    daily:$("hdaily").value.trim(),
-    status:$("hstatus").value,
-    meds:$("hmeds").value.trim(),
-    obs:$("hobs").value.trim()
-  });
-  save(); show("hotel");
-}
-function delBoarding(id){
-  if(!confirm("Excluir hospedagem?")) return;
-  DB.boardings = DB.boardings.filter(b=>b.id!==id);
-  save(); show("hotel");
-}
-
-/** ======================
- * CASH / SALES (Caixa)
- * ====================== */
-function cash(){
-  const pets = shopFilter(DB.pets);
-  const sales = shopFilter(DB.sales).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
-  const cashflow = shopFilter(DB.cashflow).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
-
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Venda rápida</h3>
-      <label>Item (produto/serviço)</label>
-      <input id="sitem" placeholder="Ex: Banho, Ração 10kg">
-      <div class="row">
-        <div><label>Valor</label><input id="svalue" placeholder="Ex: 80,00"></div>
-        <div><label>Pagamento</label>
-          <select id="spay"><option>Dinheiro</option><option>Pix</option><option>Cartão</option></select>
-        </div>
-      </div>
-      <label>Pet (opcional)</label>
-      <select id="spet">
-        <option value="">---</option>
-        ${pets.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}
-      </select>
-      <label>Obs</label>
-      <input id="sobs" placeholder="Ex: desconto, fiado, etc">
-      <div class="actions">
-        <button class="primary" onclick="addSale()">Registrar</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Entradas / Saídas</h3>
-      <div class="row">
-        <div>
-          <label>Tipo</label>
-          <select id="ctype"><option value="in">Entrada</option><option value="out">Saída</option></select>
-        </div>
-        <div><label>Valor</label><input id="cvalue" placeholder="Ex: 50,00"></div>
-      </div>
-      <label>Descrição</label><input id="cdesc" placeholder="Ex: compra de ração">
-      <div class="actions"><button class="primary" onclick="addCashflow()">Salvar</button></div>
-      <hr>
-      ${cashflow.slice(0,10).map(c=>`
-        <div class="list-item">
-          <b>${c.type==="in"?"Entrada":"Saída"}</b> <span class="badge">${esc(c.date)}</span>
-          <span class="badge">R$ ${esc(c.value)}</span><br>
-          <span class="small">${esc(c.desc||"")}</span>
-          <div class="actions"><button class="danger" onclick="delCashflow(${c.id})">Excluir</button></div>
-        </div>
-      `).join("") || `<div class="small">Sem lançamentos.</div>`}
-    </div>
-
-    <div class="card">
-      <h3>Vendas recentes</h3>
-      ${sales.slice(0,10).map(s=>`
-        <div class="list-item">
-          <b>R$ ${esc(s.total)}</b> <span class="badge">${esc(s.date)}</span> <span class="badge">${esc(s.pay)}</span><br>
-          <span class="small">${esc(s.items?.[0]?.name||"")}${s.petId ? " • "+esc(petName(s.petId)) : ""}</span>
-          ${s.obs ? `<div class="small">${esc(s.obs)}</div>` : ``}
-          <div class="actions"><button class="danger" onclick="delSale(${s.id})">Excluir</button></div>
-        </div>
-      `).join("") || `<div class="small">Sem vendas.</div>`}
-    </div>
-  `;
-}
-function addSale(){
-  const item = $("sitem").value.trim();
-  const value = $("svalue").value.trim();
-  if(!item || !value) return alert("Item e valor.");
-  const sale = {
-    id:idNow(), shopId:DB.currentShopId,
-    date: todayISO(),
-    items:[{name:item, value}],
-    total:value,
-    pay:$("spay").value,
-    petId: $("spet").value ? Number($("spet").value) : null,
-    obs:$("sobs").value.trim()
-  };
-  DB.sales.push(sale);
-  DB.cashflow.push({ id:idNow(), shopId:DB.currentShopId, date: todayISO(), type:"in", value, desc:`Venda • ${item}` });
-  save(); show("cash");
-}
-function delSale(id){
-  if(!confirm("Excluir venda?")) return;
-  DB.sales = DB.sales.filter(s=>s.id!==id);
-  save(); show("cash");
-}
-function addCashflow(){
-  const type = $("ctype").value;
-  const value = $("cvalue").value.trim();
-  const desc = $("cdesc").value.trim();
-  if(!value || !desc) return alert("Valor e descrição.");
-  DB.cashflow.push({id:idNow(), shopId:DB.currentShopId, date: todayISO(), type, value, desc});
-  save(); show("cash");
-}
-function delCashflow(id){
-  if(!confirm("Excluir lançamento?")) return;
-  DB.cashflow = DB.cashflow.filter(c=>c.id!==id);
-  save(); show("cash");
-}
-
-/** ======================
- * PORTAL DO TUTOR
- * ====================== */
-function portal(){
-  $("screen").innerHTML = `
-    <div class="card">
-      <h3>Portal do Tutor</h3>
-      <label>Telefone do tutor</label>
-      <input id="psearch" placeholder="Ex: 6799..." value="${esc(DB.__portalPhone||"")}">
-      <div class="actions"><button class="primary" onclick="searchTutor()">Buscar</button></div>
-      <div id="presult" style="margin-top:10px"></div>
-      <div class="small">Isso aqui é argumento de venda forte: “o cliente vê o histórico e confia na loja”.</div>
     </div>
   `;
 }
 function searchTutor(){
-  const phone = $("psearch").value.trim();
-  DB.__portalPhone = phone; save();
-
-  const clients = shopFilter(DB.clients);
-  const pets = shopFilter(DB.pets);
-  const agenda = shopFilter(DB.agenda);
-  const vet = shopFilter(DB.vetRecords);
-  const vac = shopFilter(DB.vaccines);
-
-  const c = clients.find(c=> (c.phone||"").includes(phone));
-  if(!c){ $("presult").innerHTML = `<div class="small">Não encontrado.</div>`; return; }
-
-  const myPets = pets.filter(p=>p.clientId===c.id);
-  const petIds = myPets.map(p=>p.id);
-  const upcoming = agenda.filter(a=> petIds.includes(a.petId)).slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).slice(0,10);
-  const lastVet = vet.filter(r=> petIds.includes(r.petId)).slice().sort((a,b)=> b.createdAt-a.createdAt).slice(0,8);
-  const myVac = vac.filter(v=> petIds.includes(v.petId)).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||"")).slice(0,10);
-
-  $("presult").innerHTML = `
-    <div class="card" style="margin:0">
-      <b>${esc(c.name)}</b> <span class="badge">${esc(c.phone||"")}</span>
-      <div class="actions">
-        ${has(FEATURES.WHATSAPP) && c.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}','Olá! 😊')">WhatsApp</button>` : ``}
-      </div>
-      <hr>
-
-      <h3 style="margin:0 0 10px 0">Pets</h3>
-      ${myPets.map(p=>`
-        <div class="list-item">
-          <div class="row" style="align-items:center">
-            <img class="avatar" src="${p.photo||""}" alt="" onerror="this.style.display='none'">
-            <div>
-              <b>${esc(p.name)}</b> <span class="badge">${esc(p.species||"")}</span><br>
-              <span class="small">${p.breed?esc(p.breed):""} ${p.allergy? "• alergia: "+esc(p.allergy):""}</span>
-            </div>
-          </div>
-        </div>
-      `).join("") || `<div class="small">Sem pets.</div>`}
-
-      <hr>
-      <h3 style="margin:0 0 10px 0">Vacinas</h3>
-      ${myVac.map(v=>`
-        <div class="list-item">
-          <b>${esc(v.name)}</b> <span class="badge">${esc(v.date||"")}</span>
-          ${v.nextDate ? `<span class="badge">Próxima: ${esc(v.nextDate)}</span>` : ``}
-          <div class="small">${esc(petName(v.petId))}</div>
-        </div>
-      `).join("") || `<div class="small">Sem vacinas registradas.</div>`}
-
-      <hr>
-      <h3 style="margin:0 0 10px 0">Próximos agendamentos</h3>
-      ${upcoming.map(a=>`
-        <div class="list-item">
-          <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
-          <span class="small">${esc(petName(a.petId))}</span>
-        </div>
-      `).join("") || `<div class="small">Nada agendado.</div>`}
-
-      ${has(FEATURES.VET) ? `
-        <hr>
-        <h3 style="margin:0 0 10px 0">Últimos atendimentos</h3>
-        ${lastVet.map(r=>`
-          <div class="list-item">
-            <b>${esc(petName(r.petId))}</b> <span class="badge">${new Date(r.createdAt).toLocaleDateString("pt-BR")}</span>
-            ${r.diag ? `<div class="small"><b>Diag:</b> ${esc(r.diag)}</div>` : ``}
-            ${r.med ? `<div class="small"><b>Receita:</b> ${esc(r.med)}</div>` : ``}
-          </div>
-        `).join("") || `<div class="small">Sem atendimentos.</div>`}
-      ` : ``}
+  const q = (document.getElementById("psearch").value||"").trim();
+  if(!q) return alert("Digite um telefone.");
+  const c = DB.clients.find(x => (x.phone||"").includes(q));
+  const box = document.getElementById("presult");
+  if(!c) return box.innerHTML = `<div class="item">Não encontrado.</div>`;
+  box.innerHTML = `
+    <div class="item">
+      <b>${escapeHtml(c.name)}</b><br>
+      <span class="small">${escapeHtml(c.phone||"")}</span>
     </div>
   `;
 }
 
-/** ======================
- * INIT
- * ====================== */
-(function init(){
-  renderNav();
-  show("home");
+function screenContent(){
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Conteúdo educativo (portal)</h3>
+        <div class="small">
+          Aqui fica a ponte pro seu portal de conteúdo. Por enquanto é lista e link.
+          Depois a gente integra por marca, por pacote e por atualização mensal.
+        </div>
 
-  // coloca Produtos/Estoque dentro da Home sempre (argumento de venda)
-  const oldHome = home;
-  home = function(){
-    oldHome();
-    if(has(FEATURES.PRODUCTS)){
-      $("screen").innerHTML = $("screen").innerHTML + productsUI();
-    }
-  };
-  show("home");
-})();
+        <hr class="sep">
+
+        <div class="list">
+          ${[
+            {t:"🥩 Alimentação", s:"Guias simples e práticos por idade e porte."},
+            {t:"🩺 Doenças comuns", s:"Conteúdo educativo, sem diagnóstico."},
+            {t:"🐕 Guia de raças", s:"Perfil, temperamento, cuidados."},
+            {t:"🎓 Adestramento", s:"Rotina, comportamento, comandos básicos."},
+            {t:"🧼 Higiene e bem-estar", s:"Banho, pele, ouvido, unha."}
+          ].map(x=>`
+            <div class="item">
+              <b>${x.t}</b><br>
+              <span class="small">${x.s}</span>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn secondary" onclick="alert('Quando você criar o portal, a gente coloca o link aqui.')">Abrir portal</button>
+          <button class="btn ghost" onclick="go('home')">Voltar</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function screenSettings(){
+  const shop = getShop();
+  const eff = getEffectivePlan();
+
+  screen.innerHTML = `
+    <div class="grid">
+      <div class="card">
+        <h3>Ajustes da Loja</h3>
+        <div class="small">Você pode deixar o sistema com a cara da loja: logo e tema.</div>
+
+        <label>Nome da loja</label>
+        <input id="sname" value="${escapeAttr(shop?.name||"")}" ${!canEditSettings() ? "disabled":""}>
+
+        <label>Telefone comercial</label>
+        <input id="sphone" value="${escapeAttr(shop?.phone||"")}" ${!canEditSettings() ? "disabled":""}>
+
+        <label>Instagram</label>
+        <input id="sinsta" value="${escapeAttr(shop?.instagram||"")}" placeholder="@seuperfil" ${!canEditSettings() ? "disabled":""}>
+
+        <label>Logo (upload)</label>
+        <input type="file" id="slogo" accept="image/*" ${!canEditSettings() ? "disabled":""}>
+
+        <label>Tema</label>
+        <select id="stheme" ${!canEditSettings() ? "disabled":""}>
+          ${THEMES.map(t=>`<option value="${t.id}" ${t.id===shop.themeId ? "selected":""}>${t.name}</option>`).join("")}
+        </select>
+
+        <div class="row" style="margin-top:10px">
+          ${canEditSettings()
+            ? `<button class="btn primary" onclick="saveSettings()">Salvar</button>
+               <button class="btn danger" onclick="removeLogo()">Remover logo</button>`
+            : `<button class="btn primary" onclick="unlockSettings()">Desbloquear</button>
+               <button class="btn ghost" onclick="go('home')">Voltar</button>`
+          }
+        </div>
+
+        <hr class="sep">
+
+        ${isAdmin ? `
+          <h3>Admin (dev)</h3>
+          <div class="small">Aqui você controla plano pago e multi-loja.</div>
+
+          <label>Plano pago (após 15 dias)</label>
+          <select id="paidPlan">
+            ${["BASIC","PRO","PLUS","MASTER"].map(p=>`<option ${p===DB.planPaid?"selected":""}>${p}</option>`).join("")}
+          </select>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn secondary" onclick="savePaidPlan()">Salvar plano pago</button>
+            <button class="btn ghost" onclick="addShop()">Adicionar loja</button>
+          </div>
+
+          <div class="small" style="margin-top:10px">Trocar loja atual:</div>
+          <div class="row" style="margin-top:6px">
+            ${DB.shops.map(s=>`
+              <button class="btn ghost" onclick="switchShop(${s.id})">🏷️ ${escapeHtml(s.name||("Loja "+s.id))}</button>
+            `).join("")}
+          </div>
+
+          <hr class="sep">
+          <h3>Backup</h3>
+          <div class="small">Copie e cole para salvar ou restaurar. (Pode ficar grande por causa de fotos.)</div>
+          <textarea id="backupBox">${escapeHtml(JSON.stringify(DB, null, 2))}</textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn ghost" onclick="copyBackup()">Copiar</button>
+            <button class="btn danger" onclick="restoreBackup()">Restaurar</button>
+          </div>
+        ` : `
+          <div class="small">Plano atual: <b>${eff.plan}</b>. No teste TOP (dias 1 a 3) tudo fica liberado automaticamente.</div>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+let settingsUnlocked = false;
+function canEditSettings(){
+  // Admin sempre pode
+  if(isAdmin) return true;
+  // Cliente: deixa editar se estiver desbloqueado via PIN
+  return settingsUnlocked;
+}
+
+function unlockSettings(){
+  const shop = getShop();
+  const pin = prompt("Digite o PIN da loja para desbloquear ajustes:");
+  if(pin && shop.pin && pin === shop.pin){
+    settingsUnlocked = true;
+    go("settings");
+  }else{
+    alert("PIN inválido.");
+  }
+}
+
+async function saveSettings(){
+  const shop = getShop();
+  shop.name = (document.getElementById("sname").value||"").trim() || shop.name;
+  shop.phone = (document.getElementById("sphone").value||"").trim();
+  shop.instagram = (document.getElementById("sinsta").value||"").trim();
+  shop.themeId = document.getElementById("stheme").value;
+
+  const file = document.getElementById("slogo").files?.[0];
+  if(file){
+    shop.logo = await fileToResizedBase64(file, 420, 0.85);
+  }
+
+  saveDB();
+  applyTheme();
+  go("home");
+}
+
+function removeLogo(){
+  const shop = getShop();
+  shop.logo = null;
+  saveDB();
+  go("settings");
+}
+
+function savePaidPlan(){
+  DB.planPaid = document.getElementById("paidPlan").value;
+  // define/atualiza PIN da loja se não existir
+  const shop = getShop();
+  if(!shop.pin){
+    shop.pin = String(Math.floor(1000 + Math.random()*9000)); // 4 dígitos
+    alert("PIN criado para essa loja: " + shop.pin + " (guarde isso)");
+  }
+  saveDB();
+  go("settings");
+}
+
+function addShop(){
+  const name = prompt("Nome da nova loja:");
+  if(!name) return;
+  const newId = Math.max(...DB.shops.map(s=>s.id)) + 1;
+  DB.shops.push({
+    id:newId,
+    name,
+    phone:"",
+    instagram:"",
+    logo:null,
+    themeId:"cuidado_natural",
+    pin:String(Math.floor(1000 + Math.random()*9000))
+  });
+  saveDB();
+  alert("Loja criada. PIN: " + DB.shops.find(s=>s.id===newId).pin);
+  go("settings");
+}
+function switchShop(id){
+  DB.currentShopId = id;
+  saveDB();
+  settingsUnlocked = false;
+  applyTheme();
+  go("home");
+}
+
+function copyBackup(){
+  const txt = document.getElementById("backupBox").value;
+  navigator.clipboard.writeText(txt);
+  alert("Backup copiado.");
+}
+function restoreBackup(){
+  const txt = document.getElementById("backupBox").value;
+  try{
+    const parsed = JSON.parse(txt);
+    DB = parsed;
+    saveDB();
+    alert("Backup restaurado.");
+    location.reload();
+  }catch(e){
+    alert("JSON inválido.");
+  }
+}
+
+/* =======================
+   UTIL
+======================= */
+function fmt(n){
+  return (Math.round((n + Number.EPSILON) * 100) / 100).toFixed(2).replace(".",",");
+}
+function escapeHtml(s){
+  return String(s||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+function escapeAttr(s){ return escapeHtml(s).replaceAll("\n"," "); }
+
+/* =======================
+   PWA INSTALL PROMPT
+======================= */
+let deferredPrompt = null;
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+function shouldShowInstall(){
+  if(isStandalone()) return false;
+  const dismissedAt = localStorage.getItem("install_dismissed_at");
+  if(dismissedAt){
+    const days = daysBetween(dismissedAt, nowISO());
+    if(days < 3) return false; // some por 3 dias
+  }
+  return true;
+}
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  if(shouldShowInstall()) showInstallBanner();
+});
+
+function showInstallBanner(){
+  const b = document.getElementById("installBanner");
+  b.style.display = "block";
+  document.getElementById("btnInstall").style.display = deferredPrompt ? "inline-flex" : "none";
+  document.getElementById("btnIOS").style.display = isIOS() ? "inline-flex" : "none";
+}
+function dismissInstall(){
+  localStorage.setItem("install_dismissed_at", nowISO());
+  document.getElementById("installBanner").style.display = "none";
+}
+async function triggerInstall(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  dismissInstall();
+}
+function showIOSHelp(){
+  const box = document.getElementById("iosHelp");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+/* =======================
+   START
+======================= */
+ensureTrial();
+applyTheme();
+buildNav("home");
+setHeader("Painel");
+
+// mostra banner de instalação (iOS) se fizer sentido
+setTimeout(()=>{
+  if(isIOS() && shouldShowInstall()) showInstallBanner();
+}, 1200);
+
+go("home");
 </script>
+
 </body>
 </html>
