@@ -1,1786 +1,1496 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PetShop App</title>
-  <meta name="theme-color" content="#070A12" />
-  <style>
-    :root{
-      --bg:#070A12;
-      --card:rgba(255,255,255,.04);
-      --card2:rgba(255,255,255,.06);
-      --line:rgba(255,255,255,.10);
-      --line2:rgba(255,255,255,.16);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.58);
-      --muted2:rgba(255,255,255,.42);
-      --accent:#34b6ff;
-      --accent2:#7c5cff;
-      --ok:#21d07a;
-      --warn:#ffb020;
-      --bad:#ff4d6d;
-      --shadow: 0 16px 40px rgba(0,0,0,.45);
-      --radius:18px;
-      --radius2:24px;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--font);
-      background: radial-gradient(600px 600px at 50% -10%, rgba(52,182,255,.20), transparent 60%),
-                  radial-gradient(700px 700px at 100% 100%, rgba(124,92,255,.18), transparent 60%),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-    }
-    .wrap{
-      max-width: 980px;
-      margin:0 auto;
-      padding: 18px 14px 110px;
-      position:relative;
-    }
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      padding: 6px 4px 10px;
-    }
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:0;
-    }
-    .brand .tiny{font-size:12px;color:var(--muted2)}
-    .brand .title{
-      font-size:20px;
-      font-weight:800;
-      letter-spacing:-.02em;
-      line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 66vw;
-    }
-    .brand .sub{font-size:12px;color:var(--muted)}
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:12px;
-      color: var(--text);
-      white-space:nowrap;
-    }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);box-shadow:0 0 20px rgba(33,208,122,.35)}
-    .warnDot{background:var(--warn);box-shadow:0 0 20px rgba(255,176,32,.35)}
-    .badDot{background:var(--bad);box-shadow:0 0 20px rgba(255,77,109,.35)}
-    .banner{
-      margin: 8px 4px 14px;
-      padding: 12px 14px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      background: linear-gradient(120deg, rgba(52,182,255,.12), rgba(124,92,255,.08));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.02);
-      backdrop-filter: blur(10px);
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      justify-content:space-between;
-    }
-    .banner .bTitle{font-weight:800;font-size:13px}
-    .banner .bText{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
-    .banner .bActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      padding:10px 12px;
-      border-radius: 14px;
-      font-weight:700;
-      font-size:13px;
-      cursor:pointer;
-      transition: transform .08s ease, border-color .12s ease, background .12s ease;
-      user-select:none;
-    }
-    .btn:hover{border-color:var(--line2); background: rgba(255,255,255,.07)}
-    .btn:active{transform: translateY(1px)}
-    .btnPrimary{
-      border-color: rgba(52,182,255,.30);
-      background: rgba(52,182,255,.16);
-    }
-    .btnDanger{
-      border-color: rgba(255,77,109,.30);
-      background: rgba(255,77,109,.14);
-    }
-    .btnOk{
-      border-color: rgba(33,208,122,.30);
-      background: rgba(33,208,122,.14);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:12px;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-      .brand .title{max-width: 78vw}
-    }
-    .card{
-      border: 1px solid var(--line);
-      background: var(--card);
-      border-radius: var(--radius2);
-      padding: 14px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,.02);
-      backdrop-filter: blur(12px);
-    }
-    .cardHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .cardTitle{font-size:14px;font-weight:800}
-    .cardHint{font-size:12px;color:var(--muted)}
-    .miniGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top:10px;
-    }
-    @media (max-width: 420px){
-      .miniGrid{grid-template-columns:1fr}
-    }
-    .mini{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 18px;
-      padding: 12px;
-    }
-    .mini .k{font-size:12px;color:var(--muted)}
-    .mini .v{font-size:18px;font-weight:900;margin-top:4px}
-    .search{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 18px;
-      padding: 10px 12px;
-    }
-    .search input{
-      width:100%;
-      border:none;
-      outline:none;
-      background: transparent;
-      color: var(--text);
-      font-size:14px;
-    }
-    .search .icon{
-      opacity:.7;
-      font-size:14px;
-      width:28px;
-      text-align:center;
-    }
-    .list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .item{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: var(--radius2);
-      padding: 12px;
-      cursor:pointer;
-      transition: border-color .12s ease, background .12s ease;
-    }
-    .item:hover{border-color:var(--line2); background: rgba(255,255,255,.05)}
-    .row{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .name{font-weight:900;font-size:14px}
-    .meta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
-    .tag{
-      font-size:12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:6px 10px;
-      border-radius:999px;
-      color: var(--text);
-      white-space:nowrap;
-    }
-    .tagAccent{border-color: rgba(52,182,255,.28); background: rgba(52,182,255,.12); color: rgba(210,240,255,.95)}
-    .tagOk{border-color: rgba(33,208,122,.28); background: rgba(33,208,122,.12); color: rgba(210,255,230,.95)}
-    .tagWarn{border-color: rgba(255,176,32,.30); background: rgba(255,176,32,.12); color: rgba(255,240,210,.95)}
-    .tagBad{border-color: rgba(255,77,109,.30); background: rgba(255,77,109,.12); color: rgba(255,220,230,.95)}
-    .fab{
-      position: fixed;
-      right: 16px;
-      bottom: 92px;
-      z-index: 50;
-      border:none;
-      border-radius: 18px;
-      padding: 12px 14px;
-      font-weight: 900;
-      cursor:pointer;
-      color: #041018;
-      background: linear-gradient(120deg, var(--accent), var(--accent2));
-      box-shadow: 0 18px 42px rgba(52,182,255,.18);
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .fab:active{transform: translateY(1px)}
-    .fab[disabled]{opacity:.45; filter:saturate(.5); cursor:not-allowed}
-    .bottomNav{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 12px;
-      width: min(980px, calc(100% - 18px));
-      z-index: 60;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      border-radius: 26px;
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
-      padding: 8px;
-      display:grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-    .tab{
-      border:none;
-      background: transparent;
-      color: var(--muted);
-      border-radius: 20px;
-      padding: 10px 8px;
-      cursor:pointer;
-      font-weight: 800;
-      font-size: 12px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      align-items:center;
-      justify-content:center;
-    }
-    .tab .ic{font-size:14px; opacity:.9}
-    .tab.active{
-      color: var(--text);
-      background: rgba(255,255,255,.08);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Petshop + Vet (V3)</title>
 
-    /* Modal */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 100;
-      padding: 14px;
-    }
-    .overlay.show{display:flex}
-    .modal{
-      width: min(760px, 100%);
-      border:1px solid var(--line);
-      background: rgba(10,12,20,.92);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(16px);
-    }
-    .modalHeader{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      padding: 14px 16px;
-      border-bottom:1px solid var(--line);
-      background: linear-gradient(120deg, rgba(52,182,255,.10), rgba(124,92,255,.08));
-    }
-    .modalHeader .mhTitle{font-weight:900}
-    .modalHeader .mhSub{font-size:12px;color:var(--muted);margin-top:3px}
-    .modalBody{padding: 14px 16px}
-    .modalFooter{
-      padding: 14px 16px;
-      border-top: 1px solid var(--line);
-      display:flex;
-      gap:10px;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-    }
-    .x{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 10px 12px;
-      cursor:pointer;
-      font-weight:900;
-    }
-    .form{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    @media (max-width: 640px){
-      .form{grid-template-columns: 1fr}
-    }
-    label{display:block;font-size:12px;color:var(--muted);margin: 2px 0 6px}
-    input, select, textarea{
-      width:100%;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 11px 12px;
-      outline:none;
-      font-size: 14px;
-    }
-    textarea{min-height: 90px; resize: vertical}
-    .sep{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
-      margin: 12px 0;
-    }
-    .muted{color: var(--muted); font-size: 12px; line-height: 1.35}
-    .two{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
-    }
-    @media (max-width: 640px){.two{grid-template-columns:1fr}}
-    .kv{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 10px 12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 16px;
-    }
-    .kv b{font-size:13px}
-    .kv span{font-size:12px; color: var(--muted)}
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 132px;
-      background: rgba(255,255,255,.10);
-      border:1px solid var(--line);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      display:none;
-      z-index: 120;
-      font-weight: 800;
-      font-size: 13px;
-    }
-    .toast.show{display:block}
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      color: rgba(210,240,255,.92);
-      background: rgba(52,182,255,.10);
-      border:1px solid rgba(52,182,255,.22);
-      padding: 6px 8px;
-      border-radius: 12px;
-      word-break: break-all;
-    }
-  </style>
+<style>
+:root{
+  --bg:#F5F1EB; --card:#FFFFFF; --text:#2E2E2E; --muted:#6B6B6B;
+  --primary:#4CAF8F; --secondary:#6FA8DC; --danger:#C97A5B;
+  --border:#E6E0D8; --radius:14px; --shadow:0 6px 16px rgba(0,0,0,.08);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+body{margin:0;background:var(--bg);color:var(--text);padding-bottom:78px}
+header{padding:16px;font-weight:850;font-size:18px}
+section{padding:12px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:14px;margin-bottom:12px}
+h3{margin:0 0 10px 0}
+label{display:block;margin-top:8px;font-size:12px;color:var(--muted)}
+input,textarea,select{
+  width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid var(--border);
+  font-size:14px;background:#fff;box-sizing:border-box;
+}
+textarea{min-height:80px;resize:vertical}
+button{padding:10px 14px;border-radius:12px;border:none;cursor:pointer;font-size:14px}
+.primary{background:var(--primary);color:#fff}
+.secondary{background:var(--secondary);color:#fff}
+.danger{background:var(--danger);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > *{flex:1;min-width:140px}
+.small{font-size:12px;color:var(--muted)}
+hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+.list-item{padding:10px;border-bottom:1px solid var(--border)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{display:inline-block;padding:4px 8px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);margin-left:6px}
+nav{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
+  display:flex;z-index:999
+}
+nav button{flex:1;background:none;border:none;padding:10px 0;font-size:12px}
+nav button.active{color:var(--primary);font-weight:850}
+.hidden{display:none}
+.avatar{
+  width:64px;height:64px;border-radius:14px;border:1px solid var(--border);object-fit:cover;background:#fff
+}
+.kpi{display:flex;gap:10px;flex-wrap:wrap}
+.kpi > div{flex:1;min-width:150px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px}
+.kpi b{font-size:18px}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+  font-size:12px;color:var(--muted);
+}
+.dot{width:8px;height:8px;border-radius:999px;background:var(--muted);display:inline-block}
+.dot.green{background:var(--primary)}
+.dot.blue{background:var(--secondary)}
+.dot.red{background:var(--danger)}
+.dot.gray{background:var(--muted)}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="tiny">PetShop • Tech Modern</div>
-        <div class="title" id="shopName">Seu PetShop</div>
-        <div class="sub" id="shopSub">Clientes, pets, agenda, serviços e pagamentos</div>
-      </div>
-      <div class="pill" id="planPill"><span class="dot" id="planDot"></span><span id="planText">Plano ativo</span></div>
-    </div>
-
-    <div class="banner" id="planBanner" style="display:none;">
-      <div>
-        <div class="bTitle" id="bannerTitle">Aviso do plano</div>
-        <div class="bText" id="bannerText">...</div>
-      </div>
-      <div class="bActions">
-        <button class="btn btnPrimary" id="btnOpenConfig">Configurar</button>
-        <button class="btn" id="btnCopyPix">Copiar Pix</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="cardHeader">
-          <div>
-            <div class="cardTitle" id="screenTitle">Painel</div>
-            <div class="cardHint" id="screenHint">Tudo organizado, bonito e rápido</div>
-          </div>
-          <button class="btn" id="btnQuickAdd">Ação rápida</button>
-        </div>
-
-        <div class="miniGrid" id="kpis">
-          <div class="mini">
-            <div class="k">Agendamentos hoje</div>
-            <div class="v" id="kToday">0</div>
-          </div>
-          <div class="mini">
-            <div class="k">Pendentes</div>
-            <div class="v" id="kPending">0</div>
-          </div>
-          <div class="mini">
-            <div class="k">Total do dia</div>
-            <div class="v" id="kTotal">R$ 0</div>
-          </div>
-        </div>
-
-        <div class="search">
-          <div class="icon">⌕</div>
-          <input id="search" placeholder="Buscar cliente, pet, serviço, telefone, observação..." />
-        </div>
-
-        <div class="list" id="list"></div>
-      </div>
-
-      <div class="card" id="sideCard">
-        <div class="cardHeader">
-          <div>
-            <div class="cardTitle">Atalhos</div>
-            <div class="cardHint">Do jeito que o petshop precisa</div>
-          </div>
-          <span class="tag tagAccent" id="shopTag">Local</span>
-        </div>
-
-        <div class="two">
-          <button class="btn btnPrimary" id="goClients">Clientes</button>
-          <button class="btn btnPrimary" id="goPets">Pets</button>
-          <button class="btn btnPrimary" id="goAgenda">Agenda</button>
-          <button class="btn btnPrimary" id="goFinance">Pagamentos</button>
-        </div>
-
-        <div class="sep"></div>
-
-        <div class="kv">
-          <div>
-            <b>Pix do petshop</b><div class="muted">Copiar chave Pix cadastrada</div>
-          </div>
-          <button class="btn" id="btnPixSide">Copiar</button>
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="kv">
-          <div>
-            <b>Backup</b><div class="muted">Exportar ou importar dados</div>
-          </div>
-          <button class="btn" id="btnBackup">Abrir</button>
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="kv">
-          <div>
-            <b>Configuração</b><div class="muted">Nome, Pix, vencimento, mensagens</div>
-          </div>
-          <button class="btn" id="btnConfig">Abrir</button>
-        </div>
-
-        <div class="sep"></div>
-        <div class="muted">
-          Dica: defina vencimento do plano e a chave Pix. Mensagens automáticas ficam no detalhe do cliente/pet/agendamento.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button class="fab" id="fab">＋ Novo</button>
-
-  <div class="bottomNav">
-    <button class="tab active" data-tab="home"><div class="ic">⌂</div><div>Painel</div></button>
-    <button class="tab" data-tab="clients"><div class="ic">👤</div><div>Clientes</div></button>
-    <button class="tab" data-tab="pets"><div class="ic">🐾</div><div>Pets</div></button>
-    <button class="tab" data-tab="agenda"><div class="ic">📅</div><div>Agenda</div></button>
-    <button class="tab" data-tab="finance"><div class="ic">💳</div><div>Pagamentos</div></button>
-  </div>
-
-  <div class="overlay" id="overlay">
-    <div class="modal" id="modal">
-      <div class="modalHeader">
-        <div>
-          <div class="mhTitle" id="modalTitle">Modal</div>
-          <div class="mhSub" id="modalSub">...</div>
-        </div>
-        <button class="x" id="modalClose">Fechar</button>
-      </div>
-      <div class="modalBody" id="modalBody"></div>
-      <div class="modalFooter" id="modalFooter"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">OK</div>
+<header id="title">Painel</header>
+<section id="screen"></section>
+<nav id="nav"></nav>
 
 <script>
-(function(){
-  const $ = (s, el=document) => el.querySelector(s);
-  const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
-  const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
-  const now = () => new Date();
-  const pad2 = (n) => String(n).padStart(2, "0");
-  const fmtDate = (d) => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
-  const iso = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-  const money = (n) => "R$ " + (Number(n||0)).toFixed(2).replace(".", ",");
-  const clampText = (t, max=90) => (t||"").length>max ? (t.slice(0,max-1)+"…") : (t||"");
-  const safeStr = (v) => (v==null ? "" : String(v));
-  const toInt = (v) => Number.parseInt(v||"0", 10) || 0;
-  const toNum = (v) => Number(String(v||"0").replace(",", "."));
-  const addDays = (d, days) => { const x=new Date(d); x.setDate(x.getDate()+days); return x; };
-  const daysBetween = (a, b) => Math.floor((b - a) / (24*60*60*1000));
+/** ======================
+ * FEATURES / PLANS (bloqueio/desbloqueio)
+ * ====================== */
+const FEATURES = {
+  CLIENTS: "CLIENTS",
+  AGENDA: "AGENDA",
+  VET: "VET",
+  PDF: "PDF",
+  WHATSAPP: "WHATSAPP",
+  PRODUCTS: "PRODUCTS",
+  STOCK_ALERT: "STOCK_ALERT",
+  CASH: "CASH",
+  HOTEL: "HOTEL",
+  COMMISSION: "COMMISSION",
+  PORTAL: "PORTAL",
+  MULTISHOP: "MULTISHOP",
+  LOGIN: "LOGIN",
+  GROOMING_FLOW: "GROOMING_FLOW",
+  TERMS: "TERMS"
+};
 
-  const KEY = "PETSHOP_APP_V1";
-  const DEFAULT = {
-    config: {
-      shopId: "local",
-      shopName: "Seu PetShop",
-      shopCity: "Local",
-      pixKey: "",
-      planDueISO: "",
-      graceDays: 15,
+const PLANS = {
+  START: {
+    name: "START",
+    label: "Start",
+    allow: [FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL]
+  },
+  PRO: {
+    name: "PRO",
+    label: "Pro",
+    allow: [
+      FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL,
+      FEATURES.VET, FEATURES.PDF, FEATURES.WHATSAPP
+    ]
+  },
+  PLUS: {
+    name: "PLUS",
+    label: "Plus",
+    allow: [
+      FEATURES.CLIENTS, FEATURES.AGENDA, FEATURES.PRODUCTS, FEATURES.PORTAL,
+      FEATURES.VET, FEATURES.PDF, FEATURES.WHATSAPP,
+      FEATURES.HOTEL, FEATURES.CASH, FEATURES.STOCK_ALERT, FEATURES.COMMISSION,
+      FEATURES.GROOMING_FLOW
+    ]
+  },
+  MASTER: {
+    name: "MASTER",
+    label: "Master",
+    allow: Object.values(FEATURES)
+  }
+};
 
-      // Templates WhatsApp (editáveis)
-      msg_confirm: "Oi, {NOME} 😊\nConfirmando o banho do {PET} em {DATA} às {HORA}.\nQualquer coisa é só avisar.",
-      msg_ready: "Oi, {NOME}! 🐶✨\nO {PET} já está pronto.\nPode passar pra buscar quando quiser.",
-      msg_reschedule: "Oi, {NOME}! 😊\nSobre o {PET}, você consegue reagendar o atendimento? Me diz o melhor horário pra você.",
-      msg_return30: "Oi, {NOME}! 😊\nJá faz cerca de 30 dias do último atendimento do {PET}.\nSe quiser agendar de novo, é só me chamar."
-    },
-    data: {
-      clients: [],
-      pets: [],
-      services: [
-        { id: "svc_banho", name: "Banho", price: 50 },
-        { id: "svc_tosa", name: "Tosa", price: 60 },
-        { id: "svc_banho_tosa", name: "Banho + Tosa", price: 100 }
-      ],
-      appointments: [],
-      payments: []
-    }
-  };
+function activePlan(){
+  const key = DB.plan || "START";
+  return PLANS[key] || PLANS.START;
+}
+function has(feature){ return activePlan().allow.includes(feature); }
 
-  function loadAll(){
-    try{
-      const raw = localStorage.getItem(KEY);
-      if(!raw) return structuredClone(DEFAULT);
-      const parsed = JSON.parse(raw);
-      return merge(structuredClone(DEFAULT), parsed);
-    }catch(e){
-      return structuredClone(DEFAULT);
-    }
-  }
-  function saveAll(state){
-    localStorage.setItem(KEY, JSON.stringify(state));
-  }
-  function merge(a,b){
-    if(typeof a !== "object" || a===null) return b;
-    if(typeof b !== "object" || b===null) return a;
-    for(const k of Object.keys(b)){
-      if(Array.isArray(b[k])) a[k]=b[k];
-      else if(typeof b[k]==="object" && b[k]!==null) a[k]=merge(a[k]??{}, b[k]);
-      else a[k]=b[k];
-    }
-    return a;
-  }
+function upgradeScreen(feature, msg){
+  const p = activePlan();
+  $("title").innerText = "Upgrade";
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Função bloqueada</h3>
+      <div class="small">${msg || "Essa função faz parte de um pacote superior."}</div>
+      <hr>
+      <div class="small">
+        Seu plano atual: <b>${p.label}</b><br>
+        Quer liberar isso? Troca o plano na hora (modo demonstração) ou vende o upgrade.
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button class="primary" onclick="show('home')">Voltar</button>
+        <button class="secondary" onclick="demoUnlock()">Desbloquear (demo)</button>
+      </div>
+      <hr>
+      <div class="small">
+        Dica de venda: “No ${PLANS.PRO.label} entra Vet + Receita. No ${PLANS.PLUS.label} entra Hotel + Caixa + Fila Banho/Tosa. No ${PLANS.MASTER.label} entra multi-loja e login.”
+      </div>
+    </div>
+  `;
+  setActiveNone();
+}
+function demoUnlock(){
+  // modo demo: sobe um nível até liberar geral
+  const k = DB.plan || "START";
+  DB.plan = (k==="START") ? "PRO" : (k==="PRO") ? "PLUS" : "MASTER";
+  save();
+  renderNav();
+  show("home");
+}
+function guard(feature, msg){
+  if(has(feature)) return true;
+  upgradeScreen(feature, msg);
+  return false;
+}
 
-  let STATE = loadAll();
-  let TAB = "home";
-  let SEARCH = "";
+/** ======================
+ * DB + helpers
+ * ====================== */
+const DEFAULT_DB = {
+  plan: "PLUS", // <-- mude aqui para START/PRO/PLUS/MASTER antes de vender
+  auth: { enabled:false, pass:"1234" }, // login só se MASTER (você ativa lá)
+  __logged: false,
 
-  // Multi loja no mesmo aparelho
-  function storeKeyForShop(shopId){
-    return KEY + "::SHOP::" + shopId;
-  }
-  function loadShop(shopId){
-    const k = storeKeyForShop(shopId);
-    const raw = localStorage.getItem(k);
-    if(!raw){
-      localStorage.setItem(k, JSON.stringify(structuredClone(DEFAULT.data)));
-      return structuredClone(DEFAULT.data);
-    }
-    try{
-      return merge(structuredClone(DEFAULT.data), JSON.parse(raw));
-    }catch(e){
-      return structuredClone(DEFAULT.data);
-    }
-  }
-  function saveShop(shopId, data){
-    localStorage.setItem(storeKeyForShop(shopId), JSON.stringify(data));
-  }
+  shops: [{id:1,name:"Minha Loja",phone:""}],
+  currentShopId: 1,
 
-  // Inicializa dados da loja atual
-  STATE.data = loadShop(STATE.config.shopId);
+  clients: [],
+  pets: [],
+  agenda: [],
+  products: [],
+  vetRecords: [],
+  vaccines: [],
+  boardings: [],
+  sales: [],
+  cashflow: [],
 
-  function toast(msg){
-    const t = $("#toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(()=>t.classList.remove("show"), 1600);
-  }
+  grooming: [] // fila banho/tosa {id, petId, type, status, createdAt, note}
+};
 
-  // WhatsApp helpers
-  function digitsOnly(phone){
-    return safeStr(phone).replace(/\D+/g, "");
-  }
-  function openWhatsApp(phone, text){
-    const d = digitsOnly(phone);
-    if(!d) return toast("Cliente sem telefone");
-    const msg = encodeURIComponent(text || "");
-    // Se tiver DDI/DDD certinho, melhor. (Ex: 5567...)
-    // Se vier só com 67..., o WhatsApp costuma aceitar também.
-    const url = `https://wa.me/${d}?text=${msg}`;
-    window.open(url, "_blank");
-  }
-  function tpl(str, vars){
-    let out = safeStr(str);
-    for(const [k,v] of Object.entries(vars||{})){
-      out = out.replaceAll(`{${k}}`, safeStr(v));
-    }
-    return out;
-  }
-
-  function planStatus(){
-    const dueISO = safeStr(STATE.config.planDueISO).trim();
-    if(!dueISO){
-      return { level:"warn", title:"Plano sem vencimento definido", text:"Defina a data de vencimento para o bloqueio automático funcionar.", limited:false, lateDays:0 };
-    }
-    const due = new Date(dueISO + "T00:00:00");
-    const today = new Date(iso(now()) + "T00:00:00");
-    const late = daysBetween(due, today);
-    if(late <= 0){
-      return { level:"ok", title:"Plano ativo", text:`Vencimento em ${fmtDate(due)}.`, limited:false, lateDays: late };
-    }
-    if(late > 0 && late <= STATE.config.graceDays){
-      return {
-        level:"warn",
-        title:"Plano vencido, ainda em tolerância",
-        text:`Venceu em ${fmtDate(due)}. Você tem ${STATE.config.graceDays - late} dia(s) antes do modo limitado.`,
-        limited:false,
-        lateDays: late
-      };
-    }
-    return {
-      level:"bad",
-      title:"Modo limitado ativado",
-      text:`Venceu em ${fmtDate(due)}. Após ${STATE.config.graceDays} dias, novos cadastros e agendamentos ficam bloqueados.`,
-      limited:true,
-      lateDays: late
+const DB = loadDB();
+function loadDB(){
+  try{
+    const raw = localStorage.getItem("petdb_v3");
+    if(!raw) return structuredClone(DEFAULT_DB);
+    const parsed = JSON.parse(raw);
+    return {...structuredClone(DEFAULT_DB), ...parsed,
+      auth: parsed.auth || structuredClone(DEFAULT_DB.auth),
+      shops: parsed.shops || structuredClone(DEFAULT_DB.shops),
+      vaccines: parsed.vaccines || [],
+      boardings: parsed.boardings || [],
+      sales: parsed.sales || [],
+      cashflow: parsed.cashflow || [],
+      grooming: parsed.grooming || []
     };
-  }
+  }catch(e){ return structuredClone(DEFAULT_DB); }
+}
+function save(){ localStorage.setItem("petdb_v3", JSON.stringify(DB)); }
 
-  function isLimited(){
-    return planStatus().limited;
-  }
+const $ = (id)=>document.getElementById(id);
+const esc = (s)=>String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const idNow = ()=> Date.now() + Math.floor(Math.random()*1000);
+const todayISO = ()=> new Date().toISOString().slice(0,10);
 
-  function setTab(t){
-    TAB = t;
-    $$(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab===t));
-    render();
-  }
+function fmt(n){
+  n = Number(n||0);
+  return n.toFixed(2).replace(".",",");
+}
+function currentShop(){ return DB.shops.find(s=>s.id===DB.currentShopId) || DB.shops[0]; }
+function shopFilter(arr){ return arr.filter(x=> (x.shopId ?? DB.currentShopId)===DB.currentShopId ); }
+function petName(petId){ const p = DB.pets.find(p=>p.id===petId); return p ? p.name : "Pet"; }
+function waOpen(phone, text){
+  const clean = String(phone||"").replace(/\D/g,"");
+  window.open(`https://wa.me/55${clean}?text=${encodeURIComponent(text||"")}`, "_blank");
+}
 
-  function applyHeader(){
-    $("#shopName").textContent = STATE.config.shopName || "Seu PetShop";
-    $("#shopTag").textContent = STATE.config.shopCity || "Local";
-  }
+/** ======================
+ * NAV (dinâmico por plano)
+ * ====================== */
+function renderNav(){
+  const nav = $("nav");
+  const btn = (id,label)=>`<button onclick="show('${id}')" id="b_${id}">${label}</button>`;
 
-  function applyPlanUI(){
-    const ps = planStatus();
-    const dot = $("#planDot");
-    const planText = $("#planText");
+  nav.innerHTML = `
+    ${btn("home","Home")}
+    ${has(FEATURES.CLIENTS) ? btn("clients","Clientes") : ""}
+    ${has(FEATURES.AGENDA) ? btn("agenda","Agenda") : ""}
+    ${has(FEATURES.GROOMING_FLOW) ? btn("groom","Banho/Tosa") : ""}
+    ${has(FEATURES.VET) ? btn("vet","Vet") : ""}
+    ${has(FEATURES.HOTEL) ? btn("hotel","Hotel") : ""}
+    ${has(FEATURES.CASH) ? btn("cash","Caixa") : ""}
+    ${has(FEATURES.PORTAL) ? btn("portal","Portal") : ""}
+  `;
+}
 
-    dot.className = "dot";
-    if(ps.level==="warn") dot.className = "dot warnDot";
-    if(ps.level==="bad") dot.className = "dot badDot";
+function setActive(tab){
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  const btn = $("b_"+tab);
+  if(btn) btn.classList.add("active");
+}
+function setActiveNone(){
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+}
+function setTitle(tab){
+  const shop = currentShop();
+  const p = activePlan();
+  $("title").innerText = ({
+    home:"Painel",
+    clients:"Clientes e Pets",
+    agenda:"Agenda + Vacinas",
+    groom:"Fila Banho/Tosa",
+    vet:"Veterinário",
+    hotel:"Hotelzinho / Creche",
+    cash:"Caixa / Vendas",
+    portal:"Portal do Tutor"
+  }[tab] || "Painel") + ` • ${shop.name} • ${p.label}`;
+}
 
-    planText.textContent = (ps.level==="ok") ? "Plano ativo" : (ps.level==="warn" ? "Aviso" : "Limitado");
+/** ======================
+ * LOGIN (somente MASTER)
+ * ====================== */
+function loginScreen(){
+  $("title").innerText = "Entrar";
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Senha</h3>
+      <input id="lpass" type="password" placeholder="Digite a senha">
+      <div class="actions">
+        <button class="primary" onclick="doLogin()">Entrar</button>
+      </div>
+      <hr>
+      <div class="small">Senha padrão: <b>1234</b>. Troque nas Configurações.</div>
+    </div>
+  `;
+}
+function doLogin(){
+  const p = $("lpass").value;
+  if(p !== DB.auth.pass) return alert("Senha errada.");
+  DB.__logged = true; save();
+  show("home");
+}
+function mustLogin(){
+  if(!has(FEATURES.LOGIN)) return false; // sem login fora do master
+  if(!DB.auth.enabled) return false;
+  return !DB.__logged;
+}
 
-    const banner = $("#planBanner");
-    if(ps.level==="ok"){
-      banner.style.display = "none";
-    }else{
-      banner.style.display = "flex";
-      $("#bannerTitle").textContent = ps.title;
-      $("#bannerText").textContent = ps.text;
-    }
-  }
+/** ======================
+ * ROUTER
+ * ====================== */
+function show(tab){
+  if(mustLogin()) return loginScreen();
 
-  function setScreenTitle(){
-    const map = {
-      home: ["Painel", "Resumo do dia e atalhos rápidos"],
-      clients: ["Clientes", "Cadastro e histórico"],
-      pets: ["Pets", "Pets vinculados aos clientes"],
-      agenda: ["Agenda", "Banho, tosa e serviços"],
-      finance: ["Pagamentos", "Lançamentos e histórico"]
-    };
-    $("#screenTitle").textContent = map[TAB][0];
-    $("#screenHint").textContent = map[TAB][1];
-  }
+  if(tab==="clients" && !guard(FEATURES.CLIENTS, "Clientes/Pets está no START ou acima.")) return;
+  if(tab==="agenda" && !guard(FEATURES.AGENDA, "Agenda está no START ou acima.")) return;
+  if(tab==="vet" && !guard(FEATURES.VET, "Veterinário é PRO ou acima.")) return;
+  if(tab==="hotel" && !guard(FEATURES.HOTEL, "Hotelzinho é PLUS ou acima.")) return;
+  if(tab==="cash" && !guard(FEATURES.CASH, "Caixa é PLUS ou acima.")) return;
+  if(tab==="portal" && !guard(FEATURES.PORTAL, "Portal do tutor é START ou acima.")) return;
+  if(tab==="groom" && !guard(FEATURES.GROOMING_FLOW, "Fila Banho/Tosa é PLUS ou acima.")) return;
 
-  function kpis(){
-    const todayISO = iso(now());
-    const apToday = STATE.data.appointments.filter(a => a.dateISO === todayISO);
-    const pending = STATE.data.appointments.filter(a => a.status !== "Finalizado");
-    const paidToday = STATE.data.payments
-      .filter(p => p.dateISO === todayISO)
-      .reduce((s,p)=> s + Number(p.amount||0), 0);
+  renderNav();
+  setActive(tab);
+  setTitle(tab);
+  const s=$("screen"); s.innerHTML="";
 
-    $("#kToday").textContent = apToday.length;
-    $("#kPending").textContent = pending.length;
-    $("#kTotal").textContent = money(paidToday);
-  }
+  if(tab==="home") return home();
+  if(tab==="clients") return clients();
+  if(tab==="agenda") return agenda();
+  if(tab==="groom") return groom();
+  if(tab==="vet") return vet();
+  if(tab==="hotel") return hotel();
+  if(tab==="cash") return cash();
+  if(tab==="portal") return portal();
+}
 
-  function matchSearch(text){
-    const s = SEARCH.trim().toLowerCase();
-    if(!s) return true;
-    return safeStr(text).toLowerCase().includes(s);
-  }
+/** ======================
+ * HOME
+ * ====================== */
+function home(){
+  const clients = shopFilter(DB.clients);
+  const pets = shopFilter(DB.pets);
+  const agenda = shopFilter(DB.agenda);
+  const boardings = shopFilter(DB.boardings);
+  const sales = shopFilter(DB.sales);
+  const grooming = shopFilter(DB.grooming);
+  const products = shopFilter(DB.products);
 
-  function listItems(){
-    const list = $("#list");
-    list.innerHTML = "";
+  const upcoming = agenda.slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).slice(0,5);
+  const todaySales = sales.filter(s=>s.date===todayISO()).reduce((acc,s)=>acc+Number((s.total||"0").replace(".","").replace(",",".")||0),0);
 
-    const makeItem = (title, meta, tag, tagClass, onClick) => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <div class="row">
-          <div style="min-width:0;">
-            <div class="name">${title}</div>
-            <div class="meta">${meta}</div>
+  const lowStock = has(FEATURES.STOCK_ALERT)
+    ? products.filter(p=>{
+        const qty = Number((p.qty||"0").replace(",","."));
+        const min = Number((p.min||"0").replace(",","."));
+        return !isNaN(qty) && !isNaN(min) && qty <= min;
+      }).slice(0,6)
+    : [];
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Plano e Loja</h3>
+      <div class="row">
+        <div>
+          <label>Plano</label>
+          <select id="planSel">
+            ${Object.keys(PLANS).map(k=>`<option value="${k}" ${(DB.plan||"START")===k?"selected":""}>${PLANS[k].label}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label>Loja</label>
+          <select id="shopSel" onchange="switchShop()">
+            ${DB.shops.map(s=>`<option value="${s.id}" ${s.id===DB.currentShopId?"selected":""}>${esc(s.name)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="setPlan()">Aplicar plano</button>
+        <button class="secondary" onclick="addShopGuarded()">Adicionar loja</button>
+        <button class="secondary" onclick="settings()">Configurações</button>
+      </div>
+      <div class="small">Vende assim: você troca o plano na frente do cliente e “desbloqueia” as funções.</div>
+    </div>
+
+    <div class="card">
+      <h3>Resumo</h3>
+      <div class="kpi">
+        <div><div class="small">Clientes</div><b>${clients.length}</b></div>
+        <div><div class="small">Pets</div><b>${pets.length}</b></div>
+        <div><div class="small">Agendamentos</div><b>${agenda.length}</b></div>
+        ${has(FEATURES.GROOMING_FLOW) ? `<div><div class="small">Fila Banho/Tosa</div><b>${grooming.filter(g=>g.status!=="Entregue").length}</b></div>` : ``}
+        ${has(FEATURES.HOTEL) ? `<div><div class="small">No hotel</div><b>${boardings.filter(b=>b.status==="Ativo").length}</b></div>` : ``}
+        ${has(FEATURES.CASH) ? `<div><div class="small">Vendas hoje</div><b>R$ ${fmt(todaySales)}</b></div>` : ``}
+      </div>
+    </div>
+
+    ${has(FEATURES.STOCK_ALERT) ? `
+      <div class="card">
+        <h3>Alertas de estoque</h3>
+        ${lowStock.length ? lowStock.map(p=>`
+          <div class="list-item">
+            <b>${esc(p.name)}</b>
+            <span class="badge">Qtd ${esc(p.qty||"0")}</span>
+            <span class="badge">Mín ${esc(p.min||"0")}</span>
           </div>
-          <div class="tag ${tagClass||""}">${tag}</div>
+        `).join("") : `<div class="small">Tudo ok no estoque.</div>`}
+      </div>
+    ` : ``}
+
+    <div class="card">
+      <h3>Próximos</h3>
+      ${upcoming.length ? upcoming.map(a=>{
+        const pet = pets.find(p=>p.id===a.petId);
+        const client = pet ? clients.find(c=>c.id===pet.clientId) : null;
+        return `
+          <div class="list-item">
+            <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
+            <span class="small">${esc(pet?.name || "Pet")} • ${esc(client?.name || "Tutor")}</span>
+          </div>
+        `;
+      }).join("") : `<div class="small">Nada agendado ainda.</div>`}
+    </div>
+
+    <div class="card">
+      <h3>Backup rápido</h3>
+      <div class="small">Copia e guarda. Se der ruim, restaura.</div>
+      <textarea readonly>${esc(JSON.stringify(DB))}</textarea>
+      <div class="actions">
+        <button class="secondary" onclick="downloadBackup()">Baixar backup</button>
+        <button class="danger" onclick="resetAll()">Zerar tudo</button>
+      </div>
+    </div>
+  `;
+}
+function setPlan(){
+  DB.plan = $("planSel").value;
+  save();
+  renderNav();
+  show("home");
+}
+function switchShop(){
+  DB.currentShopId = Number($("shopSel").value);
+  save(); show("home");
+}
+function addShopGuarded(){
+  if(!guard(FEATURES.MULTISHOP, "Multi-loja é MASTER.")) return;
+  addShop();
+}
+function addShop(){
+  const name = prompt("Nome da loja:");
+  if(!name) return;
+  const phone = prompt("Telefone (opcional):") || "";
+  const id = idNow();
+  DB.shops.push({id,name,phone});
+  DB.currentShopId = id;
+  save();
+  show("home");
+}
+function settings(){
+  const canLogin = has(FEATURES.LOGIN);
+  $("title").innerText = "Configurações";
+  setActiveNone();
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Configurações</h3>
+
+      <div class="small">Plano atual: <b>${activePlan().label}</b></div>
+      <hr>
+
+      <h3 style="margin:0 0 10px 0">Login</h3>
+      ${canLogin ? `
+        <div class="small">Somente no plano MASTER.</div>
+        <label>Ativar login</label>
+        <select id="authOn">
+          <option value="0" ${DB.auth.enabled? "":"selected"}>Desligado</option>
+          <option value="1" ${DB.auth.enabled? "selected":""}>Ligado</option>
+        </select>
+        <label>Senha atual</label>
+        <input id="curPass" type="password" placeholder="Senha atual">
+        <label>Nova senha</label>
+        <input id="newPass" type="password" placeholder="Nova senha">
+        <div class="actions">
+          <button class="primary" onclick="applyAuth()">Aplicar</button>
+        </div>
+      ` : `
+        <div class="small">Login está disponível no plano MASTER.</div>
+      `}
+      <hr>
+
+      <div class="actions">
+        <button class="secondary" onclick="show('home')">Voltar</button>
+      </div>
+    </div>
+  `;
+}
+function applyAuth(){
+  const on = $("authOn").value==="1";
+  DB.auth.enabled = on;
+
+  const cur = $("curPass").value;
+  const np = $("newPass").value.trim();
+  if(np){
+    if(cur !== DB.auth.pass) return alert("Senha atual errada.");
+    if(np.length < 4) return alert("Use 4+ caracteres.");
+    DB.auth.pass = np;
+  }
+  DB.__logged = false;
+  save();
+  alert("Ok.");
+  show("home");
+}
+function downloadBackup(){
+  const blob = new Blob([JSON.stringify(DB,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "petdb-v3-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function resetAll(){
+  if(!confirm("Tem certeza? Apaga tudo deste navegador.")) return;
+  localStorage.removeItem("petdb_v3");
+  location.reload();
+}
+
+/** ======================
+ * CLIENTS + PETS + FOTO
+ * ====================== */
+let __petPhotoB64 = "";
+
+function clients(){
+  const clients = shopFilter(DB.clients).slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+  const pets = shopFilter(DB.pets);
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Novo cliente</h3>
+      <label>Nome</label><input id="cname" placeholder="Ex: João Silva">
+      <label>Telefone</label><input id="cphone" placeholder="Ex: 6799999-9999">
+      <div class="actions"><button class="primary" onclick="addClient()">Salvar</button></div>
+    </div>
+
+    <div class="card">
+      <h3>Novo pet</h3>
+      <label>Tutor</label>
+      <select id="petOwner">
+        ${clients.length ? clients.map(c=>`<option value="${c.id}">${esc(c.name)} • ${esc(c.phone||"")}</option>`).join("") : `<option value="">Cadastre um cliente primeiro</option>`}
+      </select>
+      <label>Nome do pet</label><input id="petName" placeholder="Ex: Thor">
+      <div class="row">
+        <div><label>Espécie</label><select id="petSpecies"><option>Cão</option><option>Gato</option><option>Outro</option></select></div>
+        <div><label>Raça</label><input id="petBreed" placeholder="Ex: SRD"></div>
+      </div>
+      <div class="row">
+        <div><label>Nascimento</label><input id="petBirth" type="date"></div>
+        <div><label>Alergias</label><input id="petAllergy" placeholder="Ex: frango"></div>
+      </div>
+      <label>Foto do pet</label>
+      <input id="petPhoto" type="file" accept="image/*" onchange="previewPetPhoto()">
+      <div class="row" style="align-items:center;margin-top:10px">
+        <img id="petPreview" class="avatar" alt="">
+        <div class="small">Foto vira carteirinha e dá confiança.</div>
+      </div>
+      <label>Observações</label><input id="petNotes" placeholder="Temperamento, cuidados, etc">
+      <div class="actions"><button class="primary" onclick="addPet()">Salvar pet</button></div>
+    </div>
+
+    ${clients.map(c=>{
+      const cpets = pets.filter(p=>p.clientId===c.id);
+      return `
+        <div class="card">
+          <b>${esc(c.name)}</b> <span class="badge">${esc(c.phone||"")}</span><br>
+          <span class="small">${cpets.length} pet(s)</span>
+
+          ${cpets.length ? `<hr>` : ``}
+
+          ${cpets.map(p=>`
+            <div class="list-item">
+              <div class="row" style="align-items:center">
+                <img class="avatar" src="${p.photo||""}" alt="" onerror="this.style.display='none'">
+                <div>
+                  <b>${esc(p.name)}</b> <span class="badge">${esc(p.species||"")}</span><br>
+                  <span class="small">${esc(p.breed||"")} ${p.allergy ? "• alergia: "+esc(p.allergy) : ""}</span>
+                </div>
+              </div>
+              <div class="actions">
+                ${has(FEATURES.VET) ? `<button class="secondary" onclick="goVet(${p.id})">Ficha/Receita</button>` : `<button class="secondary" onclick="upgradeScreen('${FEATURES.VET}','Veterinário é PRO ou acima.')">Ficha/Receita</button>`}
+                ${has(FEATURES.GROOMING_FLOW) ? `<button class="secondary" onclick="quickGroom(${p.id})">Fila Banho/Tosa</button>` : ``}
+                ${has(FEATURES.HOTEL) ? `<button class="secondary" onclick="goHotel(${p.id})">Hotelzinho</button>` : ``}
+                <button class="danger" onclick="delPet(${p.id})">Excluir pet</button>
+              </div>
+            </div>
+          `).join("")}
+
+          <div class="actions">
+            <button class="danger" onclick="delClient(${c.id})">Excluir cliente</button>
+            ${c.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}','Olá! 😊')">WhatsApp tutor</button>` : ``}
+          </div>
         </div>
       `;
-      div.addEventListener("click", onClick);
-      list.appendChild(div);
-    };
+    }).join("")}
+  `;
+}
+function addClient(){
+  const name = $("cname").value.trim();
+  const phone = $("cphone").value.trim();
+  if(!name) return alert("Coloque o nome.");
+  DB.clients.push({id:idNow(), shopId:DB.currentShopId, name, phone});
+  save(); show("clients");
+}
+function previewPetPhoto(){
+  const f = $("petPhoto").files?.[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ __petPhotoB64 = r.result; $("petPreview").src = __petPhotoB64; };
+  r.readAsDataURL(f);
+}
+function addPet(){
+  const owner = Number($("petOwner").value);
+  if(!owner) return alert("Cadastre um cliente primeiro.");
+  const name = $("petName").value.trim();
+  if(!name) return alert("Nome do pet, por favor.");
 
-    if(TAB === "home"){
-      const todayISO = iso(now());
-      const todayList = STATE.data.appointments
-        .filter(a => a.dateISO===todayISO)
-        .sort((a,b)=> (a.time||"").localeCompare(b.time||""));
+  DB.pets.push({
+    id:idNow(), shopId:DB.currentShopId,
+    clientId:owner,
+    name,
+    species:$("petSpecies").value,
+    breed:$("petBreed").value.trim(),
+    birth:$("petBirth").value,
+    allergy:$("petAllergy").value.trim(),
+    notes:$("petNotes").value.trim(),
+    photo: __petPhotoB64 || ""
+  });
+  __petPhotoB64 = "";
+  save(); show("clients");
+}
+function delClient(clientId){
+  if(!confirm("Excluir cliente e tudo ligado a ele?")) return;
+  const myPets = shopFilter(DB.pets).filter(p=>p.clientId===clientId).map(p=>p.id);
 
-      if(todayList.length){
-        makeItem("Agendamentos de hoje", "Toque para ver o dia", todayList.length + " itens", "tagAccent", ()=> openAgendaDay(todayISO));
-      }
+  DB.clients = DB.clients.filter(c=>c.id!==clientId);
+  DB.pets = DB.pets.filter(p=>p.clientId!==clientId);
+  DB.agenda = DB.agenda.filter(a=> !myPets.includes(a.petId));
+  DB.vetRecords = DB.vetRecords.filter(v=> !myPets.includes(v.petId));
+  DB.vaccines = DB.vaccines.filter(v=> !myPets.includes(v.petId));
+  DB.boardings = DB.boardings.filter(b=> !myPets.includes(b.petId));
+  DB.grooming = DB.grooming.filter(g=> !myPets.includes(g.petId));
 
-      const mixed = [];
-      STATE.data.clients.slice(-6).reverse().forEach(c => mixed.push({type:"client", c}));
-      STATE.data.appointments.slice(-6).reverse().forEach(a => mixed.push({type:"app", a}));
-      STATE.data.payments.slice(-6).reverse().forEach(p => mixed.push({type:"pay", p}));
+  save(); show("clients");
+}
+function delPet(petId){
+  if(!confirm("Excluir pet e histórico dele?")) return;
 
-      const limited = isLimited();
-      if(limited){
-        makeItem("Modo limitado", "Novos cadastros e novos agendamentos estão bloqueados.", "Atraso", "tagBad", ()=> openConfig());
-      }else{
-        makeItem("Ação rápida", "Cadastrar cliente, pet ou agendar", "Abrir", "tagAccent", ()=> quickAdd());
-      }
+  DB.pets = DB.pets.filter(p=>p.id!==petId);
+  DB.agenda = DB.agenda.filter(a=>a.petId!==petId);
+  DB.vetRecords = DB.vetRecords.filter(v=>v.petId!==petId);
+  DB.vaccines = DB.vaccines.filter(v=>v.petId!==petId);
+  DB.boardings = DB.boardings.filter(b=>b.petId!==petId);
+  DB.grooming = DB.grooming.filter(g=>g.petId!==petId);
 
-      if(!mixed.length){
-        makeItem("Sem dados ainda", "Cadastre um cliente e um pet para começar", "Dica", "tagWarn", ()=> openClientForm());
-        return;
-      }
+  save(); show("clients");
+}
 
-      mixed.slice(0,8).forEach(x=>{
-        if(x.type==="client"){
-          const c = x.c;
-          if(!matchSearch(c.name + " " + c.phone + " " + c.notes)) return;
-          makeItem(c.name, clampText([c.phone, c.notes].filter(Boolean).join(" • "), 92), "Cliente", "", ()=> openClientDetails(c.id));
-        }
-        if(x.type==="app"){
-          const a = x.a;
-          const pet = STATE.data.pets.find(p=>p.id===a.petId);
-          const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
-          const meta = `${a.dateISO} ${a.time||""} • ${pet?pet.name:"Pet"} • ${client?client.name:"Cliente"}`;
-          if(!matchSearch(meta + " " + safeStr(a.notes))) return;
-          makeItem(pet?pet.name:"Agendamento", clampText(meta, 92), a.status || "Agendado", a.status==="Finalizado"?"tagOk":(a.status==="Em atendimento"?"tagAccent":"tagWarn"), ()=> openAppointmentDetails(a.id));
-        }
-        if(x.type==="pay"){
-          const p = x.p;
-          const meta = `${p.dateISO} • ${p.method} • ${p.desc||"Pagamento"}`;
-          if(!matchSearch(meta)) return;
-          makeItem(p.desc||"Pagamento", clampText(meta, 92), money(p.amount), "tagOk", ()=> openPaymentDetails(p.id));
-        }
-      });
-      return;
-    }
+/** ======================
+ * AGENDA + VACINAS
+ * ====================== */
+function agenda(){
+  const pets = shopFilter(DB.pets);
+  const clients = shopFilter(DB.clients);
+  const items = shopFilter(DB.agenda).slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  const vac = shopFilter(DB.vaccines).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
 
-    if(TAB === "clients"){
-      const arr = STATE.data.clients
-        .filter(c => matchSearch(c.name + " " + c.phone + " " + c.notes))
-        .sort((a,b)=> (a.name||"").localeCompare(b.name||""));
-
-      if(!arr.length){
-        makeItem("Nenhum cliente", "Toque para cadastrar o primeiro", "Novo", "tagAccent", ()=> openClientForm());
-        return;
-      }
-      arr.forEach(c=>{
-        const petsCount = STATE.data.pets.filter(p=>p.clientId===c.id).length;
-        makeItem(c.name, clampText([c.phone, c.notes].filter(Boolean).join(" • "), 100), petsCount + " pet(s)", "tagAccent", ()=> openClientDetails(c.id));
-      });
-      return;
-    }
-
-    if(TAB === "pets"){
-      const arr = STATE.data.pets
-        .map(p=>{
-          const c = STATE.data.clients.find(x=>x.id===p.clientId);
-          return {p, c};
-        })
-        .filter(x => matchSearch((x.p.name||"") + " " + (x.p.breed||"") + " " + (x.c?.name||"") + " " + (x.c?.phone||"") + " " + (x.p.notes||"")))
-        .sort((a,b)=> (a.p.name||"").localeCompare(b.p.name||""));
-
-      if(!arr.length){
-        makeItem("Nenhum pet", "Cadastre um cliente e depois um pet", "Dica", "tagWarn", ()=> openPetForm());
-        return;
-      }
-      arr.forEach(x=>{
-        const p = x.p, c = x.c;
-        makeItem(p.name, clampText([p.species, p.breed, c?("Tutor: "+c.name):""].filter(Boolean).join(" • "), 100), p.size||"Pet", "tagAccent", ()=> openPetDetails(p.id));
-      });
-      return;
-    }
-
-    if(TAB === "agenda"){
-      const arr = STATE.data.appointments
-        .map(a=>{
-          const pet = STATE.data.pets.find(p=>p.id===a.petId);
-          const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
-          return {a, pet, client};
-        })
-        .filter(x => matchSearch(
-          `${x.a.dateISO} ${x.a.time||""} ${x.a.status||""} ${x.pet?.name||""} ${x.client?.name||""} ${x.a.serviceName||""} ${x.a.notes||""}`
-        ))
-        .sort((x,y)=> (y.a.dateISO + (y.a.time||"")).localeCompare(x.a.dateISO + (x.a.time||"")));
-
-      if(!arr.length){
-        makeItem("Agenda vazia", "Toque para criar o primeiro agendamento", "Novo", "tagAccent", ()=> openAppointmentForm());
-        return;
-      }
-      arr.slice(0,40).forEach(x=>{
-        const {a, pet, client} = x;
-        const title = `${a.dateISO} ${a.time||""}`.trim();
-        const meta = `${pet?pet.name:"Pet"} • ${client?client.name:"Cliente"} • ${a.serviceName||"Serviço"}`;
-        const tclass = a.status==="Finalizado" ? "tagOk" : (a.status==="Em atendimento" ? "tagAccent" : "tagWarn");
-        makeItem(title, clampText(meta, 100), a.status||"Agendado", tclass, ()=> openAppointmentDetails(a.id));
-      });
-      return;
-    }
-
-    if(TAB === "finance"){
-      const arr = STATE.data.payments
-        .filter(p => matchSearch(`${p.dateISO} ${p.method} ${p.desc} ${p.notes||""}`))
-        .sort((a,b)=> (b.dateISO||"").localeCompare(a.dateISO||""));
-
-      if(!arr.length){
-        makeItem("Sem pagamentos", "Toque para lançar o primeiro", "Novo", "tagAccent", ()=> openPaymentForm());
-        return;
-      }
-      arr.slice(0,50).forEach(p=>{
-        makeItem(p.desc||"Pagamento", clampText(`${p.dateISO} • ${p.method}${p.notes?(" • "+p.notes):""}`, 100), money(p.amount), "tagOk", ()=> openPaymentDetails(p.id));
-      });
-      return;
-    }
-  }
-
-  // Modal helpers
-  function openModal(title, sub, bodyHTML, footerButtons){
-    $("#modalTitle").textContent = title;
-    $("#modalSub").textContent = sub || "";
-    $("#modalBody").innerHTML = bodyHTML || "";
-    const footer = $("#modalFooter");
-    footer.innerHTML = "";
-    (footerButtons||[]).forEach(btn=>{
-      const b = document.createElement("button");
-      b.className = btn.className || "btn";
-      b.textContent = btn.text;
-      b.disabled = !!btn.disabled;
-      b.addEventListener("click", btn.onClick);
-      footer.appendChild(b);
-    });
-    $("#overlay").classList.add("show");
-  }
-  function closeModal(){
-    $("#overlay").classList.remove("show");
-  }
-
-  $("#modalClose").addEventListener("click", closeModal);
-  $("#overlay").addEventListener("click", (e)=>{ if(e.target.id==="overlay") closeModal(); });
-
-  function persist(){
-    saveShop(STATE.config.shopId, STATE.data);
-    saveAll({config: STATE.config});
-  }
-
-  // Forms and actions
-  function openClientForm(existingId){
-    if(isLimited()) return toast("Modo limitado: cadastro bloqueado");
-    const c = existingId ? STATE.data.clients.find(x=>x.id===existingId) : null;
-    openModal(
-      c ? "Editar cliente" : "Novo cliente",
-      "Cadastre o tutor do pet",
-      `
-      <div class="form">
-        <div>
-          <label>Nome do cliente</label>
-          <input id="f_name" value="${c?safeStr(c.name):""}" placeholder="Ex: Maria Souza" />
-        </div>
-        <div>
-          <label>Telefone (WhatsApp)</label>
-          <input id="f_phone" value="${c?safeStr(c.phone):""}" placeholder="Ex: 5567999999999 ou (67) 9xxxx-xxxx" />
-        </div>
-        <div style="grid-column:1/-1;">
-          <label>Observações</label>
-          <textarea id="f_notes" placeholder="Preferências, endereços, detalhes...">${c?safeStr(c.notes):""}</textarea>
-        </div>
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Novo agendamento</h3>
+      <label>Tipo</label>
+      <select id="atype">
+        <option>Banho</option><option>Tosa</option><option>Banho + Tosa</option>
+        <option>Consulta Veterinária</option><option>Vacina</option><option>Retorno</option><option>Hotelzinho</option>
+      </select>
+      <label>Pet</label>
+      <select id="apetId">
+        ${pets.length ? pets.map(p=>{
+          const c = clients.find(x=>x.id===p.clientId);
+          return `<option value="${p.id}">${esc(p.name)} • ${esc(c?.name||"Tutor")}</option>`;
+        }).join("") : `<option value="">Cadastre um pet primeiro</option>`}
+      </select>
+      <div class="row">
+        <div><label>Data</label><input type="date" id="adate" value="${todayISO()}"></div>
+        <div><label>Hora</label><input type="time" id="atime"></div>
       </div>
-      `,
-      [
-        c ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removeClient(c.id); closeModal(); }} : null,
-        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
-          const name = safeStr($("#f_name").value).trim();
-          if(!name) return toast("Informe o nome");
-          const phone = safeStr($("#f_phone").value).trim();
-          const notes = safeStr($("#f_notes").value).trim();
-          if(c){
-            c.name=name; c.phone=phone; c.notes=notes;
-          }else{
-            STATE.data.clients.push({id: uid(), name, phone, notes, createdAt: Date.now()});
-          }
-          persist();
-          toast("Cliente salvo");
-          closeModal();
-          render();
-        }}
-      ].filter(Boolean)
-    );
-  }
+      <label>Obs</label><input id="aobs" placeholder="Ex: levar carteirinha">
+      <div class="actions"><button class="primary" onclick="addAgenda()">Salvar</button></div>
+      ${has(FEATURES.GROOMING_FLOW) ? `<div class="small" style="margin-top:10px">Dica: se for Banho/Tosa, você pode jogar direto na fila.</div>` : ``}
+    </div>
 
-  function removeClient(clientId){
-    const hasPets = STATE.data.pets.some(p=>p.clientId===clientId);
-    if(hasPets){
-      toast("Este cliente tem pets. Exclua os pets primeiro.");
-      return;
-    }
-    STATE.data.clients = STATE.data.clients.filter(c=>c.id!==clientId);
-    persist();
-    toast("Cliente excluído");
-    render();
-  }
+    <div class="card">
+      <h3>Vacinas (carteirinha)</h3>
+      <label>Pet</label>
+      <select id="vpetVac">
+        ${pets.length ? pets.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("") : `<option value="">Cadastre um pet</option>`}
+      </select>
+      <label>Vacina</label>
+      <input id="vname" placeholder="Ex: V10, Antirrábica">
+      <div class="row">
+        <div><label>Data</label><input id="vdate" type="date" value="${todayISO()}"></div>
+        <div><label>Próxima</label><input id="vnext" type="date"></div>
+      </div>
+      <label>Obs</label><input id="vobs" placeholder="Lote, reação, etc">
+      <div class="actions"><button class="primary" onclick="addVaccine()">Salvar vacina</button></div>
 
-  function openClientDetails(clientId){
-    const c = STATE.data.clients.find(x=>x.id===clientId);
-    if(!c) return;
-    const pets = STATE.data.pets.filter(p=>p.clientId===clientId);
-    const petsHtml = pets.length ? pets.map(p=>`
-      <div class="item" style="cursor:pointer" data-pet="${p.id}">
-        <div class="row">
-          <div style="min-width:0">
-            <div class="name">${p.name}</div>
-            <div class="meta">${clampText([p.species,p.breed,p.size].filter(Boolean).join(" • "), 96)}</div>
+      <hr>
+      ${vac.length ? vac.slice(0,8).map(v=>{
+        return `
+          <div class="list-item">
+            <b>${esc(v.name)}</b> <span class="badge">${esc(v.date||"")}</span>
+            ${v.nextDate ? `<span class="badge">Próxima: ${esc(v.nextDate)}</span>` : ``}
+            <div class="small">${esc(petName(v.petId))}${v.obs ? " • "+esc(v.obs) : ""}</div>
+            <div class="actions"><button class="danger" onclick="delVaccine(${v.id})">Excluir</button></div>
           </div>
-          <div class="tag tagAccent">Pet</div>
-        </div>
-      </div>
-    `).join("") : `<div class="muted">Sem pets cadastrados para este cliente.</div>`;
+        `;
+      }).join("") : `<div class="small">Sem vacinas registradas.</div>`}
+    </div>
 
-    openModal(
-      "Cliente",
-      c.name,
-      `
-      <div class="two">
-        <div class="kv"><b>Telefone</b><span>${c.phone||"Sem"}</span></div>
-        <div class="kv"><b>Pets</b><span>${pets.length}</span></div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="kv">
-        <div>
-          <b>Observações</b>
-          <div class="muted">${c.notes?clampText(c.notes, 140):"Sem observações"}</div>
-        </div>
-      </div>
-      <div class="sep"></div>
-      <div class="cardTitle" style="margin-bottom:8px">Pets deste cliente</div>
-      <div id="petsList">${petsHtml}</div>
-      `,
-      [
-        {text:"WhatsApp", className:"btn btnOk", onClick: ()=>{
-          const msg = `Oi, ${c.name}! 😊\nTudo certo por aí?`;
-          openWhatsApp(c.phone, msg);
-        }},
-        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openClientForm(c.id); }},
-        {text:"Novo pet", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openPetForm(null, c.id); }},
-        {text:"Agendar", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, null, c.id); }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
-
-    setTimeout(()=>{
-      $$("#petsList .item").forEach(el=>{
-        el.addEventListener("click", ()=> openPetDetails(el.dataset.pet));
-      });
-    }, 0);
-  }
-
-  function openPetForm(existingId, forcedClientId){
-    if(isLimited()) return toast("Modo limitado: cadastro bloqueado");
-    const p = existingId ? STATE.data.pets.find(x=>x.id===existingId) : null;
-    const clients = STATE.data.clients.slice().sort((a,b)=>(a.name||"").localeCompare(b.name||""));
-    if(!clients.length){
-      toast("Cadastre um cliente primeiro");
-      return openClientForm();
-    }
-    const selectedClient = forcedClientId || (p ? p.clientId : clients[0].id);
-    const clientOpts = clients.map(c=> `<option value="${c.id}" ${c.id===selectedClient?"selected":""}>${c.name}</option>`).join("");
-
-    openModal(
-      p ? "Editar pet" : "Novo pet",
-      "Cadastro do animal",
-      `
-      <div class="form">
-        <div>
-          <label>Tutor (cliente)</label>
-          <select id="p_client">${clientOpts}</select>
-        </div>
-        <div>
-          <label>Nome do pet</label>
-          <input id="p_name" value="${p?safeStr(p.name):""}" placeholder="Ex: Thor" />
-        </div>
-        <div>
-          <label>Espécie</label>
-          <select id="p_species">
-            ${["Cachorro","Gato","Outro"].map(x=>`<option ${p&&p.species===x?"selected":""}>${x}</option>`).join("")}
-          </select>
-        </div>
-        <div>
-          <label>Raça</label>
-          <input id="p_breed" value="${p?safeStr(p.breed):""}" placeholder="Ex: Shih Tzu" />
-        </div>
-        <div>
-          <label>Porte</label>
-          <select id="p_size">
-            ${["Pequeno","Médio","Grande"].map(x=>`<option ${p&&p.size===x?"selected":""}>${x}</option>`).join("")}
-          </select>
-        </div>
-        <div style="grid-column:1/-1;">
-          <label>Observações</label>
-          <textarea id="p_notes" placeholder="Alergia, comportamento, medo...">${p?safeStr(p.notes):""}</textarea>
-        </div>
-      </div>
-      `,
-      [
-        p ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removePet(p.id); closeModal(); }} : null,
-        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
-          const clientId = $("#p_client").value;
-          const name = safeStr($("#p_name").value).trim();
-          if(!name) return toast("Informe o nome do pet");
-          const species = $("#p_species").value;
-          const breed = safeStr($("#p_breed").value).trim();
-          const size = $("#p_size").value;
-          const notes = safeStr($("#p_notes").value).trim();
-
-          if(p){
-            p.clientId=clientId; p.name=name; p.species=species; p.breed=breed; p.size=size; p.notes=notes;
-          }else{
-            STATE.data.pets.push({id: uid(), clientId, name, species, breed, size, notes, createdAt: Date.now()});
-          }
-          persist();
-          toast("Pet salvo");
-          closeModal();
-          render();
-        }}
-      ].filter(Boolean)
-    );
-  }
-
-  function removePet(petId){
-    const hasAppointments = STATE.data.appointments.some(a=>a.petId===petId);
-    if(hasAppointments){
-      toast("Este pet tem agendamentos. Exclua os agendamentos primeiro.");
-      return;
-    }
-    STATE.data.pets = STATE.data.pets.filter(p=>p.id!==petId);
-    persist();
-    toast("Pet excluído");
-    render();
-  }
-
-  function openPetDetails(petId){
-    const p = STATE.data.pets.find(x=>x.id===petId);
-    if(!p) return;
-    const c = STATE.data.clients.find(x=>x.id===p.clientId);
-
-    const apps = STATE.data.appointments
-      .filter(a=>a.petId===petId)
-      .sort((a,b)=> (b.dateISO+(b.time||"")).localeCompare(a.dateISO+(a.time||"")))
-      .slice(0,8);
-
-    const appsHtml = apps.length ? apps.map(a=>`
-      <div class="item" style="cursor:pointer" data-app="${a.id}">
-        <div class="row">
-          <div style="min-width:0">
-            <div class="name">${a.dateISO} ${a.time||""}</div>
-            <div class="meta">${clampText([a.serviceName, a.status, a.notes].filter(Boolean).join(" • "), 96)}</div>
+    <div class="card">
+      <h3>Agendamentos</h3>
+      ${items.length ? items.map(a=>{
+        const p = pets.find(x=>x.id===a.petId);
+        const c = p ? clients.find(x=>x.id===p.clientId) : null;
+        return `
+          <div class="list-item">
+            <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
+            <span class="small">${esc(p?.name||"")} • ${esc(c?.name||"")}</span>
+            ${a.obs ? `<div class="small">${esc(a.obs)}</div>` : ``}
+            <div class="actions">
+              ${has(FEATURES.VET) ? `<button class="secondary" onclick="goVet(${a.petId})">Ficha</button>` : ``}
+              ${has(FEATURES.GROOMING_FLOW) && /Banho|Tosa/i.test(a.type) ? `<button class="secondary" onclick="quickGroom(${a.petId}, '${esc(a.type)}')">Jogar na fila</button>` : ``}
+              <button class="danger" onclick="delAgenda(${a.id})">Excluir</button>
+            </div>
           </div>
-          <div class="tag ${a.status==="Finalizado"?"tagOk":(a.status==="Em atendimento"?"tagAccent":"tagWarn")}">${a.status||"Agendado"}</div>
-        </div>
+        `;
+      }).join("") : `<div class="small">Agenda vazia.</div>`}
+    </div>
+  `;
+}
+function addAgenda(){
+  const petId = Number($("apetId").value);
+  if(!petId) return alert("Selecione um pet.");
+  const date = $("adate").value;
+  if(!date) return alert("Data obrigatória.");
+
+  DB.agenda.push({
+    id:idNow(), shopId:DB.currentShopId,
+    type:$("atype").value, petId, date,
+    time:$("atime").value,
+    obs:$("aobs").value.trim()
+  });
+  save(); show("agenda");
+}
+function delAgenda(id){
+  if(!confirm("Excluir agendamento?")) return;
+  DB.agenda = DB.agenda.filter(a=>a.id!==id);
+  save(); show("agenda");
+}
+function addVaccine(){
+  const petId = Number($("vpetVac").value);
+  if(!petId) return alert("Selecione o pet.");
+  const name = $("vname").value.trim();
+  if(!name) return alert("Nome da vacina.");
+
+  DB.vaccines.push({
+    id:idNow(), shopId:DB.currentShopId,
+    petId, name,
+    date:$("vdate").value,
+    nextDate:$("vnext").value,
+    obs:$("vobs").value.trim()
+  });
+  save(); show("agenda");
+}
+function delVaccine(id){
+  if(!confirm("Excluir vacina?")) return;
+  DB.vaccines = DB.vaccines.filter(v=>v.id!==id);
+  save(); show("agenda");
+}
+
+/** ======================
+ * GROOMING FLOW (Fila Banho/Tosa)
+ * ====================== */
+const GROOM_STEPS = ["Recebido","Banho","Secagem","Tosa","Pronto","Entregue"];
+function stepDot(status){
+  if(status==="Entregue") return "dot green";
+  if(status==="Pronto") return "dot blue";
+  if(status==="Recebido") return "dot gray";
+  return "dot red";
+}
+function groom(){
+  const pets = shopFilter(DB.pets);
+  const clients = shopFilter(DB.clients);
+  const items = shopFilter(DB.grooming)
+    .slice()
+    .sort((a,b)=> b.createdAt - a.createdAt);
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Entrar na fila</h3>
+      <label>Pet</label>
+      <select id="gpet">
+        ${pets.length ? pets.map(p=>{
+          const c = clients.find(x=>x.id===p.clientId);
+          return `<option value="${p.id}">${esc(p.name)} • ${esc(c?.name||"")}</option>`;
+        }).join("") : `<option value="">Cadastre um pet</option>`}
+      </select>
+      <label>Serviço</label>
+      <select id="gtype">
+        <option>Banho</option>
+        <option>Tosa</option>
+        <option>Banho + Tosa</option>
+      </select>
+      <label>Observação</label>
+      <input id="gnote" placeholder="Ex: não cortar muito curto">
+      <div class="actions">
+        <button class="primary" onclick="addGroom()">Adicionar</button>
       </div>
-    `).join("") : `<div class="muted">Sem agendamentos para este pet ainda.</div>`;
+      <div class="small">Isso aqui vende demais: o cliente vê organização e fluxo.</div>
+    </div>
 
-    openModal(
-      "Pet",
-      p.name,
-      `
-      <div class="two">
-        <div class="kv"><b>Tutor</b><span>${c?c.name:"Sem"}</span></div>
-        <div class="kv"><b>Porte</b><span>${p.size||"Sem"}</span></div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="kv">
-        <div>
-          <b>Detalhes</b>
-          <div class="muted">${clampText([p.species, p.breed].filter(Boolean).join(" • ") || "Sem detalhes", 120)}</div>
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="kv">
-        <div>
-          <b>Observações</b>
-          <div class="muted">${p.notes?clampText(p.notes, 140):"Sem observações"}</div>
-        </div>
-      </div>
-      <div class="sep"></div>
-      <div class="cardTitle" style="margin-bottom:8px">Últimos agendamentos</div>
-      <div id="appsList">${appsHtml}</div>
-      `,
-      [
-        {text:"Retorno 30 dias", className:"btn btnOk", onClick: ()=>{
-          const msg = tpl(STATE.config.msg_return30, {
-            NOME: c?.name || "tudo bem",
-            PET: p.name
-          });
-          openWhatsApp(c?.phone, msg);
-        }},
-        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openPetForm(p.id); }},
-        {text:"Agendar", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, p.id); }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
+    <div class="card">
+      <h3>Fila (status)</h3>
+      ${items.length ? items.map(g=>{
+        const p = pets.find(x=>x.id===g.petId);
+        const c = p ? clients.find(x=>x.id===p.clientId) : null;
+        const idx = GROOM_STEPS.indexOf(g.status);
+        const next = idx>=0 && idx < GROOM_STEPS.length-1 ? GROOM_STEPS[idx+1] : null;
+        const prev = idx>0 ? GROOM_STEPS[idx-1] : null;
 
-    setTimeout(()=>{
-      $$("#appsList .item").forEach(el=>{
-        el.addEventListener("click", ()=> openAppointmentDetails(el.dataset.app));
-      });
-    }, 0);
-  }
+        return `
+          <div class="list-item">
+            <div class="row" style="align-items:center">
+              <span class="${stepDot(g.status)}"></span>
+              <div>
+                <b>${esc(p?.name||"Pet")}</b>
+                <span class="badge">${esc(g.type||"")}</span>
+                <span class="badge">${esc(g.status||"")}</span><br>
+                <span class="small">${esc(c?.name||"")} ${c?.phone ? "• "+esc(c.phone) : ""}</span>
+                ${g.note ? `<div class="small">${esc(g.note)}</div>` : ``}
+              </div>
+            </div>
 
-  function openAppointmentForm(existingId, forcedPetId, forcedClientId){
-    if(isLimited()) return toast("Modo limitado: agendamento bloqueado");
-    const a = existingId ? STATE.data.appointments.find(x=>x.id===existingId) : null;
-
-    const clients = STATE.data.clients.slice().sort((x,y)=>(x.name||"").localeCompare(y.name||""));
-    if(!clients.length){
-      toast("Cadastre um cliente primeiro");
-      return openClientForm();
-    }
-
-    let clientId = forcedClientId || (a ? getClientIdFromPet(a.petId) : clients[0].id);
-    const petsForClient = (cid) => STATE.data.pets.filter(p=>p.clientId===cid).sort((x,y)=>(x.name||"").localeCompare(y.name||""));
-
-    if(forcedPetId){
-      const pet = STATE.data.pets.find(p=>p.id===forcedPetId);
-      if(pet) clientId = pet.clientId;
-    }
-
-    const petList = petsForClient(clientId);
-    if(!petList.length){
-      toast("Cadastre um pet para este cliente");
-      return openPetForm(null, clientId);
-    }
-
-    const petId = forcedPetId || (a ? a.petId : petList[0].id);
-
-    const clientOpts = clients.map(c=>`<option value="${c.id}" ${c.id===clientId?"selected":""}>${c.name}</option>`).join("");
-    const petOpts = petsForClient(clientId).map(p=>`<option value="${p.id}" ${p.id===petId?"selected":""}>${p.name}</option>`).join("");
-
-    const svcOpts = STATE.data.services.map(s=>`<option value="${s.id}" ${a&&a.serviceId===s.id?"selected":""}>${s.name} (${money(s.price)})</option>`).join("");
-    const statusOpts = ["Agendado","Em atendimento","Finalizado"].map(s=>`<option ${a&&a.status===s?"selected":""}>${s}</option>`).join("");
-
-    const defDate = a ? a.dateISO : iso(now());
-    const defTime = a ? safeStr(a.time) : "14:00";
-
-    openModal(
-      a ? "Editar agendamento" : "Novo agendamento",
-      "Banho, tosa e serviços",
-      `
-      <div class="form">
-        <div>
-          <label>Cliente</label>
-          <select id="a_client">${clientOpts}</select>
-        </div>
-        <div>
-          <label>Pet</label>
-          <select id="a_pet">${petOpts}</select>
-        </div>
-        <div>
-          <label>Data</label>
-          <input id="a_date" type="date" value="${defDate}" />
-        </div>
-        <div>
-          <label>Hora</label>
-          <input id="a_time" type="time" value="${defTime}" />
-        </div>
-        <div>
-          <label>Serviço</label>
-          <select id="a_service">${svcOpts}</select>
-        </div>
-        <div>
-          <label>Status</label>
-          <select id="a_status">${statusOpts}</select>
-        </div>
-        <div style="grid-column:1/-1;">
-          <label>Observações</label>
-          <textarea id="a_notes" placeholder="Detalhes do atendimento...">${a?safeStr(a.notes):""}</textarea>
-        </div>
-      </div>
-      <div class="muted" style="margin-top:10px">Dica: ao finalizar, você pode lançar o pagamento na aba Pagamentos.</div>
-      `,
-      [
-        a ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removeAppointment(a.id); closeModal(); }} : null,
-        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
-          const petId2 = $("#a_pet").value;
-          const dateISO = $("#a_date").value;
-          const time = $("#a_time").value;
-          const serviceId = $("#a_service").value;
-          const service = STATE.data.services.find(s=>s.id===serviceId);
-          const serviceName = service ? service.name : "Serviço";
-          const price = service ? Number(service.price||0) : 0;
-          const status = $("#a_status").value;
-          const notes = safeStr($("#a_notes").value).trim();
-
-          const pet = STATE.data.pets.find(p=>p.id===petId2);
-          if(!pet) return toast("Pet inválido");
-
-          if(a){
-            a.petId=petId2; a.dateISO=dateISO; a.time=time; a.serviceId=serviceId;
-            a.serviceName=serviceName; a.price=price; a.status=status; a.notes=notes;
-          }else{
-            STATE.data.appointments.push({
-              id: uid(), petId: petId2, dateISO, time, serviceId, serviceName, price,
-              status, notes, createdAt: Date.now()
-            });
-          }
-          persist();
-          toast("Agendamento salvo");
-          closeModal();
-          render();
-        }}
-      ].filter(Boolean)
-    );
-
-    // troca pets quando troca cliente
-    setTimeout(()=>{
-      $("#a_client").addEventListener("change", ()=>{
-        const newClient = $("#a_client").value;
-        const pets = petsForClient(newClient);
-        const sel = $("#a_pet");
-        sel.innerHTML = pets.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
-      });
-    }, 0);
-  }
-
-  function removeAppointment(appId){
-    STATE.data.appointments = STATE.data.appointments.filter(a=>a.id!==appId);
-    persist();
-    toast("Agendamento excluído");
-    render();
-  }
-
-  function openAppointmentDetails(appId){
-    const a = STATE.data.appointments.find(x=>x.id===appId);
-    if(!a) return;
-    const pet = STATE.data.pets.find(p=>p.id===a.petId);
-    const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
-
-    const vars = {
-      NOME: client?.name || "",
-      PET: pet?.name || "",
-      DATA: a.dateISO || "",
-      HORA: a.time || ""
-    };
-
-    openModal(
-      "Agendamento",
-      `${a.dateISO} ${a.time||""}`.trim(),
-      `
-      <div class="two">
-        <div class="kv"><b>Pet</b><span>${pet?pet.name:"Sem"}</span></div>
-        <div class="kv"><b>Cliente</b><span>${client?client.name:"Sem"}</span></div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="two">
-        <div class="kv"><b>Serviço</b><span>${a.serviceName||"Serviço"}</span></div>
-        <div class="kv"><b>Valor</b><span>${money(a.price||0)}</span></div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="kv">
-        <div>
-          <b>Status</b>
-          <div class="muted">${a.status||"Agendado"}</div>
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="kv">
-        <div>
-          <b>Observações</b>
-          <div class="muted">${a.notes?clampText(a.notes, 180):"Sem observações"}</div>
-        </div>
-      </div>
-      <div class="sep"></div>
-      <div class="muted">Mensagens automáticas: abre o WhatsApp com o texto pronto (só enviar).</div>
-      `,
-      [
-        {text:"Confirmar", className:"btn btnOk", onClick: ()=>{
-          openWhatsApp(client?.phone, tpl(STATE.config.msg_confirm, vars));
-        }},
-        {text:"Pet pronto", className:"btn btnOk", onClick: ()=>{
-          openWhatsApp(client?.phone, tpl(STATE.config.msg_ready, vars));
-        }},
-        {text:"Reagendar", className:"btn btnPrimary", onClick: ()=>{
-          openWhatsApp(client?.phone, tpl(STATE.config.msg_reschedule, vars));
-        }},
-        {text:"Retorno 30 dias", className:"btn", onClick: ()=>{
-          openWhatsApp(client?.phone, tpl(STATE.config.msg_return30, vars));
-        }},
-        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(a.id); }},
-        {text:"Lançar pagamento", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{
-          closeModal();
-          openPaymentForm(null, { amount: a.price||0, desc: `Serviço: ${a.serviceName||"Petshop"} (${pet?pet.name:"Pet"})` });
-        }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
-  }
-
-  function openAgendaDay(dateISO){
-    const arr = STATE.data.appointments
-      .filter(a=>a.dateISO===dateISO)
-      .sort((a,b)=>(a.time||"").localeCompare(b.time||""))
-      .map(a=>{
-        const pet = STATE.data.pets.find(p=>p.id===a.petId);
-        const client = pet ? STATE.data.clients.find(c=>c.id===pet.clientId) : null;
-        return {a, pet, client};
-      });
-
-    const html = arr.length ? arr.map(x=>`
-      <div class="item" style="cursor:pointer" data-app="${x.a.id}">
-        <div class="row">
-          <div style="min-width:0">
-            <div class="name">${x.a.time||""} • ${x.pet?x.pet.name:"Pet"}</div>
-            <div class="meta">${clampText([x.client?x.client.name:"Cliente", x.a.serviceName, x.a.notes].filter(Boolean).join(" • "), 100)}</div>
+            <div class="actions">
+              ${prev ? `<button class="secondary" onclick="setGroomStatus(${g.id}, '${prev}')">Voltar</button>` : ``}
+              ${next ? `<button class="primary" onclick="setGroomStatus(${g.id}, '${next}')">Avançar</button>` : ``}
+              ${c?.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}', groomMsg('${esc(p?.name||"Pet")}','${esc(g.status||"")}'))">WhatsApp status</button>` : ``}
+              <button class="danger" onclick="delGroom(${g.id})">Excluir</button>
+            </div>
           </div>
-          <div class="tag ${x.a.status==="Finalizado"?"tagOk":(x.a.status==="Em atendimento"?"tagAccent":"tagWarn")}">${x.a.status||"Agendado"}</div>
+        `;
+      }).join("") : `<div class="small">Fila vazia. Quando entrar um pet, ele aparece aqui.</div>`}
+    </div>
+  `;
+}
+function groomMsg(pet, status){
+  return `🐾 Atualização do ${pet}\nStatus: ${status}\n\nQualquer coisa, chama aqui.`;
+}
+function addGroom(){
+  const petId = Number($("gpet").value);
+  if(!petId) return alert("Selecione um pet.");
+  DB.grooming.push({
+    id:idNow(), shopId:DB.currentShopId,
+    petId,
+    type:$("gtype").value,
+    status:"Recebido",
+    note:$("gnote").value.trim(),
+    createdAt: Date.now()
+  });
+  save(); show("groom");
+}
+function setGroomStatus(id, status){
+  const g = DB.grooming.find(x=>x.id===id);
+  if(!g) return;
+  g.status = status;
+  save(); show("groom");
+}
+function delGroom(id){
+  if(!confirm("Excluir da fila?")) return;
+  DB.grooming = DB.grooming.filter(g=>g.id!==id);
+  save(); show("groom");
+}
+function quickGroom(petId, type){
+  if(!guard(FEATURES.GROOMING_FLOW, "Fila Banho/Tosa é PLUS ou acima.")) return;
+  DB.grooming.push({
+    id:idNow(), shopId:DB.currentShopId,
+    petId,
+    type: type || "Banho + Tosa",
+    status:"Recebido",
+    note:"",
+    createdAt: Date.now()
+  });
+  save(); show("groom");
+}
+
+/** ======================
+ * PRODUCTS + STOCK ALERT
+ * ====================== */
+function productsUI(){
+  const products = shopFilter(DB.products).slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+  const lowStock = products.filter(p=>{
+    const qty = Number((p.qty||"0").replace(",","."));
+    const min = Number((p.min||"0").replace(",","."));
+    return !isNaN(qty) && !isNaN(min) && qty <= min;
+  });
+
+  return `
+    <div class="card">
+      <h3>Produtos / Estoque</h3>
+      <label>Nome</label><input id="pname" placeholder="Ex: Ração 10kg">
+      <div class="row">
+        <div><label>Preço</label><input id="pprice" placeholder="Ex: 129,90"></div>
+        <div><label>Estoque</label><input id="pqty" placeholder="Ex: 8"></div>
+      </div>
+      <div class="row">
+        <div><label>Mínimo (alerta)</label><input id="pmin" placeholder="Ex: 3"></div>
+        <div><label>Obs</label><input id="pnotes" placeholder="Marca, validade, etc"></div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="addProduct()">Salvar</button>
+      </div>
+      ${has(FEATURES.STOCK_ALERT) ? `
+        <hr>
+        <div class="small"><b>Alertas:</b> ${lowStock.length ? lowStock.length+" item(ns) baixo" : "tudo ok"}</div>
+      ` : `<div class="small" style="margin-top:10px">Alerta de estoque é PLUS ou acima.</div>`}
+    </div>
+
+    <div class="card">
+      <h3>Lista</h3>
+      ${products.length ? products.map(p=>`
+        <div class="list-item">
+          <b>${esc(p.name)}</b>
+          <span class="badge">R$ ${esc(p.price||"0")}</span>
+          <span class="badge">Qtd ${esc(p.qty||"0")}</span>
+          ${has(FEATURES.STOCK_ALERT) ? `<span class="badge">Mín ${esc(p.min||"0")}</span>` : ``}
+          <div class="small">${p.notes ? esc(p.notes) : ""}</div>
+          <div class="actions">
+            <button class="secondary" onclick="adjustStock(${p.id}, 1)">+1</button>
+            <button class="secondary" onclick="adjustStock(${p.id}, -1)">-1</button>
+            <button class="danger" onclick="delProduct(${p.id})">Excluir</button>
+          </div>
+        </div>
+      `).join("") : `<div class="small">Sem produtos ainda.</div>`}
+    </div>
+  `;
+}
+function addProduct(){
+  const name = $("pname").value.trim();
+  if(!name) return alert("Nome do produto.");
+  DB.products.push({
+    id:idNow(), shopId:DB.currentShopId,
+    name,
+    price:$("pprice").value.trim(),
+    qty:$("pqty").value.trim(),
+    min:$("pmin").value.trim(),
+    notes:$("pnotes").value.trim()
+  });
+  save(); show("home");
+}
+function delProduct(id){
+  if(!confirm("Excluir produto?")) return;
+  DB.products = DB.products.filter(p=>p.id!==id);
+  save(); show("home");
+}
+function adjustStock(id, delta){
+  const p = DB.products.find(x=>x.id===id);
+  if(!p) return;
+  let q = Number((p.qty||"0").replace(",","."));
+  if(isNaN(q)) q = 0;
+  q += delta;
+  if(q < 0) q = 0;
+  p.qty = String(q).replace(".",",");
+  save(); show("home");
+}
+
+/** ======================
+ * VET + PDF/PRINT + WHATSAPP + COMISSÃO
+ * ====================== */
+function vet(){
+  const pets = shopFilter(DB.pets);
+  const clients = shopFilter(DB.clients);
+  if(!pets.length){
+    $("screen").innerHTML = `<div class="card"><h3>Veterinário</h3><div class="small">Cadastre um pet primeiro.</div></div>`;
+    return;
+  }
+  const petId = Number(DB.__vetPetId || pets[0].id);
+  DB.__vetPetId = petId; save();
+
+  const pet = pets.find(p=>p.id===petId);
+  const tutor = clients.find(c=>c.id===pet.clientId);
+
+  const records = shopFilter(DB.vetRecords).filter(r=>r.petId===petId).slice().sort((a,b)=>b.createdAt-a.createdAt);
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Atendimento</h3>
+      <label>Pet</label>
+      <select id="vpetSel" onchange="selectVetPet()">
+        ${pets.map(p=>`<option value="${p.id}" ${p.id===petId?"selected":""}>${esc(p.name)}</option>`).join("")}
+      </select>
+
+      <div class="row" style="align-items:center;margin-top:10px">
+        <img class="avatar" src="${pet.photo||""}" alt="" onerror="this.style.display='none'">
+        <div class="small">
+          <b>${esc(pet.name)}</b> • ${esc(pet.species||"")} ${pet.breed ? "• "+esc(pet.breed) : ""}<br>
+          Tutor: ${esc(tutor?.name||"")} ${tutor?.phone ? "• "+esc(tutor.phone) : ""}
         </div>
       </div>
-    `).join("") : `<div class="muted">Sem agendamentos nesta data.</div>`;
 
-    openModal(
-      "Agenda do dia",
-      fmtDate(new Date(dateISO+"T00:00:00")),
-      `<div id="dayList">${html}</div>`,
-      [
-        {text:"Novo agendamento", className:"btn btnPrimary", disabled:isLimited(), onClick: ()=>{ closeModal(); openAppointmentForm(null, null, null); }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
+      <hr>
 
-    setTimeout(()=>{
-      $$("#dayList .item").forEach(el=>{
-        el.addEventListener("click", ()=> openAppointmentDetails(el.dataset.app));
-      });
-    }, 0);
-  }
+      <div class="row">
+        <div><label>Peso (kg)</label><input id="vweight" placeholder="Ex: 12,4"></div>
+        <div><label>Temperatura</label><input id="vtemp" placeholder="Ex: 38,9"></div>
+      </div>
 
-  function openPaymentForm(existingId, prefill){
-    if(isLimited()) return toast("Modo limitado: lançamento bloqueado");
-    const p = existingId ? STATE.data.payments.find(x=>x.id===existingId) : null;
+      <label>Anamnese</label><textarea id="vanam"></textarea>
+      <label>Diagnóstico</label><textarea id="vdiag"></textarea>
+      <label>Receita</label><textarea id="vmed" placeholder="Dose, intervalo, duração"></textarea>
+      <label>Procedimentos</label><textarea id="vproc"></textarea>
 
-    const defDate = p ? p.dateISO : iso(now());
-    const defAmount = p ? p.amount : (prefill?.amount ?? 0);
-    const defDesc = p ? p.desc : (prefill?.desc ?? "Pagamento");
-    const defMethod = p ? p.method : "Pix";
-    const defNotes = p ? p.notes : "";
+      <div class="row">
+        <div><label>Retorno</label><input id="vreturn" type="date"></div>
+        <div><label>Valor</label><input id="vvalue" placeholder="Ex: 120,00"></div>
+      </div>
 
-    openModal(
-      p ? "Editar pagamento" : "Novo pagamento",
-      "Registro simples e rápido",
-      `
-      <div class="form">
+      <div class="row">
         <div>
-          <label>Data</label>
-          <input id="pay_date" type="date" value="${defDate}" />
+          <label>Veterinário</label>
+          <input id="vdoc" placeholder="Nome do veterinário">
         </div>
         <div>
-          <label>Valor</label>
-          <input id="pay_amount" inputmode="decimal" value="${String(defAmount).replace(".", ",")}" placeholder="Ex: 100,00" />
-        </div>
-        <div>
-          <label>Método</label>
-          <select id="pay_method">
-            ${["Pix","Dinheiro","Cartão","Outro"].map(x=>`<option ${defMethod===x?"selected":""}>${x}</option>`).join("")}
-          </select>
-        </div>
-        <div>
-          <label>Descrição</label>
-          <input id="pay_desc" value="${safeStr(defDesc)}" placeholder="Ex: Banho + Tosa (Thor)" />
-        </div>
-        <div style="grid-column:1/-1;">
-          <label>Observações</label>
-          <textarea id="pay_notes" placeholder="Detalhes...">${safeStr(defNotes)}</textarea>
+          <label>Comissão (%)</label>
+          <input id="vcomm" placeholder="Ex: 30" ${has(FEATURES.COMMISSION) ? "" : "disabled"}>
+          ${has(FEATURES.COMMISSION) ? "" : `<div class="small">Comissão é PLUS ou acima.</div>`}
         </div>
       </div>
-      <div class="sep"></div>
-      <div class="muted">Pix do petshop cadastrado: ${STATE.config.pixKey ? `<span class="kbd">${STATE.config.pixKey}</span>` : "Sem chave. Configure em Ajustes."}</div>
-      `,
-      [
-        p ? {text:"Excluir", className:"btn btnDanger", onClick: ()=>{ removePayment(p.id); closeModal(); }} : null,
-        {text:"Copiar Pix", className:"btn", onClick: ()=> copyPix() },
-        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
-          const dateISO = $("#pay_date").value;
-          const amount = toNum($("#pay_amount").value);
-          if(!(amount>0)) return toast("Informe o valor");
-          const method = $("#pay_method").value;
-          const desc = safeStr($("#pay_desc").value).trim() || "Pagamento";
-          const notes = safeStr($("#pay_notes").value).trim();
 
-          if(p){
-            p.dateISO=dateISO; p.amount=amount; p.method=method; p.desc=desc; p.notes=notes;
-          }else{
-            STATE.data.payments.push({ id: uid(), dateISO, amount, method, desc, notes, createdAt: Date.now() });
-          }
-          persist();
-          toast("Pagamento salvo");
-          closeModal();
-          render();
-        }}
-      ].filter(Boolean)
-    );
-  }
-
-  function removePayment(pid){
-    STATE.data.payments = STATE.data.payments.filter(p=>p.id!==pid);
-    persist();
-    toast("Pagamento excluído");
-    render();
-  }
-
-  function openPaymentDetails(pid){
-    const p = STATE.data.payments.find(x=>x.id===pid);
-    if(!p) return;
-    openModal(
-      "Pagamento",
-      p.desc || "Pagamento",
-      `
-      <div class="two">
-        <div class="kv"><b>Data</b><span>${p.dateISO}</span></div>
-        <div class="kv"><b>Valor</b><span>${money(p.amount)}</span></div>
+      <div class="actions">
+        <button class="primary" onclick="saveVetRecord()">Salvar atendimento</button>
+        <button class="secondary" onclick="printPrescriptionGuarded()">Imprimir / PDF</button>
+        ${tutor?.phone ? `<button class="secondary" onclick="sendWhatsAppReceiptGuarded('${esc(tutor.phone)}')">WhatsApp receita</button>` : ``}
       </div>
-      <div style="height:10px"></div>
-      <div class="two">
-        <div class="kv"><b>Método</b><span>${p.method}</span></div>
-        <div class="kv"><b>Obs.</b><span>${p.notes?clampText(p.notes, 50):"Sem"}</span></div>
-      </div>
-      <div class="sep"></div>
-      <div class="muted">Pix cadastrado: ${STATE.config.pixKey ? `<span class="kbd">${STATE.config.pixKey}</span>` : "Sem chave Pix configurada."}</div>
-      `,
-      [
-        {text:"Editar", className:"btn", disabled:isLimited(), onClick: ()=>{ closeModal(); openPaymentForm(p.id); }},
-        {text:"Copiar Pix", className:"btn btnPrimary", onClick: ()=> copyPix() },
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
+    </div>
+
+    <div class="card">
+      <h3>Histórico</h3>
+      ${records.length ? records.map(r=>`
+        <div class="list-item">
+          <b>${new Date(r.createdAt).toLocaleString("pt-BR")}</b>
+          ${r.value ? `<span class="badge">R$ ${esc(r.value)}</span>` : ``}
+          ${r.weight ? `<span class="badge">${esc(r.weight)} kg</span>` : ``}
+          ${r.returnDate ? `<span class="badge">Retorno: ${esc(r.returnDate)}</span>` : ``}
+          ${r.vet ? `<span class="badge">${esc(r.vet)}</span>` : ``}
+          ${r.commValue ? `<span class="badge">Comissão: R$ ${esc(r.commValue)}</span>` : ``}
+
+          <div class="small" style="margin-top:6px">
+            ${r.anam ? `<div><b>Anamnese:</b> ${esc(r.anam)}</div>` : ``}
+            ${r.diag ? `<div><b>Diagnóstico:</b> ${esc(r.diag)}</div>` : ``}
+            ${r.med ? `<div><b>Receita:</b> ${esc(r.med)}</div>` : ``}
+            ${r.proc ? `<div><b>Procedimentos:</b> ${esc(r.proc)}</div>` : ``}
+          </div>
+
+          <div class="actions">
+            <button class="secondary" onclick="openRecord(${r.id})">Abrir</button>
+            <button class="danger" onclick="delVetRecord(${r.id})">Excluir</button>
+          </div>
+        </div>
+      `).join("") : `<div class="small">Sem atendimentos ainda.</div>`}
+    </div>
+  `;
+}
+function selectVetPet(){
+  DB.__vetPetId = Number($("vpetSel").value);
+  save(); show("vet");
+}
+function goVet(petId){
+  DB.__vetPetId = petId;
+  save(); show("vet");
+}
+function saveVetRecord(){
+  const petId = Number(DB.__vetPetId);
+  const weight = $("vweight").value.trim();
+  const temp = $("vtemp").value.trim();
+  const anam = $("vanam").value.trim();
+  const diag = $("vdiag").value.trim();
+  const med = $("vmed").value.trim();
+  const proc = $("vproc").value.trim();
+  const returnDate = $("vreturn").value;
+  const value = $("vvalue").value.trim();
+  const vet = $("vdoc").value.trim();
+  const comm = $("vcomm") ? $("vcomm").value.trim() : "";
+
+  const hasAny = weight||temp||anam||diag||med||proc||returnDate||value||vet||comm;
+  if(!hasAny) return alert("Escreva algo antes de salvar.");
+
+  let commValue = "";
+  if(has(FEATURES.COMMISSION)){
+    const v = Number((value||"").replace(".","").replace(",","."));
+    const c = Number((comm||"").replace(",","."));
+    if(!isNaN(v) && !isNaN(c) && v>0 && c>0) commValue = fmt(v*(c/100));
   }
 
-  function getClientIdFromPet(petId){
-    const p = STATE.data.pets.find(x=>x.id===petId);
-    return p ? p.clientId : null;
-  }
+  DB.vetRecords.push({
+    id:idNow(), shopId:DB.currentShopId,
+    petId, createdAt:Date.now(),
+    weight, temp, anam, diag, med, proc, returnDate,
+    value, vet, comm, commValue
+  });
 
-  function copyPix(){
-    const pix = safeStr(STATE.config.pixKey).trim();
-    if(!pix) return toast("Cadastre a chave Pix em Ajustes");
-    navigator.clipboard?.writeText(pix).then(()=>toast("Pix copiado")).catch(()=>{
-      try{
-        const ta = document.createElement("textarea");
-        ta.value = pix;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        toast("Pix copiado");
-      }catch(e){
-        toast("Não consegui copiar aqui");
-      }
+  if(has(FEATURES.CASH) && value){
+    DB.cashflow.push({
+      id:idNow(), shopId:DB.currentShopId,
+      date: todayISO(),
+      type:"in",
+      value,
+      desc: `Atendimento vet • ${petName(petId)}`
     });
   }
 
-  function openConfig(){
-    const c = STATE.config;
-    const ps = planStatus();
-    openModal(
-      "Configuração",
-      "Nome, Pix, vencimento e mensagens automáticas",
-      `
-      <div class="form">
-        <div>
-          <label>ID da loja</label>
-          <input id="cfg_shopId" value="${safeStr(c.shopId)}" placeholder="Ex: petshop_centro" />
-          <div class="muted" style="margin-top:6px">Dica: um ID por petshop quando você replicar no mesmo aparelho.</div>
-        </div>
-        <div>
-          <label>Nome do petshop</label>
-          <input id="cfg_shopName" value="${safeStr(c.shopName)}" placeholder="Ex: PetShop Centro" />
-        </div>
-        <div>
-          <label>Cidade ou etiqueta</label>
-          <input id="cfg_shopCity" value="${safeStr(c.shopCity)}" placeholder="Ex: Pedro Gomes" />
-        </div>
-        <div>
-          <label>Chave Pix</label>
-          <input id="cfg_pix" value="${safeStr(c.pixKey)}" placeholder="Chave Pix do petshop" />
-        </div>
-        <div>
-          <label>Vencimento do plano</label>
-          <input id="cfg_due" type="date" value="${safeStr(c.planDueISO)}" />
-        </div>
-        <div>
-          <label>Tolerância (dias)</label>
-          <input id="cfg_grace" inputmode="numeric" value="${toInt(c.graceDays)}" />
-        </div>
+  save(); show("vet");
+}
+function delVetRecord(id){
+  if(!confirm("Excluir atendimento?")) return;
+  DB.vetRecords = DB.vetRecords.filter(r=>r.id!==id);
+  save(); show("vet");
+}
+function openRecord(id){
+  const r = DB.vetRecords.find(x=>x.id===id);
+  if(!r) return;
+  $("vweight").value = r.weight||"";
+  $("vtemp").value = r.temp||"";
+  $("vanam").value = r.anam||"";
+  $("vdiag").value = r.diag||"";
+  $("vmed").value = r.med||"";
+  $("vproc").value = r.proc||"";
+  $("vreturn").value = r.returnDate||"";
+  $("vvalue").value = r.value||"";
+  $("vdoc").value = r.vet||"";
+  if($("vcomm")) $("vcomm").value = r.comm||"";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function printPrescriptionGuarded(){
+  if(!guard(FEATURES.PDF, "Imprimir/PDF é PRO ou acima.")) return;
+  printPrescription();
+}
+function printPrescription(){
+  const pets = shopFilter(DB.pets);
+  const clients = shopFilter(DB.clients);
+  const pet = pets.find(p=>p.id===Number(DB.__vetPetId));
+  const tutor = pet ? clients.find(c=>c.id===pet.clientId) : null;
+
+  const med = $("vmed")?.value?.trim() || "";
+  const diag = $("vdiag")?.value?.trim() || "";
+  const proc = $("vproc")?.value?.trim() || "";
+  const vet = $("vdoc")?.value?.trim() || "Veterinário";
+  const shop = currentShop();
+
+  const html = `
+    <div style="font-family:Arial; padding:18px">
+      <h2 style="margin:0 0 6px 0">${esc(shop.name)}</h2>
+      ${shop.phone ? `<div>${esc(shop.phone)}</div>` : ``}
+      <hr>
+      <h3 style="margin:10px 0">Receita / Orientações</h3>
+
+      <div><b>Pet:</b> ${esc(pet?.name||"")}</div>
+      <div><b>Tutor:</b> ${esc(tutor?.name||"")} ${tutor?.phone ? " • "+esc(tutor.phone) : ""}</div>
+      <div><b>Data:</b> ${new Date().toLocaleDateString("pt-BR")}</div>
+      <div><b>Veterinário:</b> ${esc(vet)}</div>
+
+      <hr>
+
+      ${diag ? `<div><b>Diagnóstico:</b><br>${esc(diag).replace(/\n/g,"<br>")}</div><br>` : ``}
+      ${med ? `<div><b>Receita:</b><br>${esc(med).replace(/\n/g,"<br>")}</div><br>` : ``}
+      ${proc ? `<div><b>Procedimentos / Orientações:</b><br>${esc(proc).replace(/\n/g,"<br>")}</div><br>` : ``}
+
+      <hr>
+      <div style="margin-top:22px">Assinatura: _______________________________________</div>
+    </div>
+  `;
+  const w = window.open("", "_blank");
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+function sendWhatsAppReceiptGuarded(phone){
+  if(!guard(FEATURES.WHATSAPP, "WhatsApp automático é PRO ou acima.")) return;
+  sendWhatsAppReceipt(phone);
+}
+function sendWhatsAppReceipt(phone){
+  const pets = shopFilter(DB.pets);
+  const pet = pets.find(p=>p.id===Number(DB.__vetPetId));
+  const med = $("vmed")?.value?.trim() || "";
+  const diag = $("vdiag")?.value?.trim() || "";
+  const ret = $("vreturn")?.value || "";
+
+  let msg = `🐾 Receita do ${pet?.name||"pet"}\n\n`;
+  if(diag) msg += `Diagnóstico:\n${diag}\n\n`;
+  if(med) msg += `Receita:\n${med}\n\n`;
+  if(ret) msg += `Retorno: ${ret}\n\n`;
+  msg += `Qualquer coisa, chama aqui.`;
+
+  waOpen(phone, msg);
+}
+
+/** ======================
+ * HOTEL
+ * ====================== */
+function hotel(){
+  const pets = shopFilter(DB.pets);
+  const clients = shopFilter(DB.clients);
+  const items = shopFilter(DB.boardings).slice().sort((a,b)=> (b.inDate||"").localeCompare(a.inDate||""));
+
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Nova hospedagem</h3>
+      <label>Pet</label>
+      <select id="hpet">
+        ${pets.length ? pets.map(p=>{
+          const c = clients.find(x=>x.id===p.clientId);
+          return `<option value="${p.id}" ${Number(DB.__hotelPetId||0)===p.id?"selected":""}>${esc(p.name)} • ${esc(c?.name||"")}</option>`;
+        }).join("") : `<option value="">Cadastre um pet</option>`}
+      </select>
+      <div class="row">
+        <div><label>Entrada</label><input id="hin" type="date" value="${todayISO()}"></div>
+        <div><label>Saída prevista</label><input id="hout" type="date"></div>
       </div>
-
-      <div class="sep"></div>
-
-      <div class="kv">
-        <div>
-          <b>Status atual</b>
-          <div class="muted">${ps.title}</div>
-        </div>
-        <span class="tag ${ps.level==="ok"?"tagOk":(ps.level==="warn"?"tagWarn":"tagBad")}">${ps.level==="ok"?"Ativo":(ps.level==="warn"?"Aviso":"Limitado")}</span>
+      <div class="row">
+        <div><label>Diária (R$)</label><input id="hdaily" placeholder="Ex: 50,00"></div>
+        <div><label>Status</label><select id="hstatus"><option>Ativo</option><option>Finalizado</option></select></div>
       </div>
-
-      <div class="sep"></div>
-      <div class="cardTitle" style="margin-bottom:8px">Mensagens automáticas (WhatsApp)</div>
-      <div class="muted" style="margin-bottom:8px">Você pode editar os textos. Variáveis: {NOME}, {PET}, {DATA}, {HORA}</div>
-
-      <label>Confirmar agendamento</label>
-      <textarea id="m_confirm">${safeStr(c.msg_confirm)}</textarea>
-
-      <label style="margin-top:10px">Pet pronto</label>
-      <textarea id="m_ready">${safeStr(c.msg_ready)}</textarea>
-
-      <label style="margin-top:10px">Reagendar</label>
-      <textarea id="m_resch">${safeStr(c.msg_reschedule)}</textarea>
-
-      <label style="margin-top:10px">Retorno 30 dias</label>
-      <textarea id="m_ret30">${safeStr(c.msg_return30)}</textarea>
-
-      <div class="sep"></div>
-      <div class="muted">Se mudar o ID da loja, você alterna entre dados de lojas diferentes neste mesmo aparelho.</div>
-      `,
-      [
-        {text:"Salvar", className:"btn btnPrimary", onClick: ()=>{
-          const newShopId = safeStr($("#cfg_shopId").value).trim() || "local";
-          const newName = safeStr($("#cfg_shopName").value).trim() || "Seu PetShop";
-          const newCity = safeStr($("#cfg_shopCity").value).trim() || "Local";
-          const newPix = safeStr($("#cfg_pix").value).trim();
-          const due = safeStr($("#cfg_due").value).trim();
-          const grace = Math.max(0, toInt($("#cfg_grace").value)) || 15;
-
-          const msg_confirm = safeStr($("#m_confirm").value);
-          const msg_ready = safeStr($("#m_ready").value);
-          const msg_reschedule = safeStr($("#m_resch").value);
-          const msg_return30 = safeStr($("#m_ret30").value);
-
-          // salva dados da loja atual antes de trocar
-          saveShop(STATE.config.shopId, STATE.data);
-
-          STATE.config.shopId = newShopId;
-          STATE.config.shopName = newName;
-          STATE.config.shopCity = newCity;
-          STATE.config.pixKey = newPix;
-          STATE.config.planDueISO = due;
-          STATE.config.graceDays = grace;
-
-          STATE.config.msg_confirm = msg_confirm;
-          STATE.config.msg_ready = msg_ready;
-          STATE.config.msg_reschedule = msg_reschedule;
-          STATE.config.msg_return30 = msg_return30;
-
-          // carrega dados da nova loja
-          STATE.data = loadShop(STATE.config.shopId);
-
-          saveAll({config: STATE.config});
-          toast("Configuração salva");
-          closeModal();
-          render();
-        }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
-  }
-
-  function openBackup(){
-    const payload = JSON.stringify({ config: STATE.config, data: STATE.data }, null, 2);
-    openModal(
-      "Backup",
-      "Exportar e importar (JSON)",
-      `
-      <div class="muted">Exportar salva tudo em um arquivo de texto. Importar restaura o conteúdo.</div>
-      <div style="height:10px"></div>
-      <label>Conteúdo</label>
-      <textarea id="bk_text" style="min-height:220px;">${payload}</textarea>
-      <div style="height:10px"></div>
-      <div class="muted">Dica: envie esse texto pra você mesmo no WhatsApp e guarde. É seu backup.</div>
-      `,
-      [
-        {text:"Copiar backup", className:"btn", onClick: ()=>{
-          const t = $("#bk_text").value;
-          navigator.clipboard?.writeText(t).then(()=>toast("Backup copiado")).catch(()=>toast("Não consegui copiar"));
-        }},
-        {text:"Importar", className:"btn btnDanger", onClick: ()=>{
-          try{
-            const obj = JSON.parse($("#bk_text").value);
-            if(obj?.config) STATE.config = merge(structuredClone(DEFAULT.config), obj.config);
-            if(obj?.data) STATE.data = merge(structuredClone(DEFAULT.data), obj.data);
-            saveAll({config: STATE.config});
-            saveShop(STATE.config.shopId, STATE.data);
-            toast("Backup importado");
-            closeModal();
-            render();
-          }catch(e){
-            toast("JSON inválido");
-          }
-        }},
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
-  }
-
-  function quickAdd(){
-    const limited = isLimited();
-    openModal(
-      "Ação rápida",
-      limited ? "Modo limitado: novas ações bloqueadas" : "Escolha o que criar agora",
-      `
-      <div class="two">
-        <button class="btn btnPrimary" id="qa_client" ${limited?"disabled":""}>Novo cliente</button>
-        <button class="btn btnPrimary" id="qa_pet" ${limited?"disabled":""}>Novo pet</button>
-        <button class="btn btnPrimary" id="qa_app" ${limited?"disabled":""}>Agendar</button>
-        <button class="btn btnPrimary" id="qa_pay" ${limited?"disabled":""}>Pagamento</button>
+      <label>Medicação / Rotina</label>
+      <textarea id="hmeds" placeholder="Horários, ração, cuidados"></textarea>
+      <label>Observações</label>
+      <input id="hobs" placeholder="Temperamento, banho, etc">
+      <div class="actions">
+        <button class="primary" onclick="addBoarding()">Salvar</button>
       </div>
-      <div class="sep"></div>
-      <div class="muted">Comece pelo cliente, depois pet, depois agendar.</div>
-      `,
-      [
-        {text:"Fechar", className:"btn", onClick: closeModal}
-      ]
-    );
-    setTimeout(()=>{
-      $("#qa_client")?.addEventListener("click", ()=>{ closeModal(); openClientForm(); });
-      $("#qa_pet")?.addEventListener("click", ()=>{ closeModal(); openPetForm(); });
-      $("#qa_app")?.addEventListener("click", ()=>{ closeModal(); openAppointmentForm(); });
-      $("#qa_pay")?.addEventListener("click", ()=>{ closeModal(); openPaymentForm(); });
-    }, 0);
-  }
+    </div>
 
-  // UI bindings
-  $$(".tab").forEach(b=> b.addEventListener("click", ()=> setTab(b.dataset.tab)));
-  $("#search").addEventListener("input", (e)=>{ SEARCH = e.target.value; listItems(); });
+    <div class="card">
+      <h3>Hospedagens</h3>
+      ${items.length ? items.map(b=>{
+        const p = pets.find(x=>x.id===b.petId);
+        const c = p ? clients.find(x=>x.id===p.clientId) : null;
+        return `
+          <div class="list-item">
+            <b>${esc(p?.name||"Pet")}</b> <span class="badge">${esc(b.status||"")}</span><br>
+            <span class="small">${esc(c?.name||"")} • Entrada: ${esc(b.inDate||"")} ${b.outDate? "• Saída: "+esc(b.outDate):""}</span>
+            ${b.daily ? `<div class="small">Diária: R$ ${esc(b.daily)}</div>` : ``}
+            ${b.meds ? `<div class="small"><b>Rotina:</b> ${esc(b.meds)}</div>` : ``}
+            ${b.obs ? `<div class="small">${esc(b.obs)}</div>` : ``}
+            <div class="actions">
+              ${has(FEATURES.WHATSAPP) && c?.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}', '🐾 Atualização do ${esc(p?.name||"pet")}\\nStatus: ${esc(b.status||"Ativo")}')">WhatsApp status</button>` : ``}
+              <button class="danger" onclick="delBoarding(${b.id})">Excluir</button>
+            </div>
+          </div>
+        `;
+      }).join("") : `<div class="small">Nenhuma hospedagem registrada.</div>`}
+    </div>
+  `;
+}
+function goHotel(petId){
+  DB.__hotelPetId = petId;
+  save(); show("hotel");
+}
+function addBoarding(){
+  const petId = Number($("hpet").value);
+  if(!petId) return alert("Selecione um pet.");
+  const inDate = $("hin").value;
+  if(!inDate) return alert("Entrada obrigatória.");
 
-  $("#fab").addEventListener("click", ()=>{
-    if(TAB==="clients") return openClientForm();
-    if(TAB==="pets") return openPetForm();
-    if(TAB==="agenda") return openAppointmentForm();
-    if(TAB==="finance") return openPaymentForm();
-    quickAdd();
+  DB.boardings.push({
+    id:idNow(), shopId:DB.currentShopId,
+    petId,
+    inDate,
+    outDate:$("hout").value,
+    daily:$("hdaily").value.trim(),
+    status:$("hstatus").value,
+    meds:$("hmeds").value.trim(),
+    obs:$("hobs").value.trim()
   });
+  save(); show("hotel");
+}
+function delBoarding(id){
+  if(!confirm("Excluir hospedagem?")) return;
+  DB.boardings = DB.boardings.filter(b=>b.id!==id);
+  save(); show("hotel");
+}
 
-  $("#btnQuickAdd").addEventListener("click", quickAdd);
-  $("#btnOpenConfig").addEventListener("click", openConfig);
-  $("#btnConfig").addEventListener("click", openConfig);
-  $("#btnBackup").addEventListener("click", openBackup);
-  $("#btnCopyPix").addEventListener("click", copyPix);
-  $("#btnPixSide").addEventListener("click", copyPix);
+/** ======================
+ * CASH / SALES (Caixa)
+ * ====================== */
+function cash(){
+  const pets = shopFilter(DB.pets);
+  const sales = shopFilter(DB.sales).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+  const cashflow = shopFilter(DB.cashflow).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
 
-  $("#goClients").addEventListener("click", ()=> setTab("clients"));
-  $("#goPets").addEventListener("click", ()=> setTab("pets"));
-  $("#goAgenda").addEventListener("click", ()=> setTab("agenda"));
-  $("#goFinance").addEventListener("click", ()=> setTab("finance"));
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Venda rápida</h3>
+      <label>Item (produto/serviço)</label>
+      <input id="sitem" placeholder="Ex: Banho, Ração 10kg">
+      <div class="row">
+        <div><label>Valor</label><input id="svalue" placeholder="Ex: 80,00"></div>
+        <div><label>Pagamento</label>
+          <select id="spay"><option>Dinheiro</option><option>Pix</option><option>Cartão</option></select>
+        </div>
+      </div>
+      <label>Pet (opcional)</label>
+      <select id="spet">
+        <option value="">---</option>
+        ${pets.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}
+      </select>
+      <label>Obs</label>
+      <input id="sobs" placeholder="Ex: desconto, fiado, etc">
+      <div class="actions">
+        <button class="primary" onclick="addSale()">Registrar</button>
+      </div>
+    </div>
 
-  // Hotkeys (desktop)
-  document.addEventListener("keydown", (e)=>{
-    if(e.key==="Escape") closeModal();
-    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="k"){
-      e.preventDefault();
-      $("#search").focus();
+    <div class="card">
+      <h3>Entradas / Saídas</h3>
+      <div class="row">
+        <div>
+          <label>Tipo</label>
+          <select id="ctype"><option value="in">Entrada</option><option value="out">Saída</option></select>
+        </div>
+        <div><label>Valor</label><input id="cvalue" placeholder="Ex: 50,00"></div>
+      </div>
+      <label>Descrição</label><input id="cdesc" placeholder="Ex: compra de ração">
+      <div class="actions"><button class="primary" onclick="addCashflow()">Salvar</button></div>
+      <hr>
+      ${cashflow.slice(0,10).map(c=>`
+        <div class="list-item">
+          <b>${c.type==="in"?"Entrada":"Saída"}</b> <span class="badge">${esc(c.date)}</span>
+          <span class="badge">R$ ${esc(c.value)}</span><br>
+          <span class="small">${esc(c.desc||"")}</span>
+          <div class="actions"><button class="danger" onclick="delCashflow(${c.id})">Excluir</button></div>
+        </div>
+      `).join("") || `<div class="small">Sem lançamentos.</div>`}
+    </div>
+
+    <div class="card">
+      <h3>Vendas recentes</h3>
+      ${sales.slice(0,10).map(s=>`
+        <div class="list-item">
+          <b>R$ ${esc(s.total)}</b> <span class="badge">${esc(s.date)}</span> <span class="badge">${esc(s.pay)}</span><br>
+          <span class="small">${esc(s.items?.[0]?.name||"")}${s.petId ? " • "+esc(petName(s.petId)) : ""}</span>
+          ${s.obs ? `<div class="small">${esc(s.obs)}</div>` : ``}
+          <div class="actions"><button class="danger" onclick="delSale(${s.id})">Excluir</button></div>
+        </div>
+      `).join("") || `<div class="small">Sem vendas.</div>`}
+    </div>
+  `;
+}
+function addSale(){
+  const item = $("sitem").value.trim();
+  const value = $("svalue").value.trim();
+  if(!item || !value) return alert("Item e valor.");
+  const sale = {
+    id:idNow(), shopId:DB.currentShopId,
+    date: todayISO(),
+    items:[{name:item, value}],
+    total:value,
+    pay:$("spay").value,
+    petId: $("spet").value ? Number($("spet").value) : null,
+    obs:$("sobs").value.trim()
+  };
+  DB.sales.push(sale);
+  DB.cashflow.push({ id:idNow(), shopId:DB.currentShopId, date: todayISO(), type:"in", value, desc:`Venda • ${item}` });
+  save(); show("cash");
+}
+function delSale(id){
+  if(!confirm("Excluir venda?")) return;
+  DB.sales = DB.sales.filter(s=>s.id!==id);
+  save(); show("cash");
+}
+function addCashflow(){
+  const type = $("ctype").value;
+  const value = $("cvalue").value.trim();
+  const desc = $("cdesc").value.trim();
+  if(!value || !desc) return alert("Valor e descrição.");
+  DB.cashflow.push({id:idNow(), shopId:DB.currentShopId, date: todayISO(), type, value, desc});
+  save(); show("cash");
+}
+function delCashflow(id){
+  if(!confirm("Excluir lançamento?")) return;
+  DB.cashflow = DB.cashflow.filter(c=>c.id!==id);
+  save(); show("cash");
+}
+
+/** ======================
+ * PORTAL DO TUTOR
+ * ====================== */
+function portal(){
+  $("screen").innerHTML = `
+    <div class="card">
+      <h3>Portal do Tutor</h3>
+      <label>Telefone do tutor</label>
+      <input id="psearch" placeholder="Ex: 6799..." value="${esc(DB.__portalPhone||"")}">
+      <div class="actions"><button class="primary" onclick="searchTutor()">Buscar</button></div>
+      <div id="presult" style="margin-top:10px"></div>
+      <div class="small">Isso aqui é argumento de venda forte: “o cliente vê o histórico e confia na loja”.</div>
+    </div>
+  `;
+}
+function searchTutor(){
+  const phone = $("psearch").value.trim();
+  DB.__portalPhone = phone; save();
+
+  const clients = shopFilter(DB.clients);
+  const pets = shopFilter(DB.pets);
+  const agenda = shopFilter(DB.agenda);
+  const vet = shopFilter(DB.vetRecords);
+  const vac = shopFilter(DB.vaccines);
+
+  const c = clients.find(c=> (c.phone||"").includes(phone));
+  if(!c){ $("presult").innerHTML = `<div class="small">Não encontrado.</div>`; return; }
+
+  const myPets = pets.filter(p=>p.clientId===c.id);
+  const petIds = myPets.map(p=>p.id);
+  const upcoming = agenda.filter(a=> petIds.includes(a.petId)).slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).slice(0,10);
+  const lastVet = vet.filter(r=> petIds.includes(r.petId)).slice().sort((a,b)=> b.createdAt-a.createdAt).slice(0,8);
+  const myVac = vac.filter(v=> petIds.includes(v.petId)).slice().sort((a,b)=> (b.date||"").localeCompare(a.date||"")).slice(0,10);
+
+  $("presult").innerHTML = `
+    <div class="card" style="margin:0">
+      <b>${esc(c.name)}</b> <span class="badge">${esc(c.phone||"")}</span>
+      <div class="actions">
+        ${has(FEATURES.WHATSAPP) && c.phone ? `<button class="secondary" onclick="waOpen('${esc(c.phone)}','Olá! 😊')">WhatsApp</button>` : ``}
+      </div>
+      <hr>
+
+      <h3 style="margin:0 0 10px 0">Pets</h3>
+      ${myPets.map(p=>`
+        <div class="list-item">
+          <div class="row" style="align-items:center">
+            <img class="avatar" src="${p.photo||""}" alt="" onerror="this.style.display='none'">
+            <div>
+              <b>${esc(p.name)}</b> <span class="badge">${esc(p.species||"")}</span><br>
+              <span class="small">${p.breed?esc(p.breed):""} ${p.allergy? "• alergia: "+esc(p.allergy):""}</span>
+            </div>
+          </div>
+        </div>
+      `).join("") || `<div class="small">Sem pets.</div>`}
+
+      <hr>
+      <h3 style="margin:0 0 10px 0">Vacinas</h3>
+      ${myVac.map(v=>`
+        <div class="list-item">
+          <b>${esc(v.name)}</b> <span class="badge">${esc(v.date||"")}</span>
+          ${v.nextDate ? `<span class="badge">Próxima: ${esc(v.nextDate)}</span>` : ``}
+          <div class="small">${esc(petName(v.petId))}</div>
+        </div>
+      `).join("") || `<div class="small">Sem vacinas registradas.</div>`}
+
+      <hr>
+      <h3 style="margin:0 0 10px 0">Próximos agendamentos</h3>
+      ${upcoming.map(a=>`
+        <div class="list-item">
+          <b>${esc(a.type)}</b> <span class="badge">${esc(a.date)} ${esc(a.time||"")}</span><br>
+          <span class="small">${esc(petName(a.petId))}</span>
+        </div>
+      `).join("") || `<div class="small">Nada agendado.</div>`}
+
+      ${has(FEATURES.VET) ? `
+        <hr>
+        <h3 style="margin:0 0 10px 0">Últimos atendimentos</h3>
+        ${lastVet.map(r=>`
+          <div class="list-item">
+            <b>${esc(petName(r.petId))}</b> <span class="badge">${new Date(r.createdAt).toLocaleDateString("pt-BR")}</span>
+            ${r.diag ? `<div class="small"><b>Diag:</b> ${esc(r.diag)}</div>` : ``}
+            ${r.med ? `<div class="small"><b>Receita:</b> ${esc(r.med)}</div>` : ``}
+          </div>
+        `).join("") || `<div class="small">Sem atendimentos.</div>`}
+      ` : ``}
+    </div>
+  `;
+}
+
+/** ======================
+ * INIT
+ * ====================== */
+(function init(){
+  renderNav();
+  show("home");
+
+  // coloca Produtos/Estoque dentro da Home sempre (argumento de venda)
+  const oldHome = home;
+  home = function(){
+    oldHome();
+    if(has(FEATURES.PRODUCTS)){
+      $("screen").innerHTML = $("screen").innerHTML + productsUI();
     }
-  });
-
-  function render(){
-    applyHeader();
-    applyPlanUI();
-    setScreenTitle();
-    kpis();
-    listItems();
-
-    const limited = isLimited();
-    const fab = $("#fab");
-
-    const label =
-      TAB==="clients" ? "＋ Cliente" :
-      TAB==="pets" ? "＋ Pet" :
-      TAB==="agenda" ? "＋ Agendar" :
-      TAB==="finance" ? "＋ Pagamento" : "＋ Novo";
-    fab.textContent = label;
-    fab.disabled = limited;
-
-    const ps = planStatus();
-    $("#shopSub").textContent = limited
-      ? "Modo limitado: sem novos cadastros e agendamentos"
-      : "Clientes, pets, agenda, serviços e pagamentos";
-  }
-
-  // Inicial
-  render();
-
-  // Primeira vez: abre ajustes se estiver vazio
-  if(!STATE.config.planDueISO && !STATE.config.pixKey){
-    setTimeout(()=> openConfig(), 400);
-  }
-
+  };
+  show("home");
 })();
 </script>
 </body>
